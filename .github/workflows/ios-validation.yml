@@ -1,0 +1,34 @@
+name: Validate Flutter iOS Foundation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ios-validate:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate iOS scaffold without overwriting dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp pubspec.yaml /tmp/pyincc-ios-pubspec.yaml
+          flutter create --platforms=ios --org com.pyincc --project-name pyincc_fashionai --no-pub .
+          cp /tmp/pyincc-ios-pubspec.yaml pubspec.yaml
+          rm -f pubspec.lock
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Analyze Flutter sources
+        run: flutter analyze --no-fatal-infos
+      - name: Run Flutter tests
+        run: flutter test
+      - name: Check iOS simulator compilation (no signing)
+        run: flutter build ios --simulator --no-codesign
