@@ -4,13 +4,12 @@ import 'package:pyincc_fashionai/main.dart';
 
 Future<void> openHome(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
-  await tester.tap(find.text('Bắt đầu xem giao diện'));
   await tester.pumpAndSettle();
   expect(find.text('Add ảnh PNG'), findsOneWidget);
 }
 
 void main() {
-  testWidgets('Welcome opens unified Studio', (tester) async {
+  testWidgets('App opens unified Studio by default', (tester) async {
     await openHome(tester);
     final studioScroll = find.byType(Scrollable).first;
     await tester.scrollUntilVisible(find.text('Tạo nhân vật 3D từ ảnh thật'), 180,
