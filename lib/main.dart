@@ -82,21 +82,47 @@ class _HomeShellState extends State<HomeShell> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(child: IndexedStack(index: tab, children: [
-      Dashboard(onOpen: (i) => setState(() => tab = i)),
-      const TryOnScreen(),
-      const WardrobeScreen(),
+      const UnifiedStudioScreen(),
+      Dashboard(onOpen: (_) => setState(() => tab = 0)),
       const ProfileScreen(),
     ])),
     bottomNavigationBar: NavigationBar(
       selectedIndex: tab,
       onDestinationSelected: (i) => setState(() => tab = i),
       destinations: const [
-        NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Khám phá'),
-        NavigationDestination(icon: Icon(Icons.checkroom_outlined), label: 'Thử đồ'),
-        NavigationDestination(icon: Icon(Icons.inventory_2_outlined), label: 'Tủ đồ'),
+        NavigationDestination(icon: Icon(Icons.auto_awesome_outlined), label: 'Studio'),
+        NavigationDestination(icon: Icon(Icons.explore_outlined), label: 'Khám phá'),
         NavigationDestination(icon: Icon(Icons.person_outline), label: 'Cá nhân'),
       ],
     ),
+  );
+}
+
+class UnifiedStudioScreen extends StatelessWidget {
+  const UnifiedStudioScreen({super.key});
+  @override
+  Widget build(BuildContext context) => SectionPage(
+    title: 'Studio',
+    subtitle: 'Nhân vật · Tủ đồ · Thử đồ · Làm đẹp',
+    children: [
+      const DemoNotice(),
+      const SizedBox(height: 16),
+      const PreviewPanel(icon: Icons.person_outline, title: 'Nhân vật 2D',
+        caption: 'Vùng hiển thị ảnh toàn thân. Chưa tải ảnh hoặc tạo avatar tự động.'),
+      const SizedBox(height: 18),
+      FeatureTile(icon: Icons.inventory_2_outlined, title: 'Tủ đồ',
+        detail: 'Quản lý và chọn trang phục', onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const WardrobeScreen()))),
+      FeatureTile(icon: Icons.checkroom_outlined, title: 'Thử đồ',
+        detail: 'Xem bố cục thử đồ 2D', onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const TryOnScreen()))),
+      FeatureTile(icon: Icons.face_retouching_natural_outlined, title: 'Làm đẹp',
+        detail: 'Điều chỉnh phong cách trong Studio', onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const BeautyScreen()))),
+      FeatureTile(icon: Icons.view_in_ar_outlined, title: 'Avatar 3D',
+        detail: 'Tính năng tương lai, chưa có trong MVP', onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const FutureScreen()))),
+    ],
   );
 }
 
