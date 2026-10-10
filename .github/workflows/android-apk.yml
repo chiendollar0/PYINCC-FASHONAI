@@ -1,4 +1,4 @@
-name: Build Android Foundation APK
+name: Test Debug and Build Android APK
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  android:
+  validate:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,18 +22,55 @@ jobs:
           cache: true
       - name: Generate Android scaffold
         run: flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai .
-      - name: Configure application ID
+      - name: Configure Android application ID
+        run: sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+      - name: Validate launcher configuration
+        shell: bash
         run: |
-          sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+          set -euo pipefail
+          test -f android/app/src/main/kotlin/com/pyincc/fashionai/MainActivity.kt
+          grep -q 'package com.pyincc.fashionai' android/app/src/main/kotlin/com/pyincc/fashionai/MainActivity.kt
+          grep -q 'class MainActivity : FlutterActivity()' android/app/src/main/kotlin/com/pyincc/fashionai/MainActivity.kt
+          grep -q 'android:name=".MainActivity"' android/app/src/main/AndroidManifest.xml
+          grep -q 'android.intent.action.MAIN' android/app/src/main/AndroidManifest.xml
+          grep -q 'android.intent.category.LAUNCHER' android/app/src/main/AndroidManifest.xml
+          grep -q 'applicationId = "com.pyincc.fashionai"' android/app/build.gradle.kts
       - name: Install dependencies
         run: flutter pub get
-      - name: Run tests
+      - name: Static analysis
+        run: flutter analyze --no-fatal-infos
+      - name: Unit and widget tests
         run: flutter test
-      - name: Build debug APK
+      - name: Android Gradle compile check
+        working-directory: android
+        run: ./gradlew :app:compileDebugKotlin --stacktrace
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate Android scaffold
+        run: flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai .
+      - name: Configure Android application ID
+        run: sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+      - name: Dependencies
+        run: flutter pub get
+      - name: Build debug APK only after tests pass
         run: flutter build apk --debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: pyincc-fashionai-foundation-apk
+          name: pyincc-fashionai-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
