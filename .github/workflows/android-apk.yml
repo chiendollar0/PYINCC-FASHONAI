@@ -21,9 +21,12 @@ jobs:
           channel: stable
           cache: true
       - name: Generate Android scaffold
-        run: flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai .
+        run: flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai --no-pub .
       - name: Configure Android application ID
-        run: sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+        run: |
+          sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+          mkdir -p android/app/src/main/kotlin/com/pyincc/fashionai
+          rm -f android/app/src/main/kotlin/com/pyincc/pyincc_fashionai/MainActivity.kt
       - name: Validate launcher configuration
         shell: bash
         run: |
@@ -43,7 +46,7 @@ jobs:
         run: flutter test
       - name: Android Gradle compile check
         working-directory: android
-        run: ./gradlew :app:compileDebugKotlin --stacktrace
+        run: bash ./gradlew :app:compileDebugKotlin --stacktrace
 
   build:
     needs: validate
@@ -61,9 +64,12 @@ jobs:
           channel: stable
           cache: true
       - name: Generate Android scaffold
-        run: flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai .
+        run: flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai --no-pub .
       - name: Configure Android application ID
-        run: sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+        run: |
+          sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
+          mkdir -p android/app/src/main/kotlin/com/pyincc/fashionai
+          rm -f android/app/src/main/kotlin/com/pyincc/pyincc_fashionai/MainActivity.kt
       - name: Dependencies
         run: flutter pub get
       - name: Build debug APK only after tests pass
