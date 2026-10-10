@@ -37,7 +37,11 @@ void main() {
     await openHome(tester);
     await tester.tap(find.text('Thử đồ'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Mở Studio Làm Đẹp'));
+    await tester.scrollUntilVisible(
+      find.text('Mở Studio Làm Đẹp'),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Mở Studio Làm Đẹp'));
     await tester.pumpAndSettle();
     expect(find.text('Studio Làm Đẹp'), findsOneWidget);
