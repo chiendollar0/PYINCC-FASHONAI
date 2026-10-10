@@ -191,13 +191,14 @@ class SectionPage extends StatelessWidget {
   final List<Widget> children;
   const SectionPage({super.key, required this.title, required this.subtitle, required this.children});
   @override
-  Widget build(BuildContext context) => ListView(padding: const EdgeInsets.all(20), children: [
+  Widget build(BuildContext context) => Scaffold(
+    body: ListView(padding: const EdgeInsets.all(20), children: [
     Text(title, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: coffee)),
     const SizedBox(height: 6),
     Text(subtitle, style: const TextStyle(color: Colors.black54)),
     const SizedBox(height: 22),
     ...children,
-  ]);
+  ]));
 }
 
 class FeatureTile extends StatelessWidget {
