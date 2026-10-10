@@ -307,26 +307,6 @@ class Dashboard extends StatelessWidget {
   );
 }
 
-class StoreScreen extends StatelessWidget {
-  const StoreScreen({super.key});
-  @override
-  Widget build(BuildContext context) => const SectionPage(
-    title: 'Store',
-    subtitle: 'Chọn trang phục thật để thử trong Studio',
-    children: [
-      DemoNotice(),
-      SizedBox(height: 16),
-      PreviewPanel(
-        icon: Icons.shopping_bag_outlined,
-        title: 'Sản phẩm từ cửa hàng',
-        caption: 'Chưa kết nối danh mục sản phẩm Shopee hoặc TikTok Shop. Chỉ hiển thị sản phẩm khi có nguồn và liên kết mua được xác minh.',
-      ),
-      SizedBox(height: 16),
-      Text('Khi có sản phẩm hợp lệ, bạn có thể thêm vào Tủ đồ và chọn thử trong Studio.'),
-    ],
-  );
-}
-
 class TryOnScreen extends StatefulWidget {
   const TryOnScreen({super.key});
   @override
