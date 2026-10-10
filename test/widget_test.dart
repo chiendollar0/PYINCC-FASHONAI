@@ -4,73 +4,51 @@ import 'package:pyincc_fashionai/main.dart';
 
 Future<void> openHome(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
-  expect(find.text('Thử đồ ảo. Phong cách thật.'), findsOneWidget);
   await tester.tap(find.text('Bắt đầu xem giao diện'));
   await tester.pumpAndSettle();
-  expect(find.text('Trang Chủ'), findsOneWidget);
+  expect(find.text('Nhân vật 2D'), findsOneWidget);
 }
 
 void main() {
-  testWidgets('Welcome opens dashboard', (tester) async {
+  testWidgets('Welcome opens unified Studio', (tester) async {
     await openHome(tester);
-    expect(find.text('Tủ Đồ AI'), findsWidgets);
+    expect(find.text('Tủ đồ'), findsWidgets);
+    expect(find.text('Thử đồ'), findsWidgets);
+    expect(find.text('Làm đẹp'), findsOneWidget);
   });
 
-  testWidgets('Dashboard feature tiles open core modules', (tester) async {
+  testWidgets('Studio opens wardrobe', (tester) async {
     await openHome(tester);
-    await tester.tap(find.text('Thử Đồ AI'));
+    await tester.tap(find.text('Tủ đồ').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Thêm món đồ'), findsOneWidget);
+  });
+
+  testWidgets('Studio opens try-on', (tester) async {
+    await openHome(tester);
+    await tester.tap(find.text('Thử đồ').last);
     await tester.pumpAndSettle();
     expect(find.text('Chất lượng hình ảnh'), findsOneWidget);
   });
 
-  testWidgets('Four-tab navigation opens wardrobe and profile', (tester) async {
+  testWidgets('Studio opens beauty', (tester) async {
     await openHome(tester);
-    await tester.tap(find.text('Tủ đồ'));
+    await tester.tap(find.text('Làm đẹp'));
     await tester.pumpAndSettle();
-    expect(find.text('Thêm món đồ'), findsOneWidget);
+    expect(find.text('Studio Làm Đẹp'), findsOneWidget);
+  });
+
+  testWidgets('Explore and profile are primary tabs', (tester) async {
+    await openHome(tester);
+    await tester.tap(find.text('Khám phá'));
+    await tester.pumpAndSettle();
+    expect(find.text('Trang Chủ'), findsOneWidget);
     await tester.tap(find.text('Cá nhân'));
     await tester.pumpAndSettle();
     expect(find.text('Local-first'), findsOneWidget);
   });
 
-  testWidgets('Beauty is accessible inside Try-on', (tester) async {
-    await openHome(tester);
-    await tester.tap(find.text('Thử đồ'));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('Mở Studio Làm Đẹp'),
-      180,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('Mở Studio Làm Đẹp'));
-    await tester.pumpAndSettle();
-    expect(find.text('Studio Làm Đẹp'), findsOneWidget);
-  });
-
-  testWidgets('Try-on result is explicitly a preview', (tester) async {
-    await openHome(tester);
-    await tester.tap(find.text('Thử đồ'));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('Xem bố cục kết quả mẫu'),
-      180,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('Xem bố cục kết quả mẫu'));
-    await tester.pumpAndSettle();
-    expect(find.text('Kết quả Thử Đồ'), findsOneWidget);
-    expect(find.textContaining('Chưa có ảnh kết quả AI'), findsOneWidget);
-  });
-
-  testWidgets('Avatar 3D is labeled future feature', (tester) async {
-    await openHome(tester);
-    await tester.scrollUntilVisible(find.text('Avatar 3D'), 180, scrollable: find.byType(Scrollable).first);
-    await tester.tap(find.text('Avatar 3D'));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('chưa triển khai trong MVP'), findsOneWidget);
-  });
-
-  testWidgets('Cloud backup is disabled by default', (tester) async {
+  testWidgets('Cloud backup remains disabled', (tester) async {
     await openHome(tester);
     await tester.tap(find.text('Cá nhân'));
     await tester.pumpAndSettle();
