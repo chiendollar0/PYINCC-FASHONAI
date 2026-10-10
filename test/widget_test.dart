@@ -12,33 +12,41 @@ Future<void> openHome(WidgetTester tester) async {
 void main() {
   testWidgets('Welcome opens unified Studio', (tester) async {
     await openHome(tester);
-    expect(find.text('Tủ đồ'), findsWidgets);
-    expect(find.text('Thử đồ'), findsWidgets);
-    expect(find.text('Làm đẹp'), findsOneWidget);
+    final studioScroll = find.byType(Scrollable).first;
+    await tester.scrollUntilVisible(find.text('Tạo nhân vật 3D từ ảnh thật'), 180,
+        scrollable: studioScroll);
     expect(find.text('Tạo nhân vật 3D từ ảnh thật'), findsOneWidget);
+    for (final label in ['Tủ đồ', 'Thử đồ', 'Làm đẹp']) {
+      await tester.scrollUntilVisible(find.text(label), 180,
+          scrollable: studioScroll);
+      expect(find.text(label), findsOneWidget);
+    }
     expect(find.text('Render thành nhân vật 2D'), findsNothing);
     expect(find.text('Face Swap với mẫu nhân vật'), findsNothing);
   });
 
   testWidgets('Studio opens wardrobe', (tester) async {
     await openHome(tester);
-    await tester.ensureVisible(find.text('Tủ đồ').last);
-    await tester.tap(find.text('Tủ đồ').last);
+    await tester.scrollUntilVisible(find.text('Tủ đồ'), 180,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
     expect(find.text('Thêm món đồ'), findsOneWidget);
   });
 
   testWidgets('Studio opens try-on', (tester) async {
     await openHome(tester);
-    await tester.ensureVisible(find.text('Thử đồ').last);
-    await tester.tap(find.text('Thử đồ').last);
+    await tester.scrollUntilVisible(find.text('Thử đồ'), 180,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Thử đồ'));
     await tester.pumpAndSettle();
     expect(find.text('Chất lượng hình ảnh'), findsOneWidget);
   });
 
   testWidgets('Studio opens beauty', (tester) async {
     await openHome(tester);
-    await tester.ensureVisible(find.text('Làm đẹp'));
+    await tester.scrollUntilVisible(find.text('Làm đẹp'), 180,
+        scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Làm đẹp'));
     await tester.pumpAndSettle();
     expect(find.text('Studio Làm Đẹp'), findsOneWidget);
