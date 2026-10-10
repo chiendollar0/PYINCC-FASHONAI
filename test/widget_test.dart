@@ -47,7 +47,11 @@ void main() {
     await openHome(tester);
     await tester.tap(find.text('Thử đồ'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Xem bố cục kết quả mẫu'));
+    await tester.scrollUntilVisible(
+      find.text('Xem bố cục kết quả mẫu'),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Xem bố cục kết quả mẫu'));
     await tester.pumpAndSettle();
     expect(find.text('Kết quả Thử Đồ'), findsOneWidget);
