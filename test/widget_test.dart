@@ -15,8 +15,9 @@ void main() {
     expect(find.text('Tủ đồ'), findsWidgets);
     expect(find.text('Thử đồ'), findsWidgets);
     expect(find.text('Làm đẹp'), findsOneWidget);
-    expect(find.text('Render thành nhân vật 2D'), findsOneWidget);
-    expect(find.text('Face Swap với mẫu nhân vật'), findsOneWidget);
+    expect(find.text('Tạo nhân vật 3D từ ảnh thật'), findsOneWidget);
+    expect(find.text('Render thành nhân vật 2D'), findsNothing);
+    expect(find.text('Face Swap với mẫu nhân vật'), findsNothing);
   });
 
   testWidgets('Studio opens wardrobe', (tester) async {
