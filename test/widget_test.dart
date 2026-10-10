@@ -25,17 +25,17 @@ void main() {
 
   testWidgets('Bottom navigation opens wardrobe and beauty', (tester) async {
     await openHome(tester);
-    await tester.tap(find.byIcon(Icons.inventory_2_outlined).last);
+    await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
     expect(find.text('Thêm món đồ'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.face_retouching_natural_outlined));
+    await tester.tap(find.text('Làm đẹp'));
     await tester.pumpAndSettle();
     expect(find.text('Studio Làm Đẹp'), findsOneWidget);
   });
 
   testWidgets('Try-on result is explicitly a preview', (tester) async {
     await openHome(tester);
-    await tester.tap(find.byIcon(Icons.checkroom_outlined).last);
+    await tester.tap(find.text('Thử đồ'));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Xem bố cục kết quả mẫu'));
     await tester.tap(find.text('Xem bố cục kết quả mẫu'));
@@ -46,6 +46,7 @@ void main() {
 
   testWidgets('Avatar 3D is labeled future feature', (tester) async {
     await openHome(tester);
+    await tester.scrollUntilVisible(find.text('Avatar 3D'), 180, scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Avatar 3D'));
     await tester.pumpAndSettle();
     expect(find.textContaining('chưa triển khai trong MVP'), findsOneWidget);
