@@ -53,19 +53,22 @@ void main() {
     expect(find.text('Studio Làm Đẹp'), findsOneWidget);
   });
 
-  testWidgets('Explore and profile are primary tabs', (tester) async {
+  testWidgets('Studio, Home, Store and Account are primary tabs', (tester) async {
     await openHome(tester);
-    await tester.tap(find.text('Khám phá'));
+    await tester.tap(find.text('Home'));
     await tester.pumpAndSettle();
-    expect(find.text('Trang Chủ'), findsOneWidget);
-    await tester.tap(find.text('Cá nhân'));
+    expect(find.text('Nhân vật của bạn'), findsOneWidget);
+    await tester.tap(find.text('Store'));
+    await tester.pumpAndSettle();
+    expect(find.text('Chọn trang phục thật để thử'), findsOneWidget);
+    await tester.tap(find.text('Account'));
     await tester.pumpAndSettle();
     expect(find.text('Local-first'), findsOneWidget);
   });
 
   testWidgets('Cloud backup remains disabled', (tester) async {
     await openHome(tester);
-    await tester.tap(find.text('Cá nhân'));
+    await tester.tap(find.text('Account'));
     await tester.pumpAndSettle();
     final backup = tester.widget<SwitchListTile>(find.byType(SwitchListTile));
     expect(backup.value, isFalse);
