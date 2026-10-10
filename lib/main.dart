@@ -79,13 +79,16 @@ class HomeShell extends StatefulWidget {
   @override
   State<HomeShell> createState() => _HomeShellState();
 }
+
 class _HomeShellState extends State<HomeShell> {
   int tab = 0;
+
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(child: IndexedStack(index: tab, children: [
       const UnifiedStudioScreen(),
-      Dashboard(onOpen: (_) => setState(() => tab = 0)),
+      const CharacterHomeScreen(),
+      StoreScreen(onTryOn: () => setState(() => tab = 0)),
       const ProfileScreen(),
     ])),
     bottomNavigationBar: NavigationBar(
@@ -93,10 +96,70 @@ class _HomeShellState extends State<HomeShell> {
       onDestinationSelected: (i) => setState(() => tab = i),
       destinations: const [
         NavigationDestination(icon: Icon(Icons.auto_awesome_outlined), label: 'Studio'),
-        NavigationDestination(icon: Icon(Icons.explore_outlined), label: 'Khám phá'),
-        NavigationDestination(icon: Icon(Icons.person_outline), label: 'Cá nhân'),
+        NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
+        NavigationDestination(icon: Icon(Icons.shopping_bag_outlined), label: 'Store'),
+        NavigationDestination(icon: Icon(Icons.person_outline), label: 'Account'),
       ],
     ),
+  );
+}
+
+/// UI-only foundation. Real avatar reconstruction and face swap require a
+/// separately validated image-processing provider and explicit user consent.
+class CharacterHomeScreen extends StatelessWidget {
+  const CharacterHomeScreen({super.key});
+  @override
+  Widget build(BuildContext context) => SectionPage(
+    title: 'Home',
+    subtitle: 'Nhân vật của bạn',
+    children: [
+      const DemoNotice(),
+      const SizedBox(height: 16),
+      const PreviewPanel(
+        icon: Icons.accessibility_new_outlined,
+        title: 'Chọn nhân vật mẫu',
+        caption: 'Mẫu nhân vật và ảnh toàn thân sẽ được tích hợp sau.',
+      ),
+      const SizedBox(height: 16),
+      const Text('Thông số tham khảo',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 8),
+      const Text('Chiều cao, cân nặng và tuổi là thông tin tùy chọn; '
+        'không dùng để đánh giá ngoại hình.'),
+      const SizedBox(height: 16),
+      const ListTile(
+        leading: Icon(Icons.face_outlined),
+        title: Text('Ảnh khuôn mặt của bạn'),
+        subtitle: Text('Chọn ảnh và Face Swap trong Studio; chưa kết nối AI.'),
+      ),
+    ],
+  );
+}
+
+/// Store deliberately contains no invented prices, brands or purchase URLs.
+class StoreScreen extends StatelessWidget {
+  final VoidCallback onTryOn;
+  const StoreScreen({super.key, required this.onTryOn});
+  @override
+  Widget build(BuildContext context) => SectionPage(
+    title: 'Store',
+    subtitle: 'Chọn trang phục thật để thử',
+    children: [
+      const DemoNotice(),
+      const SizedBox(height: 16),
+      const PreviewPanel(
+        icon: Icons.shopping_bag_outlined,
+        title: 'Danh mục sản phẩm',
+        caption: 'Đang chờ nguồn dữ liệu sản phẩm và liên kết '
+          'Shopee / TikTok Shop được xác minh.',
+      ),
+      const SizedBox(height: 16),
+      OutlinedButton.icon(
+        onPressed: onTryOn,
+        icon: const Icon(Icons.auto_awesome),
+        label: const Text('Về Studio để thử đồ'),
+      ),
+    ],
   );
 }
 
