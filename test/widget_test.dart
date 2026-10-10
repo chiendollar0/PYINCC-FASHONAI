@@ -23,12 +23,22 @@ void main() {
     expect(find.text('Chất lượng hình ảnh'), findsOneWidget);
   });
 
-  testWidgets('Bottom navigation opens wardrobe and beauty', (tester) async {
+  testWidgets('Four-tab navigation opens wardrobe and profile', (tester) async {
     await openHome(tester);
     await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
     expect(find.text('Thêm món đồ'), findsOneWidget);
-    await tester.tap(find.text('Làm đẹp'));
+    await tester.tap(find.text('Cá nhân'));
+    await tester.pumpAndSettle();
+    expect(find.text('Local-first'), findsOneWidget);
+  });
+
+  testWidgets('Beauty is accessible inside Try-on', (tester) async {
+    await openHome(tester);
+    await tester.tap(find.text('Thử đồ'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Mở Studio Làm Đẹp'));
+    await tester.tap(find.text('Mở Studio Làm Đẹp'));
     await tester.pumpAndSettle();
     expect(find.text('Studio Làm Đẹp'), findsOneWidget);
   });
@@ -54,7 +64,7 @@ void main() {
 
   testWidgets('Cloud backup is disabled by default', (tester) async {
     await openHome(tester);
-    await tester.tap(find.byIcon(Icons.person_outline).last);
+    await tester.tap(find.text('Cá nhân'));
     await tester.pumpAndSettle();
     final backup = tester.widget<SwitchListTile>(find.byType(SwitchListTile));
     expect(backup.value, isFalse);
