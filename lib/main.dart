@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(const PyinccApp());
 
@@ -98,27 +100,79 @@ class _HomeShellState extends State<HomeShell> {
   );
 }
 
-class UnifiedStudioScreen extends StatelessWidget {
+class UnifiedStudioScreen extends StatefulWidget {
   const UnifiedStudioScreen({super.key});
+  @override
+  State<UnifiedStudioScreen> createState() => _UnifiedStudioScreenState();
+}
+
+class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? _portrait;
+  bool _importing = false;
+
+  Future<void> _addPortrait() async {
+    if (_importing) return;
+    setState(() => _importing = true);
+    try {
+      final selected = await _picker.pickImage(source: ImageSource.gallery);
+      if (selected == null || !mounted) return;
+      final header = await File(selected.path).openRead(0, 8).fold<List<int>>(
+        <int>[], (bytes, chunk) => bytes..addAll(chunk));
+      const pngSignature = <int>[137, 80, 78, 71, 13, 10, 26, 10];
+      final valid = header.length == 8 &&
+        List.generate(8, (i) => header[i] == pngSignature[i]).every((v) => v);
+      if (!valid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Vui lòng chọn ảnh PNG hợp lệ.')));
+        return;
+      }
+      setState(() => _portrait = selected);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không thể đọc ảnh. Vui lòng thử lại.')));
+      }
+    } finally {
+      if (mounted) setState(() => _importing = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => SectionPage(
     title: 'Studio',
-    subtitle: 'Nhân vật · Tủ đồ · Thử đồ · Làm đẹp',
+    subtitle: 'Ảnh chân dung → Nhân vật → Tủ đồ → Thử đồ → Làm đẹp',
     children: [
       const DemoNotice(),
       const SizedBox(height: 16),
-      const PreviewPanel(icon: Icons.add_photo_alternate_outlined, title: 'Bước 1 · Import ảnh PNG chân dung thật',
-        caption: 'Ảnh của bạn hoặc ảnh được phép sử dụng. Chọn ảnh trên thiết bị sẽ được tích hợp ở giai đoạn xử lý ảnh cục bộ.'),
+      const Text('Bước 1 · Add ảnh chân dung PNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       const SizedBox(height: 12),
-      const Text('Bước 2 · Chọn cách tạo nhân vật', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      if (_portrait == null)
+        const PreviewPanel(icon: Icons.add_photo_alternate_outlined, title: 'Chưa có ảnh chân dung',
+          caption: 'Chọn ảnh PNG của bạn hoặc ảnh được phép sử dụng. Ảnh không tự động tải lên máy chủ.')
+      else
+        ClipRRect(borderRadius: BorderRadius.circular(20),
+          child: Image.file(File(_portrait!.path), height: 250, fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const Text('Không thể hiển thị ảnh PNG'))),
+      const SizedBox(height: 12),
+      FilledButton.icon(
+        onPressed: _importing ? null : _addPortrait,
+        icon: const Icon(Icons.add_photo_alternate_outlined),
+        label: Text(_importing ? 'Đang đọc ảnh...' : (_portrait == null ? 'Add ảnh PNG' : 'Đổi ảnh PNG'))),
+      const SizedBox(height: 16),
+      const Text('Bước 2 · Render hoặc Face Swap', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       const SizedBox(height: 8),
-      const ListTile(leading: Icon(Icons.person_outline), title: Text('Render nhân vật 2D'),
-        subtitle: Text('Từ ảnh chân dung đã nhập · Chưa khả dụng')),
-      const ListTile(leading: Icon(Icons.swap_horiz), title: Text('Face swap với mẫu có sẵn'),
-        subtitle: Text('Chỉ dùng ảnh có sự đồng ý · Chưa khả dụng')),
+      ListTile(
+        enabled: false, leading: const Icon(Icons.person_outline),
+        title: const Text('Render thành nhân vật 2D'),
+        subtitle: Text(_portrait == null ? 'Cần Add ảnh PNG trước' : 'Đã có ảnh · Chờ tích hợp engine render')),
+      ListTile(
+        enabled: false, leading: const Icon(Icons.swap_horiz),
+        title: const Text('Face Swap với mẫu nhân vật'),
+        subtitle: Text(_portrait == null ? 'Cần Add ảnh PNG trước' : 'Chỉ dùng ảnh được phép · Chờ engine face swap')),
       const SizedBox(height: 8),
-      const Text('Bước 3 · Chỉnh sửa trong Studio', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      const SizedBox(height: 18),
+      const Text('Bước 3 · Công cụ Studio', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 16),
       FeatureTile(icon: Icons.inventory_2_outlined, title: 'Tủ đồ',
         detail: 'Quản lý và chọn trang phục', onTap: () => Navigator.push(context,
           MaterialPageRoute(builder: (_) => const WardrobeScreen()))),
