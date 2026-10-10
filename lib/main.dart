@@ -141,7 +141,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   @override
   Widget build(BuildContext context) => SectionPage(
     title: 'Studio',
-    subtitle: 'Ảnh chân dung → Nhân vật → Tủ đồ → Thử đồ → Làm đẹp',
+    subtitle: 'Ảnh thật → AI dựng nhân vật 3D → Studio',
     children: [
       const DemoNotice(),
       const SizedBox(height: 16),
@@ -160,16 +160,15 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         icon: const Icon(Icons.add_photo_alternate_outlined),
         label: Text(_importing ? 'Đang đọc ảnh...' : (_portrait == null ? 'Add ảnh PNG' : 'Đổi ảnh PNG'))),
       const SizedBox(height: 16),
-      const Text('Bước 2 · Render hoặc Face Swap', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const Text('Bước 2 · AI dựng nhân vật 3D từ ảnh', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       const SizedBox(height: 8),
       ListTile(
-        enabled: false, leading: const Icon(Icons.person_outline),
-        title: const Text('Render thành nhân vật 2D'),
-        subtitle: Text(_portrait == null ? 'Cần Add ảnh PNG trước' : 'Đã có ảnh · Chờ tích hợp engine render')),
-      ListTile(
-        enabled: false, leading: const Icon(Icons.swap_horiz),
-        title: const Text('Face Swap với mẫu nhân vật'),
-        subtitle: Text(_portrait == null ? 'Cần Add ảnh PNG trước' : 'Chỉ dùng ảnh được phép · Chờ engine face swap')),
+        enabled: false, leading: const Icon(Icons.view_in_ar_outlined),
+        title: const Text('Tạo nhân vật 3D từ ảnh thật'),
+        subtitle: Text(_portrait == null
+          ? 'Cần nhập ảnh trước khi dựng 3D'
+          : 'Đã có ảnh tham chiếu · Chờ tích hợp AI tái tạo 3D')),
+      const Text('Ảnh chân dung chỉ cung cấp thông tin khuôn mặt; nên bổ sung ảnh toàn thân để ước lượng hình dáng. Kết quả 3D không phải bản sao chính xác tuyệt đối.'),
       const SizedBox(height: 8),
       const Text('Bước 3 · Công cụ Studio', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       const SizedBox(height: 16),
@@ -182,9 +181,6 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
       FeatureTile(icon: Icons.face_retouching_natural_outlined, title: 'Làm đẹp',
         detail: 'Điều chỉnh phong cách trong Studio', onTap: () => Navigator.push(context,
           MaterialPageRoute(builder: (_) => const BeautyScreen()))),
-      FeatureTile(icon: Icons.view_in_ar_outlined, title: 'Avatar 3D',
-        detail: 'Tính năng tương lai, chưa có trong MVP', onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const FutureScreen()))),
     ],
   );
 }
