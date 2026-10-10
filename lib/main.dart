@@ -89,7 +89,6 @@ class _HomeShellState extends State<HomeShell> {
       const UnifiedStudioScreen(),
       const CharacterHomeScreen(),
       StoreScreen(onTryOn: () => setState(() => tab = 0)),
-      const StoreScreen(),
       const ProfileScreen(),
     ])),
     bottomNavigationBar: NavigationBar(
