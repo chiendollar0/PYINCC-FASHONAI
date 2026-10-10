@@ -23,7 +23,7 @@ class PyinccApp extends StatelessWidget {
       cardTheme: CardThemeData(color: Colors.white, elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
     ),
-    home: const WelcomeScreen(),
+    home: const HomeShell(),
   );
 }
 
@@ -89,6 +89,7 @@ class _HomeShellState extends State<HomeShell> {
       const UnifiedStudioScreen(),
       const CharacterHomeScreen(),
       StoreScreen(onTryOn: () => setState(() => tab = 0)),
+      const StoreScreen(),
       const ProfileScreen(),
     ])),
     bottomNavigationBar: NavigationBar(
@@ -303,6 +304,26 @@ class Dashboard extends StatelessWidget {
       FeatureTile(icon: Icons.view_in_ar, title: 'Avatar 3D',
         detail: 'Tính năng tương lai', onTap: () => Navigator.push(context,
           MaterialPageRoute(builder: (_) => const FutureScreen()))),
+    ],
+  );
+}
+
+class StoreScreen extends StatelessWidget {
+  const StoreScreen({super.key});
+  @override
+  Widget build(BuildContext context) => const SectionPage(
+    title: 'Store',
+    subtitle: 'Chọn trang phục thật để thử trong Studio',
+    children: [
+      DemoNotice(),
+      SizedBox(height: 16),
+      PreviewPanel(
+        icon: Icons.shopping_bag_outlined,
+        title: 'Sản phẩm từ cửa hàng',
+        caption: 'Chưa kết nối danh mục sản phẩm Shopee hoặc TikTok Shop. Chỉ hiển thị sản phẩm khi có nguồn và liên kết mua được xác minh.',
+      ),
+      SizedBox(height: 16),
+      Text('Khi có sản phẩm hợp lệ, bạn có thể thêm vào Tủ đồ và chọn thử trong Studio.'),
     ],
   );
 }
