@@ -26,6 +26,7 @@ jobs:
           cp pubspec.yaml /tmp/pyincc-pubspec.yaml
           flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai --no-pub .
           cp /tmp/pyincc-pubspec.yaml pubspec.yaml
+          rm -f pubspec.lock
       - name: Configure Android application ID
         run: |
           sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
@@ -44,8 +45,12 @@ jobs:
           grep -q 'applicationId = "com.pyincc.fashionai"' android/app/build.gradle.kts
       - name: Install dependencies
         run: flutter pub get
-      - name: Verify lint package is installed
-        run: test -f "$HOME/.pub-cache/hosted/pub.dev/flutter_lints-6.0.0/lib/flutter.yaml"
+      - name: Verify Flutter dependency resolution
+        shell: bash
+        run: |
+          flutter pub deps --style=compact
+          grep -q "flutter_lints:" pubspec.yaml
+          flutter pub get
       - name: Static analysis
         run: flutter analyze --no-fatal-infos
       - name: Unit and widget tests
@@ -75,6 +80,7 @@ jobs:
           cp pubspec.yaml /tmp/pyincc-pubspec.yaml
           flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai --no-pub .
           cp /tmp/pyincc-pubspec.yaml pubspec.yaml
+          rm -f pubspec.lock
       - name: Configure Android application ID
         run: |
           sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
