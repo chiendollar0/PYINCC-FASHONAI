@@ -36,7 +36,8 @@ void main() {
 
   testWidgets('Studio opens try-on', (tester) async {
     await openHome(tester);
-    await tester.scrollUntilVisible(find.text('Thử đồ'), 180,
+    // Scroll to the following tile so Try-on is clear of the bottom navigation.
+    await tester.scrollUntilVisible(find.text('Làm đẹp'), 180,
         scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Thử đồ'));
     await tester.pumpAndSettle();
