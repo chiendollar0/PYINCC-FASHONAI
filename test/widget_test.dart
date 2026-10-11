@@ -54,6 +54,10 @@ void main() {
 
   testWidgets('Studio, Home, Store and Account are primary tabs', (tester) async {
     await openHome(tester);
+    final navigation = tester.widget<NavigationBar>(find.byType(NavigationBar));
+    expect(navigation.selectedIndex, 2);
+    expect(navigation.destinations.map((item) => (item as NavigationDestination).label).toList(),
+        ['Store', 'Home', 'Studio', 'Account']);
     await tester.tap(find.text('Home'));
     await tester.pumpAndSettle();
     expect(find.text('Nhân vật của bạn'), findsOneWidget);
