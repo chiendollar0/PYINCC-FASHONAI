@@ -81,22 +81,22 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  int tab = 0;
+  int tab = 1;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(child: IndexedStack(index: tab, children: [
-      const UnifiedStudioScreen(),
       const CharacterHomeScreen(),
-      StoreScreen(onTryOn: () => setState(() => tab = 0)),
+      const UnifiedStudioScreen(),
+      StoreScreen(onTryOn: () => setState(() => tab = 1)),
       const ProfileScreen(),
     ])),
     bottomNavigationBar: NavigationBar(
       selectedIndex: tab,
       onDestinationSelected: (i) => setState(() => tab = i),
       destinations: const [
-        NavigationDestination(icon: Icon(Icons.auto_awesome_outlined), label: 'Studio'),
         NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
+        NavigationDestination(icon: Icon(Icons.auto_awesome_outlined), label: 'Studio'),
         NavigationDestination(icon: Icon(Icons.shopping_bag_outlined), label: 'Store'),
         NavigationDestination(icon: Icon(Icons.person_outline), label: 'Account'),
       ],
