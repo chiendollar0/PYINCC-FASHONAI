@@ -204,7 +204,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   @override
   Widget build(BuildContext context) => SectionPage(
     title: 'Studio',
-    subtitle: 'Ảnh thật → AI dựng nhân vật 3D → Studio',
+    subtitle: 'Phòng thử đồ cá nhân · Studio',
     children: [
       const DemoNotice(),
       const SizedBox(height: 16),
