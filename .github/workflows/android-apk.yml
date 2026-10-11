@@ -32,6 +32,12 @@ jobs:
           sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
           mkdir -p android/app/src/main/kotlin/com/pyincc/fashionai
           rm -f android/app/src/main/kotlin/com/pyincc/pyincc_fashionai/MainActivity.kt
+      - name: Set Android 8 minimum SDK (API 26)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i -E 's/minSdk = flutter.minSdkVersion/minSdk = 26/' android/app/build.gradle.kts
+          grep -Eq 'minSdk = 26' android/app/build.gradle.kts
       - name: Validate launcher configuration
         shell: bash
         run: |
@@ -43,6 +49,7 @@ jobs:
           grep -q 'android.intent.action.MAIN' android/app/src/main/AndroidManifest.xml
           grep -q 'android.intent.category.LAUNCHER' android/app/src/main/AndroidManifest.xml
           grep -q 'applicationId = "com.pyincc.fashionai"' android/app/build.gradle.kts
+          grep -q 'minSdk = 26' android/app/build.gradle.kts
       - name: Install dependencies
         run: flutter pub get
       - name: Verify Flutter dependency resolution
@@ -86,6 +93,12 @@ jobs:
           sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
           mkdir -p android/app/src/main/kotlin/com/pyincc/fashionai
           rm -f android/app/src/main/kotlin/com/pyincc/pyincc_fashionai/MainActivity.kt
+      - name: Set Android 8 minimum SDK (API 26)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i -E 's/minSdk = flutter.minSdkVersion/minSdk = 26/' android/app/build.gradle.kts
+          grep -Eq 'minSdk = 26' android/app/build.gradle.kts
       - name: Dependencies
         run: flutter pub get
       - name: Build debug APK only after tests pass
