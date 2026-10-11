@@ -20,6 +20,8 @@ void main() {
 
   testWidgets('Studio switches to Face Swap controls', (tester) async {
     await openHome(tester);
+    await tester.ensureVisible(find.text('Khuôn mặt'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Khuôn mặt'));
     await tester.pumpAndSettle();
     expect(find.text('Chọn ảnh khuôn mặt'), findsOneWidget);
@@ -28,6 +30,8 @@ void main() {
 
   testWidgets('Studio opens wardrobe', (tester) async {
     await openHome(tester);
+    await tester.ensureVisible(find.text('Tủ đồ'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Mở tủ đồ'));
@@ -37,6 +41,8 @@ void main() {
 
   testWidgets('Studio displays compact makeup controls', (tester) async {
     await openHome(tester);
+    await tester.ensureVisible(find.text('Makeup'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Makeup'));
     await tester.pumpAndSettle();
     expect(find.text('Son môi'), findsOneWidget);
