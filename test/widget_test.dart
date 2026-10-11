@@ -5,51 +5,44 @@ import 'package:pyincc_fashionai/main.dart';
 Future<void> openHome(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
   await tester.pumpAndSettle();
-  expect(find.text('Add ảnh PNG'), findsOneWidget);
+  expect(find.text('Khu vực người mẫu toàn thân'), findsOneWidget);
 }
 
 void main() {
-  testWidgets('App opens unified Studio by default', (tester) async {
+  testWidgets('Studio opens with main preview and compact tools', (tester) async {
     await openHome(tester);
-    final studioScroll = find.byType(Scrollable).first;
-    await tester.scrollUntilVisible(find.text('Tạo nhân vật 3D từ ảnh thật'), 180,
-        scrollable: studioScroll);
-    expect(find.text('Tạo nhân vật 3D từ ảnh thật'), findsOneWidget);
-    for (final label in ['Tủ đồ', 'Thử đồ', 'Làm đẹp']) {
-      await tester.scrollUntilVisible(find.text(label), 180,
-          scrollable: studioScroll);
-      expect(find.text(label), findsOneWidget);
-    }
-    expect(find.text('Render thành nhân vật 2D'), findsNothing);
-    expect(find.text('Face Swap với mẫu nhân vật'), findsNothing);
+    expect(find.text('Trang phục'), findsWidgets);
+    expect(find.text('Khuôn mặt'), findsOneWidget);
+    expect(find.text('Tủ đồ'), findsOneWidget);
+    expect(find.text('Makeup'), findsOneWidget);
+    expect(find.text('Bước 1 · Add ảnh chân dung PNG'), findsNothing);
+  });
+
+  testWidgets('Studio switches to Face Swap controls', (tester) async {
+    await openHome(tester);
+    await tester.tap(find.text('Khuôn mặt'));
+    await tester.pumpAndSettle();
+    expect(find.text('Chọn ảnh khuôn mặt'), findsOneWidget);
+    expect(find.text('Áp dụng Face Swap'), findsOneWidget);
   });
 
   testWidgets('Studio opens wardrobe', (tester) async {
     await openHome(tester);
-    await tester.scrollUntilVisible(find.text('Tủ đồ'), 180,
-        scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Tủ đồ'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mở tủ đồ'));
     await tester.pumpAndSettle();
     expect(find.text('Thêm món đồ'), findsOneWidget);
   });
 
-  testWidgets('Studio opens try-on', (tester) async {
+  testWidgets('Studio displays compact makeup controls', (tester) async {
     await openHome(tester);
-    // Scroll to the following tile so Try-on is clear of the bottom navigation.
-    await tester.scrollUntilVisible(find.text('Làm đẹp'), 180,
-        scrollable: find.byType(Scrollable).first);
-    await tester.tap(find.text('Thử đồ'));
+    await tester.tap(find.text('Makeup'));
     await tester.pumpAndSettle();
-    expect(find.text('Chất lượng hình ảnh'), findsOneWidget);
-  });
-
-  testWidgets('Studio opens beauty', (tester) async {
-    await openHome(tester);
-    await tester.scrollUntilVisible(find.text('Làm đẹp'), 180,
-        scrollable: find.byType(Scrollable).first);
-    await tester.tap(find.text('Làm đẹp'));
-    await tester.pumpAndSettle();
-    expect(find.text('Studio Làm Đẹp'), findsOneWidget);
+    expect(find.text('Son môi'), findsOneWidget);
+    expect(find.text('Kẻ mắt'), findsOneWidget);
+    expect(find.text('Mascara/mi'), findsOneWidget);
+    expect(find.text('Má hồng'), findsOneWidget);
   });
 
   testWidgets('Studio, Home, Store and Account are primary tabs', (tester) async {
