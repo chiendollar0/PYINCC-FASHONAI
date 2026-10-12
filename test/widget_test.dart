@@ -16,6 +16,7 @@ void main() {
   testWidgets('2D editor prevents exporting without two images', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: OutfitEditorScreen()));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('1. Chọn ảnh người mẫu'), 160);
     expect(find.text('1. Chọn ảnh người mẫu'), findsOneWidget);
     expect(find.text('2. Chọn ảnh trang phục'), findsOneWidget);
     expect(find.text('Xuất PNG và chia sẻ'), findsNothing);

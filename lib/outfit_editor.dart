@@ -83,6 +83,9 @@ class _OutfitEditorState extends State<OutfitEditorScreen> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('Studio · Ghép ảnh 2D')),
     body: ListView(padding: const EdgeInsets.all(16), children: [
+      const Text('Không gian phối đồ · Xem trọn bộ',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 8),
       AspectRatio(aspectRatio: 3 / 4, child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: LayoutBuilder(builder: (context, bounds) {
@@ -109,6 +112,17 @@ class _OutfitEditorState extends State<OutfitEditorScreen> {
         }),
       )),
       const SizedBox(height: 12),
+      FilledButton.tonalIcon(
+        onPressed: person == null ? null : () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => OutfitFullPreview(
+            personPath: person!.path,
+            outfitPath: outfit?.path,
+            x: x, y: y, size: size, angle: angle,
+          ))),
+        icon: const Icon(Icons.fullscreen),
+        label: const Text('Xem toàn bộ phối đồ · Toàn màn hình'),
+      ),
+      const SizedBox(height: 12),
       OutlinedButton(onPressed: busy ? null : () => choose(true),
           child: const Text('1. Chọn ảnh người mẫu')),
       OutlinedButton(onPressed: busy ? null : () => choose(false),
@@ -129,5 +143,49 @@ class _OutfitEditorState extends State<OutfitEditorScreen> {
       const Text('Ghép lớp ảnh thủ công trên thiết bị, không phải AI. '
           'Ảnh trang phục nền trong suốt cho kết quả tốt nhất.'),
     ]),
+  );
+}
+
+
+/// A dedicated uncluttered full-look view using the same transform as editor.
+class OutfitFullPreview extends StatelessWidget {
+  final String personPath;
+  final String? outfitPath;
+  final double x, y, size, angle;
+  const OutfitFullPreview({super.key, required this.personPath,
+      required this.outfitPath, required this.x, required this.y,
+      required this.size, required this.angle});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Colors.black,
+    appBar: AppBar(title: const Text('Toàn bộ phối đồ'),
+      backgroundColor: Colors.black, foregroundColor: Colors.white),
+    body: SafeArea(child: Center(child: LayoutBuilder(
+      builder: (context, bounds) {
+        final w = bounds.maxWidth;
+        final h = bounds.maxHeight;
+        final previewW = (h * 3 / 4 < w ? h * 3 / 4 : w).toDouble();
+        final previewH = previewW * 4 / 3;
+        return SizedBox(width: previewW, height: previewH,
+          child: ClipRect(child: ColoredBox(
+            color: const Color(0xFFEDE3D7),
+            child: Stack(children: [
+              Positioned.fill(child: Image.file(File(personPath),
+                fit: BoxFit.contain)),
+              if (outfitPath != null)
+                Positioned(
+                  left: x * previewW - size * previewW / 2,
+                  top: y * previewH - size * previewW / 2,
+                  width: size * previewW, height: size * previewW,
+                  child: Transform.rotate(angle: angle,
+                    child: Image.file(File(outfitPath!),
+                      fit: BoxFit.contain)),
+                ),
+            ]),
+          )),
+        ));
+      },
+    ))),
   );
 }
