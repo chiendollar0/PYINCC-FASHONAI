@@ -18,6 +18,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('1. Chọn ảnh người mẫu'), 160);
     expect(find.text('1. Chọn ảnh người mẫu'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('2. Chọn ảnh trang phục'), 120);
     expect(find.text('2. Chọn ảnh trang phục'), findsOneWidget);
     expect(find.text('Xuất PNG và chia sẻ'), findsNothing);
     expect(tester.takeException(), isNull);

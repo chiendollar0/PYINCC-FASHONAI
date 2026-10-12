@@ -86,6 +86,22 @@ class _OutfitEditorState extends State<OutfitEditorScreen> {
       const Text('Không gian phối đồ · Xem trọn bộ',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       const SizedBox(height: 8),
+      Row(children: [
+        Expanded(child: OutlinedButton.icon(
+          onPressed: busy ? null : () => choose(true),
+          icon: const Icon(Icons.person_outline),
+          label: const Text('Người mẫu'),
+        )),
+        const SizedBox(width: 8),
+        Expanded(child: OutlinedButton.icon(
+          onPressed: busy ? null : () => choose(false),
+          icon: const Icon(Icons.checkroom_outlined),
+          label: const Text('Trang phục'),
+        )),
+      ]),
+      const SizedBox(height: 8),
+      const Text('Chọn hai ảnh, căn chỉnh trang phục rồi xem toàn thân.'),
+      const SizedBox(height: 12),
       AspectRatio(aspectRatio: 3 / 4, child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: LayoutBuilder(builder: (context, bounds) {
