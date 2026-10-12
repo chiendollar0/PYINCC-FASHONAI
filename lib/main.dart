@@ -352,6 +352,16 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
     title: 'Studio',
     subtitle: 'Phòng thử đồ PYINCC FashionAI',
     children: [
+      Wrap(spacing: 8, runSpacing: 6, children: [
+        _tool('Trang phục', Icons.checkroom_outlined),
+        _tool('Khuôn mặt', Icons.face_outlined),
+        _tool('Tủ đồ', Icons.inventory_2_outlined),
+        _tool('Makeup', Icons.brush_outlined),
+      ]),
+      const SizedBox(height: 12),
+      Card(child: Padding(padding: const EdgeInsets.all(14),
+        child: _activePanel())),
+      const SizedBox(height: 12),
       Container(
         height: 350,
         decoration: BoxDecoration(
@@ -386,16 +396,6 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           'Chưa có Face Swap hoặc thử đồ AI thực tế.',
           style: TextStyle(fontSize: 12, color: Colors.black54)),
       const SizedBox(height: 14),
-      Wrap(spacing: 8, runSpacing: 6, children: [
-        _tool('Trang phục', Icons.checkroom_outlined),
-        _tool('Khuôn mặt', Icons.face_outlined),
-        _tool('Tủ đồ', Icons.inventory_2_outlined),
-        _tool('Makeup', Icons.brush_outlined),
-      ]),
-      const SizedBox(height: 12),
-      Card(child: Padding(padding: const EdgeInsets.all(14),
-        child: _activePanel())),
-      const SizedBox(height: 12),
       FilledButton.icon(
         onPressed: _outfit == null ? null : () => _notReady('Thử đồ AI'),
         icon: const Icon(Icons.auto_awesome),
