@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'production_auth.dart';
+import 'outfit_editor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
@@ -401,6 +402,13 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           'Chưa có Face Swap hoặc thử đồ AI thực tế.',
           style: TextStyle(fontSize: 12, color: Colors.black54)),
       const SizedBox(height: 14),
+      FilledButton.tonalIcon(
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const OutfitEditorScreen())),
+        icon: const Icon(Icons.layers_outlined),
+        label: const Text('Ghép trang phục 2D · Sử dụng ngay'),
+      ),
+      const SizedBox(height: 8),
       FilledButton.icon(
         onPressed: _outfit == null ? null : () => _notReady('Thử đồ AI'),
         icon: const Icon(Icons.auto_awesome),

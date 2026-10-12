@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyincc_fashionai/main.dart';
+import 'package:pyincc_fashionai/outfit_editor.dart';
 
 Future<void> openHome(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
@@ -12,6 +13,15 @@ Future<void> openHome(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('2D editor prevents exporting without two images', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: OutfitEditorScreen()));
+    await tester.pumpAndSettle();
+    expect(find.text('1. Chọn ảnh người mẫu'), findsOneWidget);
+    expect(find.text('2. Chọn ảnh trang phục'), findsOneWidget);
+    expect(find.text('Xuất PNG và chia sẻ'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Production stays locked without Firebase configuration', (tester) async {
     await tester.pumpWidget(const PyinccApp(requireAuthentication: true));
     await tester.pumpAndSettle();
