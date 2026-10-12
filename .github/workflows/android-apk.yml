@@ -32,6 +32,13 @@ jobs:
           sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
           mkdir -p android/app/src/main/kotlin/com/pyincc/fashionai
           rm -f android/app/src/main/kotlin/com/pyincc/pyincc_fashionai/MainActivity.kt
+      - name: Enable local 3D model viewer WebView
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/AndroidManifest.xml
+          sed -i '/<application/i\\    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
+          grep -q 'usesCleartextTraffic="true"' android/app/src/main/AndroidManifest.xml
       - name: Set Android 8 minimum SDK (API 26)
         shell: bash
         run: |
@@ -93,6 +100,13 @@ jobs:
           sed -i 's/com.pyincc.pyincc_fashionai/com.pyincc.fashionai/g' android/app/build.gradle.kts
           mkdir -p android/app/src/main/kotlin/com/pyincc/fashionai
           rm -f android/app/src/main/kotlin/com/pyincc/pyincc_fashionai/MainActivity.kt
+      - name: Enable local 3D model viewer WebView
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/AndroidManifest.xml
+          sed -i '/<application/i\\    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
+          grep -q 'usesCleartextTraffic="true"' android/app/src/main/AndroidManifest.xml
       - name: Set Android 8 minimum SDK (API 26)
         shell: bash
         run: |

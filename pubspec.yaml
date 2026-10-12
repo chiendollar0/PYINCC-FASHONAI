@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.1.2
+  model_viewer_plus: 1.9.3
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 void main() => runApp(const PyinccApp());
 
@@ -24,6 +25,44 @@ class PyinccApp extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
     ),
     home: const HomeShell(),
+  );
+}
+
+/// Licensed sample model: CesiumMan, Cesium, CC BY 4.0.
+/// Source: Khronos glTF Sample Assets (GLB served by GitHub).
+/// A live network connection and modern Android System WebView are required.
+class SampleAvatar3DScreen extends StatelessWidget {
+  const SampleAvatar3DScreen({super.key});
+
+  static const modelUrl =
+      'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/CesiumMan/glTF-Binary/CesiumMan.glb';
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Nhân vật mẫu 3D')),
+    body: SafeArea(child: Column(children: [
+      const Expanded(child: ModelViewer(
+        src: modelUrl,
+        alt: 'Nhân vật CesiumMan toàn thân 3D',
+        backgroundColor: sand,
+        cameraControls: true,
+        autoRotate: true,
+        ar: false,
+        loading: Loading.eager,
+      )),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text('Vuốt để xoay · Chụm để phóng to. Mô hình cần Internet và Android WebView mới.',
+            textAlign: TextAlign.center),
+      ),
+      const Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 18),
+        child: Text('CesiumMan © Cesium · CC BY 4.0 · Khronos glTF Sample Assets. '
+            'Mẫu thử hiển thị 3D, chưa thay trang phục hoặc Face Swap.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: Colors.black54)),
+      ),
+    ])),
   );
 }
 
@@ -120,6 +159,13 @@ class CharacterHomeScreen extends StatelessWidget {
         icon: Icons.accessibility_new_outlined,
         title: 'Chọn nhân vật mẫu',
         caption: 'Mẫu nhân vật và ảnh toàn thân sẽ được tích hợp sau.',
+      ),
+      const SizedBox(height: 16),
+      FilledButton.tonalIcon(
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
+        icon: const Icon(Icons.view_in_ar_outlined),
+        label: const Text('Xem nhân vật mẫu 3D · GLB'),
       ),
       const SizedBox(height: 16),
       const Text('Thông số tham khảo',
@@ -329,6 +375,13 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 const Center(child: Text('Không thể hiển thị ảnh'))),
       ),
       const SizedBox(height: 10),
+      OutlinedButton.icon(
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
+        icon: const Icon(Icons.view_in_ar_outlined),
+        label: const Text('Xem người mẫu 3D GLB'),
+      ),
+      const SizedBox(height: 8),
       const Text('Ảnh chỉ được xem trước trên thiết bị. '
           'Chưa có Face Swap hoặc thử đồ AI thực tế.',
           style: TextStyle(fontSize: 12, color: Colors.black54)),
