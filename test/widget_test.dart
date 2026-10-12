@@ -5,12 +5,26 @@ import 'package:pyincc_fashionai/main.dart';
 Future<void> openHome(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
   await tester.pumpAndSettle();
-  expect(find.text('Khu vực người mẫu toàn thân'), findsOneWidget);
+  expect(find.byType(UnifiedStudioScreen), findsOneWidget);
+  await tester.scrollUntilVisible(find.text('Khu vực người mẫu toàn thân'), 160,
+      scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
+  await tester.pumpAndSettle();
 }
 
 void main() {
+  testWidgets('Production stays locked without Firebase configuration', (tester) async {
+    await tester.pumpWidget(const PyinccApp(requireAuthentication: true));
+    await tester.pumpAndSettle();
+    expect(find.text('Đăng nhập chưa sẵn sàng'), findsOneWidget);
+    expect(find.byType(HomeShell), findsNothing);
+    expect(find.byType(NavigationBar), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Studio opens with main preview and compact tools', (tester) async {
     await openHome(tester);
+    await tester.scrollUntilVisible(find.text('Khuôn mặt'), -160,
+        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     expect(find.text('Trang phục'), findsWidgets);
     expect(find.text('Khuôn mặt'), findsOneWidget);
     expect(find.text('Tủ đồ'), findsOneWidget);
@@ -20,7 +34,8 @@ void main() {
 
   testWidgets('Studio switches to Face Swap controls', (tester) async {
     await openHome(tester);
-    await tester.ensureVisible(find.text('Khuôn mặt'));
+    await tester.scrollUntilVisible(find.text('Khuôn mặt'), -160,
+        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Khuôn mặt'));
     await tester.pumpAndSettle();
@@ -30,7 +45,8 @@ void main() {
 
   testWidgets('Studio opens wardrobe', (tester) async {
     await openHome(tester);
-    await tester.ensureVisible(find.text('Tủ đồ'));
+    await tester.scrollUntilVisible(find.text('Tủ đồ'), -160,
+        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
@@ -41,7 +57,8 @@ void main() {
 
   testWidgets('Studio displays compact makeup controls', (tester) async {
     await openHome(tester);
-    await tester.ensureVisible(find.text('Makeup'));
+    await tester.scrollUntilVisible(find.text('Makeup'), -160,
+        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Makeup'));
     await tester.pumpAndSettle();

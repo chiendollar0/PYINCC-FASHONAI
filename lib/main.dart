@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'production_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
@@ -10,7 +12,8 @@ const coffee = Color(0xFF6E5749);
 const sand = Color(0xFFEDE3D7);
 
 class PyinccApp extends StatelessWidget {
-  const PyinccApp({super.key});
+  final bool requireAuthentication;
+  const PyinccApp({super.key, this.requireAuthentication = false});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -24,7 +27,9 @@ class PyinccApp extends StatelessWidget {
       cardTheme: CardThemeData(color: Colors.white, elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
     ),
-    home: const HomeShell(),
+    home: kDebugMode && !requireAuthentication
+        ? const HomeShell()
+        : ProductionAuthGate(authenticatedBuilder: (_) => const HomeShell()),
   );
 }
 
