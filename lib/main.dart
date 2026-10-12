@@ -72,38 +72,6 @@ class SampleAvatar3DScreen extends StatelessWidget {
   );
 }
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(child: Padding(
-      padding: const EdgeInsets.all(28),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        const Spacer(),
-        const Icon(Icons.checkroom_outlined, size: 90, color: coffee),
-        const SizedBox(height: 22),
-        const Text('Pyincc\nFashionAI', textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 42, height: 1.08, fontWeight: FontWeight.w700, color: coffee)),
-        const SizedBox(height: 12),
-        const Text('Thử đồ ảo. Phong cách thật.', textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 17)),
-        const SizedBox(height: 24),
-        const Text('Khám phá phong cách qua trải nghiệm thời trang số. Ảnh cá nhân được giữ trên thiết bị theo mặc định.',
-          textAlign: TextAlign.center),
-        const Spacer(),
-        const DemoNotice(),
-        const SizedBox(height: 18),
-        FilledButton(onPressed: () => Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_) => const HomeShell())),
-          child: const Padding(padding: EdgeInsets.all(12), child: Text('Bắt đầu xem giao diện'))),
-        const SizedBox(height: 12),
-        const Text('Chế độ xem trước UI · Chưa kích hoạt đăng nhập hoặc AI',
-          textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.black54)),
-      ]),
-    )),
-  );
-}
-
 class DemoNotice extends StatelessWidget {
   const DemoNotice({super.key});
   @override
@@ -159,8 +127,6 @@ class CharacterHomeScreen extends StatelessWidget {
     title: 'Home',
     subtitle: 'Nhân vật của bạn',
     children: [
-      const DemoNotice(),
-      const SizedBox(height: 16),
       const PreviewPanel(
         icon: Icons.accessibility_new_outlined,
         title: 'Chọn nhân vật mẫu',
@@ -441,92 +407,6 @@ class SectionPage extends StatelessWidget {
   ]));
 }
 
-class FeatureTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String detail;
-  final VoidCallback onTap;
-  const FeatureTile({super.key, required this.icon, required this.title, required this.detail, required this.onTap});
-  @override
-  Widget build(BuildContext context) => Card(child: ListTile(
-    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-    leading: CircleAvatar(backgroundColor: sand, child: Icon(icon, color: coffee)),
-    title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-    subtitle: Text(detail),
-    trailing: const Icon(Icons.chevron_right),
-    onTap: onTap,
-  ));
-}
-
-class Dashboard extends StatelessWidget {
-  final ValueChanged<int> onOpen;
-  const Dashboard({super.key, required this.onOpen});
-  @override
-  Widget build(BuildContext context) => SectionPage(
-    title: 'Trang Chủ',
-    subtitle: 'Bảng điều khiển thời trang · PYINCC FashionAI',
-    children: [
-      const DemoNotice(), const SizedBox(height: 16),
-      FeatureTile(icon: Icons.checkroom, title: 'Thử Đồ AI',
-        detail: 'Trải nghiệm trang phục 2D', onTap: () => onOpen(1)),
-      FeatureTile(icon: Icons.inventory_2_outlined, title: 'Tủ Đồ AI',
-        detail: 'Danh mục trang phục cá nhân', onTap: () => onOpen(2)),
-      FeatureTile(icon: Icons.face_retouching_natural, title: 'Làm Đẹp',
-        detail: 'Son, má hồng và phong cách', onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const BeautyScreen()))),
-      FeatureTile(icon: Icons.auto_awesome, title: 'Fashion Studio',
-        detail: 'Ý tưởng và bối cảnh sáng tạo', onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const StudioScreen()))),
-      FeatureTile(icon: Icons.view_in_ar, title: 'Avatar 3D',
-        detail: 'Tính năng tương lai', onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const FutureScreen()))),
-    ],
-  );
-}
-
-class TryOnScreen extends StatefulWidget {
-  const TryOnScreen({super.key});
-  @override
-  State<TryOnScreen> createState() => _TryOnScreenState();
-}
-class _TryOnScreenState extends State<TryOnScreen> {
-  String quality = 'Cân bằng';
-  @override
-  Widget build(BuildContext context) => SectionPage(
-    title: 'Thử Đồ AI', subtitle: 'Trình chỉnh sửa thử đồ ảo 2D',
-    children: [
-      const PreviewPanel(icon: Icons.person_outline, title: 'Ảnh toàn thân',
-        caption: 'Chọn ảnh hoặc chụp ảnh sẽ được tích hợp sau'),
-      const SizedBox(height: 16),
-      const Text('Chọn trang phục để thử', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      const SizedBox(height: 10),
-      const Wrap(spacing: 8, children: [
-        Chip(label: Text('Áo')), Chip(label: Text('Quần')),
-        Chip(label: Text('Váy')), Chip(label: Text('Phụ kiện')),
-      ]),
-      const SizedBox(height: 18),
-      const Text('Chất lượng hình ảnh', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      const SizedBox(height: 8),
-      SegmentedButton<String>(segments: const [
-        ButtonSegment(value: 'Tiết kiệm', label: Text('Tiết kiệm')),
-        ButtonSegment(value: 'Cân bằng', label: Text('Cân bằng')),
-        ButtonSegment(value: 'HD', label: Text('HD')),
-      ], selected: {quality}, onSelectionChanged: (v) => setState(() => quality = v.first)),
-      const SizedBox(height: 16),
-      OutlinedButton.icon(onPressed: () => Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const BeautyScreen())),
-        icon: const Icon(Icons.face_retouching_natural), label: const Text('Mở Studio Làm Đẹp')),
-      const SizedBox(height: 20),
-      FilledButton(onPressed: () => Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const ResultScreen())),
-        child: const Text('Xem bố cục kết quả mẫu')),
-      const SizedBox(height: 8),
-      const Text('Chưa chạy AI. Không tạo ảnh giả hoặc gửi ảnh lên máy chủ.',
-        style: TextStyle(fontSize: 12, color: Colors.black54)),
-    ],
-  );
-}
-
 class PreviewPanel extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -571,52 +451,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   );
 }
 
-class BeautyScreen extends StatefulWidget {
-  const BeautyScreen({super.key});
-  @override
-  State<BeautyScreen> createState() => _BeautyScreenState();
-}
-class _BeautyScreenState extends State<BeautyScreen> {
-  double lipstick = .65, blush = .48, eyes = .55;
-  @override
-  Widget build(BuildContext context) => SectionPage(
-    title: 'Studio Làm Đẹp', subtitle: 'Tinh chỉnh diện mạo tự nhiên',
-    children: [
-      const PreviewPanel(icon: Icons.face_retouching_natural, title: 'Xem trước',
-        caption: 'Các thanh điều khiển chỉ mô phỏng UI, chưa chỉnh sửa ảnh'),
-      const SizedBox(height: 18),
-      _control('Son môi', lipstick, (v) => setState(() => lipstick = v)),
-      _control('Má hồng', blush, (v) => setState(() => blush = v)),
-      _control('Mắt', eyes, (v) => setState(() => eyes = v)),
-      const Wrap(spacing: 8, children: [
-        Chip(label: Text('Tự nhiên')), Chip(label: Text('Thanh lịch')),
-        Chip(label: Text('Hồng nhẹ')), Chip(label: Text('Glowy')),
-      ]),
-    ],
-  );
-  Widget _control(String name, double value, ValueChanged<double> onChanged) =>
-    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('$name · ${(value * 100).round()}%'),
-      Slider(value: value, onChanged: onChanged),
-    ]);
-}
-
-class StudioScreen extends StatelessWidget {
-  const StudioScreen({super.key});
-  @override
-  Widget build(BuildContext context) => SectionPage(
-    title: 'Fashion Studio', subtitle: 'Không gian sáng tạo phong cách',
-    children: [
-      const PreviewPanel(icon: Icons.auto_awesome_outlined, title: 'Studio',
-        caption: 'Bối cảnh, ánh sáng và góc chụp sẽ được kết nối với AI sau'),
-      const SizedBox(height: 16),
-      FeatureTile(icon: Icons.view_in_ar, title: 'Studio Avatar 3D',
-        detail: 'Tính năng tương lai, ngoài MVP', onTap: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const FutureScreen()))),
-    ],
-  );
-}
-
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
   @override
@@ -643,17 +477,6 @@ class _ResultScreenState extends State<ResultScreen> {
   );
 }
 
-class FutureScreen extends StatelessWidget {
-  const FutureScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Studio Avatar 3D')),
-    body: const Center(child: Padding(padding: EdgeInsets.all(24),
-      child: Text('Avatar 3D là tính năng tương lai, chưa triển khai trong MVP.',
-        textAlign: TextAlign.center))),
-  );
-}
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
   @override
@@ -667,7 +490,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     children: [
       const DemoNotice(), const SizedBox(height: 14),
       const ListTile(leading: Icon(Icons.lock_outline), title: Text('Đăng nhập'),
-        subtitle: Text('Firebase Authentication sẽ được tích hợp sau khi UI ổn định')),
+        subtitle: Text('Firebase Authentication áp dụng cho bản production; bản debug dùng giao diện phát triển')),
       SwitchListTile(
         value: cloudBackup,
         onChanged: null,
