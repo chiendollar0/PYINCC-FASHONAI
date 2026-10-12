@@ -184,7 +184,7 @@ class OutfitFullPreview extends StatelessWidget {
                 ),
             ]),
           )),
-        ));
+        );
       },
     ))),
   );
