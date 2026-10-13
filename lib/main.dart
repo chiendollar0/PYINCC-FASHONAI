@@ -381,12 +381,9 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         label: const Text('Thử đồ AI'),
       ),
       const SizedBox(height: 8),
-      OutlinedButton.icon(
-        onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const ResultScreen())),
-        icon: const Icon(Icons.compare_outlined),
-        label: const Text('Trước / Sau · Xem bố cục'),
-      ),
+      const Text('Xem kết quả toàn thân và xuất PNG trong trình phối đồ 2D; '
+          'chưa có ảnh trước/sau AI thật.',
+          style: TextStyle(fontSize: 12, color: Colors.black54)),
     ],
   );
 }
@@ -448,32 +445,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
         const SnackBar(content: Text('Thêm ảnh trang phục sẽ được tích hợp ở bước xử lý ảnh cục bộ.'))),
         icon: const Icon(Icons.add), label: const Text('Thêm món đồ')),
     ],
-  );
-}
-
-class ResultScreen extends StatefulWidget {
-  const ResultScreen({super.key});
-  @override
-  State<ResultScreen> createState() => _ResultScreenState();
-}
-class _ResultScreenState extends State<ResultScreen> {
-  double compare = .5;
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Kết quả Thử Đồ')),
-    body: ListView(padding: const EdgeInsets.all(20), children: [
-      const DemoNotice(), const SizedBox(height: 16),
-      const PreviewPanel(icon: Icons.compare_outlined, title: 'Trước / Sau',
-        caption: 'Chưa có ảnh kết quả AI. Khu vực này dành cho so sánh ảnh thật.'),
-      const SizedBox(height: 16),
-      Text('Thanh trượt Trước / Sau · ${(compare * 100).round()}%'),
-      Slider(value: compare, onChanged: (v) => setState(() => compare = v)),
-      const Wrap(spacing: 10, children: [
-        Chip(label: Text('Lưu · Chưa khả dụng')),
-        Chip(label: Text('Chia sẻ · Chưa khả dụng')),
-        Chip(label: Text('Thử lại · Chưa khả dụng')),
-      ]),
-    ]),
   );
 }
 

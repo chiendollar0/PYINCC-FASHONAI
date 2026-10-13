@@ -2,6 +2,8 @@
 
 Flutter application foundation for Android and iOS. The first deliverable is a **UI preview**, not a working face-swap, virtual try-on, checkout, or 3D engine.
 
+**Product scope is locked in [docs/product-contract-v2.md](docs/product-contract-v2.md).** This README describes the current implementation, which is not yet compliant with the locked 3D/offline requirements.
+
 ## Product navigation
 
 The default tab is **Studio**. Bottom navigation has exactly four destinations: **Studio**, **Home**, **Store**, **Account**.
