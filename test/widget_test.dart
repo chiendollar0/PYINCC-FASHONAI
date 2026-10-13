@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pyincc_fashionai/main.dart';
 import 'package:pyincc_fashionai/outfit_editor.dart';
+import 'package:pyincc_fashionai/production_auth.dart';
 
-Future<void> openHome(WidgetTester tester) async {
+Future<void> openStudio(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
   await tester.pumpAndSettle();
-  expect(find.byType(UnifiedStudioScreen), findsOneWidget);
-  await tester.scrollUntilVisible(find.text('Khu vực người mẫu toàn thân'), 160,
-      scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
+  // Home is the product entry point; navigate explicitly to Studio.
+  expect(find.text('Khuôn mặt và nhân vật của bạn'), findsOneWidget);
+  expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
+  await tester.tap(find.text('Studio'));
   await tester.pumpAndSettle();
+  expect(find.byType(UnifiedStudioScreen), findsOneWidget);
 }
 
 void main() {
@@ -33,8 +36,17 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Debug opens Home without a login prompt', (tester) async {
+    await tester.pumpWidget(const PyinccApp());
+    await tester.pumpAndSettle();
+    expect(find.text('Khuôn mặt và nhân vật của bạn'), findsOneWidget);
+    expect(find.byType(SignInScreen), findsNothing);
+    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Studio opens with main preview and compact tools', (tester) async {
-    await openHome(tester);
+    await openStudio(tester);
     await tester.scrollUntilVisible(find.text('Khuôn mặt'), -160,
         scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     expect(find.text('Trang phục'), findsWidgets);
@@ -45,7 +57,7 @@ void main() {
   });
 
   testWidgets('Studio switches to Face Swap controls', (tester) async {
-    await openHome(tester);
+    await openStudio(tester);
     await tester.scrollUntilVisible(find.text('Khuôn mặt'), -160,
         scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
@@ -56,7 +68,7 @@ void main() {
   });
 
   testWidgets('Studio opens wardrobe', (tester) async {
-    await openHome(tester);
+    await openStudio(tester);
     await tester.scrollUntilVisible(find.text('Tủ đồ'), -160,
         scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
@@ -68,7 +80,7 @@ void main() {
   });
 
   testWidgets('Studio displays compact makeup controls', (tester) async {
-    await openHome(tester);
+    await openStudio(tester);
     await tester.scrollUntilVisible(find.text('Makeup'), -160,
         scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
@@ -81,14 +93,14 @@ void main() {
   });
 
   testWidgets('Studio, Home, Store and Account are primary tabs', (tester) async {
-    await openHome(tester);
+    await openStudio(tester);
     final navigation = tester.widget<NavigationBar>(find.byType(NavigationBar));
     expect(navigation.selectedIndex, 2);
     expect(navigation.destinations.map((item) => (item as NavigationDestination).label).toList(),
         ['Store', 'Home', 'Studio', 'Account']);
     await tester.tap(find.text('Home'));
     await tester.pumpAndSettle();
-    expect(find.text('Nhân vật của bạn'), findsOneWidget);
+    expect(find.text('Khuôn mặt và nhân vật của bạn'), findsOneWidget);
     await tester.tap(find.text('Store'));
     await tester.pumpAndSettle();
     expect(find.text('Chọn trang phục thật để thử'), findsOneWidget);
@@ -98,7 +110,7 @@ void main() {
   });
 
   testWidgets('Cloud backup remains disabled', (tester) async {
-    await openHome(tester);
+    await openStudio(tester);
     await tester.tap(find.text('Account'));
     await tester.pumpAndSettle();
     final backup = tester.widget<SwitchListTile>(find.byType(SwitchListTile));
