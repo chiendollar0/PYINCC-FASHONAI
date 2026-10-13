@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show AssetManifest;
 import 'production_auth.dart';
 import 'outfit_editor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,38 +38,76 @@ class PyinccApp extends StatelessWidget {
 /// Licensed sample model: CesiumMan, Cesium, CC BY 4.0.
 /// Source: Khronos glTF Sample Assets (GLB served by GitHub).
 /// A live network connection and modern Android System WebView are required.
-class SampleAvatar3DScreen extends StatelessWidget {
+/// Viewer for the user's actual scan meshes, loaded from bundled Flutter assets.
+/// Never substitutes a third-party demo character when the scan is unavailable.
+class SampleAvatar3DScreen extends StatefulWidget {
   const SampleAvatar3DScreen({super.key});
 
-  static const modelUrl =
-      'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/CesiumMan/glTF-Binary/CesiumMan.glb';
+  @override
+  State<SampleAvatar3DScreen> createState() => _SampleAvatar3DScreenState();
+}
+
+class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
+  static const _primary = 'assets/avatars/pyincc_avatar_primary.glb';
+  static const _alternate = 'assets/avatars/pyincc_avatar_alternate.glb';
+  String _selected = _primary;
+  late final Future<Set<String>> _available = _loadAssets();
+
+  Future<Set<String>> _loadAssets() async {
+    final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+    return manifest.listAssets().toSet();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Nhân vật mẫu 3D')),
-    body: SafeArea(child: Column(children: [
-      const Expanded(child: ModelViewer(
-        src: modelUrl,
-        alt: 'Nhân vật CesiumMan toàn thân 3D',
-        backgroundColor: sand,
-        cameraControls: true,
-        autoRotate: true,
-        ar: false,
-        loading: Loading.eager,
-      )),
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Text('Vuốt để xoay · Chụm để phóng to. Mô hình cần Internet và Android WebView mới.',
-            textAlign: TextAlign.center),
-      ),
-      const Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 18),
-        child: Text('CesiumMan © Cesium · CC BY 4.0 · Khronos glTF Sample Assets. '
-            'Mẫu thử hiển thị 3D, chưa thay trang phục hoặc Face Swap.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: Colors.black54)),
-      ),
-    ])),
+    appBar: AppBar(title: const Text('PYINCC · Nhân vật 3D')),
+    body: SafeArea(child: FutureBuilder<Set<String>>(
+      future: _available,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Không đọc được danh sách asset 3D.'));
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final available = snapshot.data!;
+        if (!available.contains(_selected)) {
+          return const Center(child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text('Chưa đóng gói GLB nữ PYINCC vào ứng dụng. '
+              'Cần thêm file trong assets/avatars/ và build lại. '
+              'Không sử dụng nhân vật demo thay thế.',
+              textAlign: TextAlign.center)));
+        }
+        return Column(children: [
+          Padding(padding: const EdgeInsets.all(10),
+            child: SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(value: _primary, label: Text('Mẫu A')),
+                ButtonSegment(value: _alternate, label: Text('Mẫu B')),
+              ],
+              selected: {_selected},
+              onSelectionChanged: (selection) =>
+                setState(() => _selected = selection.first),
+            )),
+          Expanded(child: ModelViewer(
+            key: ValueKey(_selected),
+            src: _selected,
+            alt: 'Nhân vật nữ PYINCC GLB quét 3D',
+            backgroundColor: sand,
+            cameraControls: true,
+            autoRotate: false,
+            ar: false,
+            loading: Loading.eager,
+          )),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 10, 16, 18),
+            child: Text('Vuốt xoay 360° · Chụm phóng to. '
+              'Mesh quét tĩnh, chưa có Face Swap hay trang phục mesh riêng.',
+              textAlign: TextAlign.center)),
+        ]);
+      },
+    )),
   );
 }
 
