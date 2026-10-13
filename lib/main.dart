@@ -94,8 +94,8 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  // Studio remains the initial screen despite its third menu position.
-  int tab = 2;
+  // Home is the entry point for face identity and avatar setup.
+  int tab = 1;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -118,39 +118,143 @@ class _HomeShellState extends State<HomeShell> {
   );
 }
 
-/// UI-only foundation. Real avatar reconstruction and face swap require a
-/// separately validated image-processing provider and explicit user consent.
-class CharacterHomeScreen extends StatelessWidget {
+/// Home owns the face image and avatar preferences for this app session.
+/// A selected photo is never represented as a completed 3D face swap.
+class CharacterHomeScreen extends StatefulWidget {
   const CharacterHomeScreen({super.key});
   @override
+  State<CharacterHomeScreen> createState() => _CharacterHomeScreenState();
+}
+
+class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? _face;
+  bool _loading = false;
+  bool _consent = false;
+  double _height = 165;
+  double _weight = 60;
+  String _form = 'M';
+
+  Future<void> _selectFace() async {
+    if (_loading) return;
+    setState(() => _loading = true);
+    try {
+      final selected = await _picker.pickImage(
+        source: ImageSource.gallery, maxWidth: 1200,
+        maxHeight: 1200, imageQuality: 85);
+      if (selected == null || !mounted) return;
+      final bytes = await File(selected.path).openRead(0, 12)
+          .fold<List<int>>(<int>[], (a, b) => a..addAll(b));
+      final png = bytes.length >= 8 && bytes[0] == 137 &&
+          bytes[1] == 80 && bytes[2] == 78 && bytes[3] == 71;
+      final jpeg = bytes.length >= 3 && bytes[0] == 255 &&
+          bytes[1] == 216 && bytes[2] == 255;
+      final webp = bytes.length >= 12 &&
+          String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
+          String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP';
+      if (!png && !jpeg && !webp) throw const FormatException();
+      setState(() => _face = selected);
+    } catch (_) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ảnh không hợp lệ. Chọn PNG, JPG hoặc WEBP.')));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _faceSwapStatus() {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Chưa có engine Face Swap 3D đã kiểm chứng. '
+          'Không ghép giả hoặc gửi ảnh lên máy chủ.')));
+  }
+
+  Widget _measure(String label, double value, double min, double max,
+      String unit, ValueChanged<double> onChanged) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text(label), Text('${value.round()} $unit'),
+      ]),
+      Slider(value: value, min: min, max: max, onChanged: onChanged),
+    ],
+  );
+
+  @override
   Widget build(BuildContext context) => SectionPage(
-    title: 'Home',
-    subtitle: 'Nhân vật của bạn',
+    title: 'Home', subtitle: 'Khuôn mặt và nhân vật của bạn',
     children: [
-      const PreviewPanel(
-        icon: Icons.accessibility_new_outlined,
-        title: 'Chọn nhân vật mẫu',
-        caption: 'Mẫu nhân vật và ảnh toàn thân sẽ được tích hợp sau.',
-      ),
-      const SizedBox(height: 16),
+      Row(children: [
+        const Icon(Icons.face_retouching_natural_outlined, color: coffee),
+        const SizedBox(width: 10),
+        const Expanded(child: Text('Fake · Face Swap',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
+      ]),
+      const SizedBox(height: 10),
+      Card(child: Padding(padding: const EdgeInsets.all(12), child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          if (_face == null)
+            const SizedBox(height: 112, child: Center(
+              child: Icon(Icons.add_a_photo_outlined, size: 48, color: coffee)))
+          else
+            ClipRRect(borderRadius: BorderRadius.circular(12),
+              child: Image.file(File(_face!.path), height: 180,
+                fit: BoxFit.contain, errorBuilder: (_, __, ___) =>
+                  const Text('Không thể đọc ảnh khuôn mặt'))),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: _loading ? null : _selectFace,
+            icon: const Icon(Icons.upload_file_outlined),
+            label: Text(_face == null ? '1. Tải ảnh khuôn mặt' : 'Đổi ảnh khuôn mặt'),
+          ),
+          CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            value: _consent,
+            onChanged: (value) => setState(() => _consent = value ?? false),
+            title: const Text('Tôi có quyền sử dụng khuôn mặt trong ảnh'),
+            subtitle: const Text('Ảnh chỉ dùng trong phiên hiện tại; chưa tải lên cloud.'),
+            controlAffinity: ListTileControlAffinity.leading,
+          ),
+          FilledButton.icon(
+            onPressed: _face != null && _consent ? _faceSwapStatus : null,
+            icon: const Icon(Icons.face_outlined),
+            label: const Text('2. Face Swap lên avatar 3D'),
+          ),
+          const SizedBox(height: 8),
+          const Text('Chưa có kết quả Face Swap 3D. Ảnh trên là ảnh nguồn, '
+              'không phải khuôn mặt đã ánh xạ.',
+              style: TextStyle(fontSize: 12, color: Colors.black54)),
+        ]))),
+      const SizedBox(height: 12),
       FilledButton.tonalIcon(
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
         icon: const Icon(Icons.view_in_ar_outlined),
-        label: const Text('Xem nhân vật mẫu 3D · GLB'),
+        label: const Text('Xem avatar GLB mẫu · Xoay 360°'),
       ),
       const SizedBox(height: 16),
-      const Text('Thông số tham khảo',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const Text('Thông số nhân vật', style: TextStyle(
+        fontSize: 18, fontWeight: FontWeight.w600)),
+      const Text('Giá trị tham khảo, không phải số đo cơ thể được suy ra từ ảnh.',
+        style: TextStyle(fontSize: 12, color: Colors.black54)),
       const SizedBox(height: 8),
-      const Text('Chiều cao, cân nặng và tuổi là thông tin tùy chọn; '
-        'không dùng để đánh giá ngoại hình.'),
-      const SizedBox(height: 16),
-      const ListTile(
-        leading: Icon(Icons.face_outlined),
-        title: Text('Ảnh khuôn mặt của bạn'),
-        subtitle: Text('Chọn ảnh và Face Swap trong Studio; chưa kết nối AI.'),
+      _measure('Chiều cao', _height, 120, 210, 'cm',
+          (v) => setState(() => _height = v)),
+      _measure('Cân nặng', _weight, 30, 150, 'kg',
+          (v) => setState(() => _weight = v)),
+      const Text('Form nhân vật · X / M / N'),
+      const SizedBox(height: 8),
+      SegmentedButton<String>(
+        segments: const [
+          ButtonSegment(value: 'X', label: Text('X')),
+          ButtonSegment(value: 'M', label: Text('M')),
+          ButtonSegment(value: 'N', label: Text('N')),
+        ],
+        selected: {_form},
+        onSelectionChanged: (v) => setState(() => _form = v.first),
       ),
+      const SizedBox(height: 8),
+      const Text('Các thanh trượt chưa thay đổi mesh 3D. '
+        'Cần avatar tương thích morph targets để áp dụng thực tế.',
+        style: TextStyle(fontSize: 12, color: Colors.black54)),
     ],
   );
 }
