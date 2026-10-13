@@ -45,51 +45,47 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Studio opens with main preview and compact tools', (tester) async {
+  testWidgets('Studio opens with 3D-first preview and tools', (tester) async {
     await openStudio(tester);
-    await tester.scrollUntilVisible(find.text('Khuôn mặt'), -160,
-        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
-    expect(find.text('Trang phục'), findsWidgets);
-    expect(find.text('Khuôn mặt'), findsOneWidget);
+    expect(find.text('Studio · 3D'), findsOneWidget);
+    expect(find.text('Nhân vật GLB toàn thân'), findsOneWidget);
+    expect(find.text('Mở trình xem GLB'), findsOneWidget);
     expect(find.text('Tủ đồ'), findsOneWidget);
-    expect(find.text('Makeup'), findsOneWidget);
-    expect(find.text('Bước 1 · Add ảnh chân dung PNG'), findsNothing);
+    expect(find.text('Shop'), findsOneWidget);
+    expect(find.text('Big Bag'), findsOneWidget);
+    expect(find.text('Skin Care'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Studio switches to Face Swap controls', (tester) async {
+  testWidgets('Big Bag states the 3D garment pipeline is unavailable', (tester) async {
     await openStudio(tester);
-    await tester.scrollUntilVisible(find.text('Khuôn mặt'), -160,
-        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
+    await tester.tap(find.text('Big Bag'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Khuôn mặt'));
-    await tester.pumpAndSettle();
-    expect(find.text('Chọn ảnh khuôn mặt'), findsOneWidget);
-    expect(find.text('Áp dụng Face Swap'), findsOneWidget);
+    expect(find.textContaining('chưa có pipeline'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Studio opens wardrobe', (tester) async {
+  testWidgets('Studio opens wardrobe catalog', (tester) async {
     await openStudio(tester);
-    await tester.scrollUntilVisible(find.text('Tủ đồ'), -160,
-        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
-    await tester.pumpAndSettle();
     await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Mở tủ đồ'));
+    await tester.tap(find.text('Mở danh mục trang phục'));
     await tester.pumpAndSettle();
-    expect(find.text('Thêm món đồ'), findsOneWidget);
+    expect(find.text('Tủ Đồ AI'), findsOneWidget);
+    expect(find.text('Danh mục Áo'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Studio displays compact makeup controls', (tester) async {
+  testWidgets('Studio displays Skin Care controls without claiming 3D effects', (tester) async {
     await openStudio(tester);
-    await tester.scrollUntilVisible(find.text('Makeup'), -160,
-        scrollable: find.descendant(of: find.byType(UnifiedStudioScreen), matching: find.byType(Scrollable)).first);
+    await tester.tap(find.text('Skin Care'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Makeup'));
-    await tester.pumpAndSettle();
-    expect(find.text('Son môi'), findsOneWidget);
-    expect(find.text('Kẻ mắt'), findsOneWidget);
-    expect(find.text('Mascara/mi'), findsOneWidget);
+    expect(find.text('Độ sáng'), findsOneWidget);
     expect(find.text('Má hồng'), findsOneWidget);
+    expect(find.text('Son môi'), findsOneWidget);
+    expect(find.text('Các thanh trượt chưa tác động lên vật liệu 3D.'),
+        findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('Studio, Home, Store and Account are primary tabs', (tester) async {
