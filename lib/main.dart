@@ -286,6 +286,7 @@ class StoreScreen extends StatelessWidget {
   );
 }
 
+/// Studio v2: 3D-only navigation; no 2D image-overlay workflow.
 class UnifiedStudioScreen extends StatefulWidget {
   const UnifiedStudioScreen({super.key});
   @override
@@ -293,202 +294,109 @@ class UnifiedStudioScreen extends StatefulWidget {
 }
 
 class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
-  final ImagePicker _picker = ImagePicker();
-  XFile? _portrait;
-  XFile? _outfit;
-  bool _importing = false;
-  String _panel = 'Trang phục';
-  double _lipstick = .35, _eyes = .25, _lashes = .20, _blush = .25;
+  String? _panel;
+  double _brightness = .5, _blush = .2, _lip = .2;
 
-  Future<void> _pickPhoto({required bool outfit}) async {
-    if (_importing) return;
-    setState(() => _importing = true);
-    try {
-      final selected = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 85,
-        maxWidth: 1600,
-        maxHeight: 2000,
-      );
-      if (selected == null || !mounted) return;
-      final file = File(selected.path);
-      final bytes = await file.openRead(0, 12).fold<List<int>>(
-        <int>[], (value, chunk) => value..addAll(chunk));
-      final isPng = bytes.length >= 8 &&
-          bytes[0] == 137 && bytes[1] == 80 &&
-          bytes[2] == 78 && bytes[3] == 71;
-      final isJpeg = bytes.length >= 3 &&
-          bytes[0] == 255 && bytes[1] == 216 && bytes[2] == 255;
-      final isWebp = bytes.length >= 12 &&
-          String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
-          String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP';
-      if (!isPng && !isJpeg && !isWebp) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Chỉ hỗ trợ ảnh PNG, JPG hoặc WEBP hợp lệ.')));
-        return;
-      }
-      if (!mounted) return;
-      setState(() {
-        if (outfit) {
-          _outfit = selected;
-          _panel = 'Trang phục';
-        } else {
-          _portrait = selected;
-          _panel = 'Khuôn mặt';
-        }
-      });
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Không đọc được ảnh. Hãy chọn ảnh khác.')));
-      }
-    } finally {
-      if (mounted) setState(() => _importing = false);
-    }
-  }
+  void _notice(String message) => ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(message)));
 
-  void _notReady(String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$feature đang chờ tích hợp AI. Ảnh chưa được gửi đi.')));
-  }
-
-  Widget _tool(String title, IconData icon) => ChoiceChip(
-    avatar: Icon(icon, size: 18),
-    label: Text(title),
-    selected: _panel == title,
-    onSelected: (_) => setState(() => _panel = title),
+  Widget _menu(String label, IconData icon) => ActionChip(
+    avatar: Icon(icon, size: 18, color: coffee),
+    label: Text(label),
+    onPressed: () => setState(() => _panel = _panel == label ? null : label),
   );
 
-  Widget _slider(String title, double value, ValueChanged<double> onChange) =>
-      Row(children: [
-        SizedBox(width: 95, child: Text(title)),
-        Expanded(child: Slider(value: value, onChanged: onChange)),
-      ]);
-
-  Widget _activePanel() {
+  Widget _panelContent() {
     switch (_panel) {
-      case 'Khuôn mặt':
-        return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          const Text('Face Swap', style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: _importing ? null : () => _pickPhoto(outfit: false),
-            icon: const Icon(Icons.face_outlined),
-            label: Text(_portrait == null ? 'Chọn ảnh khuôn mặt' : 'Đổi ảnh khuôn mặt'),
-          ),
-          FilledButton.tonal(
-            onPressed: _portrait == null ? null : () => _notReady('Face Swap'),
-            child: const Text('Áp dụng Face Swap'),
-          ),
-        ]);
-      case 'Makeup':
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Makeup nhanh · Bản điều khiển xem trước',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          _slider('Son môi', _lipstick, (v) => setState(() => _lipstick = v)),
-          _slider('Kẻ mắt', _eyes, (v) => setState(() => _eyes = v)),
-          _slider('Mascara/mi', _lashes, (v) => setState(() => _lashes = v)),
-          _slider('Má hồng', _blush, (v) => setState(() => _blush = v)),
-          const Text('Chưa áp dụng hiệu ứng lên ảnh.',
-              style: TextStyle(fontSize: 12, color: Colors.black54)),
-        ]);
       case 'Tủ đồ':
         return OutlinedButton.icon(
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const WardrobeScreen())),
           icon: const Icon(Icons.inventory_2_outlined),
-          label: const Text('Mở tủ đồ'),
+          label: const Text('Mở danh mục trang phục'),
         );
-      default:
-        return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          const Text('Chọn ảnh trang phục để thử',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: _importing ? null : () => _pickPhoto(outfit: true),
-            icon: const Icon(Icons.add_photo_alternate_outlined),
-            label: Text(_outfit == null ? 'Tải ảnh trang phục' : 'Đổi ảnh trang phục'),
-          ),
-          if (_outfit != null)
-            Padding(padding: const EdgeInsets.only(top: 8),
-              child: Row(children: [
-                ClipRRect(borderRadius: BorderRadius.circular(10),
-                  child: Image.file(File(_outfit!.path), width: 64, height: 72,
-                    fit: BoxFit.cover, cacheWidth: 128,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image))),
-                const SizedBox(width: 12),
-                const Expanded(child: Text('Đã chọn ảnh trang phục trên thiết bị')),
-              ])),
+      case 'Shop':
+        return const Text('Trang phục đã chọn từ Store sẽ xuất hiện tại đây. '
+            'Chưa có dữ liệu sản phẩm đã xác minh.');
+      case 'Big Bag':
+        return const Text('Kho ảnh trang phục cá nhân: chưa có pipeline '
+            'chuyển ảnh thành mesh quần áo 3D.');
+      case 'Skin Care':
+        return Column(children: [
+          Row(children: [const SizedBox(width: 100, child: Text('Độ sáng')),
+            Expanded(child: Slider(value: _brightness,
+              onChanged: (v) => setState(() => _brightness = v)))]),
+          Row(children: [const SizedBox(width: 100, child: Text('Má hồng')),
+            Expanded(child: Slider(value: _blush,
+              onChanged: (v) => setState(() => _blush = v)))]),
+          Row(children: [const SizedBox(width: 100, child: Text('Son môi')),
+            Expanded(child: Slider(value: _lip,
+              onChanged: (v) => setState(() => _lip = v)))]),
+          const Text('Các thanh trượt chưa tác động lên vật liệu 3D.',
+            style: TextStyle(fontSize: 12, color: Colors.black54)),
         ]);
+      default:
+        return const SizedBox.shrink();
     }
   }
 
   @override
-  Widget build(BuildContext context) => SectionPage(
-    title: 'Studio',
-    subtitle: 'Phòng thử đồ PYINCC FashionAI',
-    children: [
-      Wrap(spacing: 8, runSpacing: 6, children: [
-        _tool('Trang phục', Icons.checkroom_outlined),
-        _tool('Khuôn mặt', Icons.face_outlined),
-        _tool('Tủ đồ', Icons.inventory_2_outlined),
-        _tool('Makeup', Icons.brush_outlined),
-      ]),
-      const SizedBox(height: 12),
-      Card(child: Padding(padding: const EdgeInsets.all(14),
-        child: _activePanel())),
-      const SizedBox(height: 12),
-      Container(
-        height: 350,
-        decoration: BoxDecoration(
-          color: sand, borderRadius: BorderRadius.circular(22)),
-        clipBehavior: Clip.antiAlias,
-        child: _portrait == null
-          ? const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.accessibility_new_outlined, size: 92, color: coffee),
-              SizedBox(height: 12),
-              Text('Khu vực người mẫu toàn thân',
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 28),
-                child: Text('Chưa có ảnh người mẫu được tích hợp. '
-                    'Chọn ảnh của bạn để xem trước tại đây.',
-                    textAlign: TextAlign.center)),
-            ])
-          : Image.file(File(_portrait!.path), fit: BoxFit.contain,
-              width: double.infinity, cacheWidth: 900,
-              errorBuilder: (_, __, ___) =>
-                const Center(child: Text('Không thể hiển thị ảnh'))),
-      ),
-      const SizedBox(height: 10),
-      OutlinedButton.icon(
-        onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
-        icon: const Icon(Icons.view_in_ar_outlined),
-        label: const Text('Xem người mẫu 3D GLB'),
-      ),
-      const SizedBox(height: 8),
-      const Text('Ảnh chỉ được xem trước trên thiết bị. '
-          'Chưa có Face Swap hoặc thử đồ AI thực tế.',
-          style: TextStyle(fontSize: 12, color: Colors.black54)),
-      const SizedBox(height: 14),
-      FilledButton.tonalIcon(
-        onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const OutfitEditorScreen())),
-        icon: const Icon(Icons.layers_outlined),
-        label: const Text('Ghép trang phục 2D · Sử dụng ngay'),
-      ),
-      const SizedBox(height: 8),
-      FilledButton.icon(
-        onPressed: _outfit == null ? null : () => _notReady('Thử đồ AI'),
-        icon: const Icon(Icons.auto_awesome),
-        label: const Text('Thử đồ AI'),
-      ),
-      const SizedBox(height: 8),
-      const Text('Xem kết quả toàn thân và xuất PNG trong trình phối đồ 2D; '
-          'chưa có ảnh trước/sau AI thật.',
-          style: TextStyle(fontSize: 12, color: Colors.black54)),
-    ],
+  Widget build(BuildContext context) => Scaffold(
+    body: SafeArea(child: Column(children: [
+      Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        child: Row(children: [
+          const Expanded(child: Text('Studio · 3D',
+            style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600,
+              color: coffee))),
+          IconButton(tooltip: 'Hoàn tác', icon: const Icon(Icons.undo),
+            onPressed: () => _notice('Chưa có thao tác phối đồ để hoàn tác.')),
+          IconButton(tooltip: 'Đặt lại', icon: const Icon(Icons.restart_alt),
+            onPressed: () => setState(() {
+              _panel = null; _brightness = .5; _blush = .2; _lip = .2;
+            })),
+        ])),
+      Expanded(child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(color: sand,
+          borderRadius: BorderRadius.circular(22)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Icon(Icons.view_in_ar_outlined, size: 78, color: coffee),
+          const SizedBox(height: 12),
+          const Text('Nhân vật GLB toàn thân',
+            style: TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          const Padding(padding: EdgeInsets.symmetric(horizontal: 26),
+            child: Text('Đã chuẩn bị mesh PYINCC. Cần đưa file GLB '
+              'vào assets của ứng dụng trước khi hiển thị offline.',
+              textAlign: TextAlign.center)),
+          const SizedBox(height: 12),
+          FilledButton.tonalIcon(
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
+            icon: const Icon(Icons.threed_rotation),
+            label: const Text('Mở trình xem GLB'),
+          ),
+        ]),
+      )),
+      Padding(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Wrap(alignment: WrapAlignment.center, spacing: 6,
+          runSpacing: 4, children: [
+            _menu('Tủ đồ', Icons.checkroom_outlined),
+            _menu('Shop', Icons.storefront_outlined),
+            _menu('Big Bag', Icons.shopping_bag_outlined),
+            _menu('Skin Care', Icons.auto_awesome_outlined),
+          ])),
+      if (_panel != null) Container(
+        constraints: const BoxConstraints(maxHeight: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: SingleChildScrollView(child: _panelContent())),
+      const Padding(padding: EdgeInsets.fromLTRB(14, 0, 14, 8),
+        child: Text('Studio chỉ dùng mô hình 3D; không còn trình ghép ảnh 2D. '
+          'Thay trang phục mesh và Face Swap đang chờ tích hợp.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 11, color: Colors.black54))),
+    ])),
   );
 }
 

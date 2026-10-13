@@ -1,12 +1,12 @@
 # PYINCC FashionAI
 
-Flutter application foundation for Android and iOS. The first deliverable is a **UI preview**, not a working face-swap, virtual try-on, checkout, or 3D engine.
+Flutter application foundation for Android and iOS. The current app is a **UI preview**, not a working face-swap, virtual try-on or checkout. A sample GLB viewer exists, but the user-supplied PYINCC scan meshes are not yet bundled in GitHub. See [3D asset integration](docs/3d-avatar-integration.md).
 
 **Product scope is locked in [docs/product-contract-v2.md](docs/product-contract-v2.md).** This README describes the current implementation, which is not yet compliant with the locked 3D/offline requirements.
 
 ## Product navigation
 
-The default tab is **Studio**. Bottom navigation has exactly four destinations: **Studio**, **Home**, **Store**, **Account**.
+The default tab is **Home**. Bottom navigation has exactly four destinations: **Studio**, **Home**, **Store**, **Account**.
 
 - **Studio**: personal portrait selection, outfit selection, saved wardrobe, lightweight makeup (lipstick, eyeliner, mascara/lashes, blush), before/after UI and a future AI processing integration. Customers will be able to add their own garment photos.
 - **Home**: model/avatar selection and optional height, weight and age settings.
