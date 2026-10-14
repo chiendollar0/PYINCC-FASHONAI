@@ -48,8 +48,7 @@ void main() {
   testWidgets('Studio opens with 3D-first preview and tools', (tester) async {
     await openStudio(tester);
     expect(find.text('Studio · 3D'), findsOneWidget);
-    expect(find.text('Nhân vật GLB toàn thân'), findsOneWidget);
-    expect(find.text('Mở trình xem GLB'), findsOneWidget);
+    expect(find.textContaining('Studio chỉ dùng mô hình 3D'), findsOneWidget);
     expect(find.text('Tủ đồ'), findsOneWidget);
     expect(find.text('Shop'), findsOneWidget);
     expect(find.text('Big Bag'), findsOneWidget);
