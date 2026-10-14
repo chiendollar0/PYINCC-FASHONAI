@@ -1,19 +1,11 @@
 # PYINCC 3D model integration — asset delivery
 
-## Verified local scan assets
-- `pyincc_avatar_primary.glb`: 138088 vertices, 199132 triangles.
-- `pyincc_avatar_alternate.glb`: 121336 vertices, 187031 triangles.
-- Mesh and UV preserved, source textures removed; neutral material. No skeleton/rig, independent face material, garment separation or Face Swap.
-- Both files were packaged separately in `PYINCC_3D_avatar_assets_for_project.zip` for delivery. **Binary assets are not yet committed to GitHub.** Do not claim the app renders these scans until assets are installed and tested.
+## Models
+- `assets/avatars/pyincc_avatar_primary.glb`: 138,088 vertices, 199,132 triangles; neutral material.
+- `assets/avatars/pyincc_avatar_alternate.glb`: 121,336 vertices, 187,031 triangles; neutral material.
+- Extract `PYINCC_FashionAI_3D_assets_ready.zip` from the project conversation at the repository root.
+- **Binary GLB files are not yet committed to GitHub.** The viewer shows an explicit missing-asset message until these are installed.
+- `pubspec.yaml` already includes `assets/avatars/`. Studio embeds the primary model; Home provides an A/B full-screen viewer.
 
-## Install into Flutter app
-Copy both `.glb` files into `assets/avatars/`. Register both in `pubspec.yaml` under `flutter: assets:`, then update the viewer's `src` to the bundled asset path. Run `flutter pub get`, `flutter analyze`, `flutter test` and Android physical-device validation.
-
-## Next engineering gates
-1. Bundle real GLBs in repository or approved asset distribution, replacing remote CesiumMan.
-2. Verify camera 360, framing, UV, face geometry and performance on Android 10/6GB.
-3. Split head/face UV region for consent-based texture replacement; do not claim true face swap before validation.
-4. Prepare independently replaceable, fully clothed garment meshes and matching rig, without distorting scan.
-5. Studio is 3D-first; the 2D editor must not be linked from user-facing navigation.
-
-Reference image is a **pose/composition target**, not geometry or verified garment fit. Do not present a generated reference infographic as an actual GLB render.
+## Validation
+Run `flutter pub get`, `flutter analyze`, `flutter test` and `flutter run` after extracting assets. Test offline camera orbit and full-body framing on Android 10 / 6GB RAM. Scan mesh and UV remain; texture was removed. These scans have no face material separation, rig or modular garment meshes. Face Swap and 3D outfit replacement remain unimplemented. The 2D overlay editor is not part of user-facing navigation.

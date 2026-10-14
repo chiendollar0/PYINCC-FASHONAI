@@ -35,9 +35,6 @@ class PyinccApp extends StatelessWidget {
   );
 }
 
-/// Licensed sample model: CesiumMan, Cesium, CC BY 4.0.
-/// Source: Khronos glTF Sample Assets (GLB served by GitHub).
-/// A live network connection and modern Android System WebView are required.
 /// Viewer for the user's actual scan meshes, loaded from bundled Flutter assets.
 /// Never substitutes a third-party demo character when the scan is unavailable.
 class SampleAvatar3DScreen extends StatefulWidget {
@@ -397,26 +394,47 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
       Expanded(child: Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 12),
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(color: sand,
           borderRadius: BorderRadius.circular(22)),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.view_in_ar_outlined, size: 78, color: coffee),
-          const SizedBox(height: 12),
-          const Text('Nhân vật GLB toàn thân',
-            style: TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          const Padding(padding: EdgeInsets.symmetric(horizontal: 26),
-            child: Text('Đã chuẩn bị mesh PYINCC. Cần đưa file GLB '
-              'vào assets của ứng dụng trước khi hiển thị offline.',
-              textAlign: TextAlign.center)),
-          const SizedBox(height: 12),
-          FilledButton.tonalIcon(
-            onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
-            icon: const Icon(Icons.threed_rotation),
-            label: const Text('Mở trình xem GLB'),
-          ),
-        ]),
+        child: FutureBuilder<AssetManifest>(
+          future: AssetManifest.loadFromAssetBundle(rootBundle),
+          builder: (context, snapshot) {
+            const model = 'assets/avatars/pyincc_avatar_primary.glb';
+            if (snapshot.hasError) {
+              return const Center(child: Text('Không đọc được asset 3D.'));
+            }
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.data!.listAssets().contains(model)) {
+              return const Center(child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Text('Chưa có GLB PYINCC trong bản build. '
+                  'Thêm assets/avatars/pyincc_avatar_primary.glb để '
+                  'hiển thị avatar 3D offline.',
+                  textAlign: TextAlign.center)));
+            }
+            return Stack(children: [
+              const Positioned.fill(child: ModelViewer(
+                src: model,
+                alt: 'Avatar PYINCC toàn thân xoay 360 độ',
+                backgroundColor: sand,
+                cameraControls: true,
+                autoRotate: false,
+                ar: false,
+                loading: Loading.eager,
+              )),
+              Positioned(top: 8, right: 8, child: IconButton.filledTonal(
+                tooltip: 'Xem toàn màn hình',
+                icon: const Icon(Icons.fullscreen),
+                onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) =>
+                    const SampleAvatar3DScreen())),
+              )),
+            ]);
+          },
+        ),
       )),
       Padding(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Wrap(alignment: WrapAlignment.center, spacing: 6,
