@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'production_auth.dart';
-import 'outfit_editor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
@@ -191,8 +190,10 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
       if (!png && !jpeg && !webp) throw const FormatException();
       setState(() => _face = selected);
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ảnh không hợp lệ. Chọn PNG, JPG hoặc WEBP.')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ảnh không hợp lệ. Chọn PNG, JPG hoặc WEBP.')));
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -218,10 +219,10 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
   Widget build(BuildContext context) => SectionPage(
     title: 'Home', subtitle: 'Khuôn mặt và nhân vật của bạn',
     children: [
-      Row(children: [
-        const Icon(Icons.face_retouching_natural_outlined, color: coffee),
-        const SizedBox(width: 10),
-        const Expanded(child: Text('Fake · Face Swap',
+      const Row(children: [
+        Icon(Icons.face_retouching_natural_outlined, color: coffee),
+        SizedBox(width: 10),
+        Expanded(child: Text('Fake · Face Swap',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
       ]),
       const SizedBox(height: 10),
