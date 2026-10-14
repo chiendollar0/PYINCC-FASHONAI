@@ -1,10 +1,10 @@
-# Avatar assets
+# PYINCC scanned avatar assets
 
-Place the actual scanned GLB models here:
+Upload the two GLB files from the project asset bundle into this directory, keeping these exact names:
 
-- `pyincc_avatar_primary.glb`
-- `pyincc_avatar_alternate.glb`
+- `pyincc_avatar_primary.glb` (5,152,656 bytes)
+- `pyincc_avatar_alternate.glb` (4,672,404 bytes)
 
-The source mesh package is delivered separately as `PYINCC_3D_avatar_assets_for_project.zip`. This directory intentionally does **not** contain a substitute avatar. The viewer reports a missing asset until both GLB files are copied here and the app is rebuilt.
+GitHub supports files of these sizes in a normal repository; Git LFS is not necessary. For browser upload, open this folder on GitHub, select **Add file → Upload files**, select each extracted .glb, then commit. Do not upload the ZIP without extracting it: Flutter expects the individual .glb files.
 
-No face swap, garment replacement, or retopology is implied by the GLB viewer.
+After upload, verify the file sizes in GitHub and trigger Android CI. The viewer loads assets locally. Face Swap and modular clothing are not implemented.
