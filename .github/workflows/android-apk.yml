@@ -20,6 +20,14 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Prepare real 3D meshes and remove source textures (fail closed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'trimesh==4.7.4' 'numpy>=1.26,<3'
+          python scripts/prepare_avatar_assets.py
+          test -s assets/avatars/pyincc_avatar_primary.glb
+          test -s assets/avatars/pyincc_avatar_alternate.glb
       - name: Generate Android scaffold without overwriting app dependencies
         shell: bash
         run: |
@@ -88,6 +96,14 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Prepare real 3D meshes and remove source textures (fail closed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'trimesh==4.7.4' 'numpy>=1.26,<3'
+          python scripts/prepare_avatar_assets.py
+          test -s assets/avatars/pyincc_avatar_primary.glb
+          test -s assets/avatars/pyincc_avatar_alternate.glb
       - name: Generate Android scaffold without overwriting app dependencies
         shell: bash
         run: |
@@ -117,6 +133,20 @@ jobs:
         run: flutter pub get
       - name: Build debug APK only after tests pass
         run: flutter build apk --debug
+      - name: Verify GLBs embedded in APK
+        shell: bash
+        run: |
+          python - <<'PY'
+          from zipfile import ZipFile
+          p = 'build/app/outputs/flutter-apk/app-debug.apk'
+          with ZipFile(p) as z:
+              names = set(z.namelist())
+              for f in ['pyincc_avatar_primary.glb', 'pyincc_avatar_alternate.glb']:
+                  key = 'assets/flutter_assets/assets/avatars/' + f
+                  if key not in names or z.getinfo(key).file_size < 100000:
+                      raise SystemExit('APK_ASSET_FAIL: ' + key)
+                  print('APK_ASSET_PASS', key, z.getinfo(key).file_size)
+          PY
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
