@@ -86,7 +86,7 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
               onSelectionChanged: (selection) =>
                 setState(() => _selected = selection.first),
             )),
-          Expanded(child: ModelViewer(
+          Expanded(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
             key: ValueKey(_selected),
             src: _selected,
             alt: 'Nhân vật nữ PYINCC GLB quét 3D',
@@ -417,7 +417,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                   textAlign: TextAlign.center)));
             }
             return Stack(children: [
-              const Positioned.fill(child: ModelViewer(
+              Positioned.fill(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
                 src: model,
                 alt: 'Avatar PYINCC toàn thân xoay 360 độ',
                 backgroundColor: sand,
