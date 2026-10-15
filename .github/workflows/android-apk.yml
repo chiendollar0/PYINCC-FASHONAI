@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install 'trimesh==4.7.4' 'numpy>=1.26,<3'
+          python -m pip install 'Pillow>=10,<13'
           python scripts/prepare_avatar_assets.py
           test -s assets/avatars/pyincc_avatar_primary.glb
           test -s assets/avatars/pyincc_avatar_alternate.glb
@@ -100,7 +100,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install 'trimesh==4.7.4' 'numpy>=1.26,<3'
+          python -m pip install 'Pillow>=10,<13'
           python scripts/prepare_avatar_assets.py
           test -s assets/avatars/pyincc_avatar_primary.glb
           test -s assets/avatars/pyincc_avatar_alternate.glb
