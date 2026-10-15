@@ -20,7 +20,7 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Prepare real 3D meshes and remove source textures (fail closed)
+      - name: Prepare GLB mesh UV and preserve embedded textures (fail closed)
         shell: bash
         run: |
           set -euo pipefail
@@ -76,7 +76,7 @@ jobs:
       - name: Static analysis
         run: flutter analyze --no-fatal-infos
       - name: Unit and widget tests
-        run: flutter test
+        run: flutter test --dart-define=PYINCC_WIDGET_TEST=true
       - name: Android Gradle compile check
         working-directory: android
         run: bash ./gradlew :app:compileDebugKotlin --stacktrace
@@ -96,7 +96,7 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Prepare real 3D meshes and remove source textures (fail closed)
+      - name: Prepare GLB mesh UV and preserve embedded textures (fail closed)
         shell: bash
         run: |
           set -euo pipefail
