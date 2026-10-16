@@ -1,0 +1,26 @@
+# PYINCC FashionAI — SOURCE OF TRUTH / UI & P0
+
+Document precedence (do not reinterpret from CI or screenshots):
+1. Latest explicit owner instructions.
+2. PYINCC_FashionAI_Spec_KhoaCung_v2_2026-10-13.docx (scope locked).
+3. PYINCC_FashionAI_Nguyen_tac_hoat_dong_co_anh_mau.docx.
+4. PYINCC FashionAI UX.mp4, architecture documents; code is implementation evidence only.
+
+## Non-negotiable contract
+- Exactly ONE approved avatar in the user-facing app. No A/B selector, invented models, or demo replacements.
+- Bottom tabs: HOME | STUDIO | STORE | ACCOUNT. Responsibilities are locked by the V2 document.
+- HOME: real face photo, consent, Face Swap status, avatar, height/weight/form X/M/N. Do not imply face mapping works before it does.
+- STUDIO: full-body 3D avatar, 360-degree camera, floating compact menus for Skin Care / Tủ đồ mẫu / Shop / Big Bag, Undo/Reset; tools must not obscure avatar. No duplicate pages or giant placeholders.
+- STORE: legitimate product links/sources, no invented prices/brands.
+- ACCOUNT: authentication, temporary session, cloud opt-in, delete controls.
+- UI: fashion-grade, cream/beige/white/neutral; consistent component size, hierarchy, spacing; remove debug/explanatory copy from user-facing pages. Error messages must remain truthful and accessible.
+- Offline-first; no fake AI output, no forced production PASS.
+
+## Each build — do not ask owner to restate prior requirements
+1. Read this contract and the named source docs. Compare changes against every locked rule.
+2. Static analyze, widget tests, GLB validation, APK compile, inspect packaged assets, record commit/run/artifact/digest.
+3. Review mobile layouts and Studio full-body front/side/back camera; CI green does not prove visual correctness.
+4. Owner tests only actual Android device behavior, render, interaction, and performance. Keep P0 FAIL/BLOCKED until verified.
+5. Record regressions and fixes; do not invent extra scope or ask the owner to repeat established constraints.
+
+Current limitations: bundled scanned GLB is a renderer source, not evidence of successful Face Swap or separate 3D garment rigging. Existing debug builds are not production approvals.
