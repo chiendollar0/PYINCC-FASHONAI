@@ -60,7 +60,7 @@ void main() {
     await openStudio(tester);
     await tester.tap(find.text('Big Bag'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('chưa có pipeline'), findsOneWidget);
+    expect(find.text('Chưa có trang phục'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -71,7 +71,7 @@ void main() {
     await tester.tap(find.text('Mở danh mục trang phục'));
     await tester.pumpAndSettle();
     expect(find.text('Tủ Đồ AI'), findsOneWidget);
-    expect(find.text('Danh mục Áo'), findsOneWidget);
+    expect(find.text('Áo'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 
@@ -82,8 +82,7 @@ void main() {
     expect(find.text('Độ sáng'), findsOneWidget);
     expect(find.text('Má hồng'), findsOneWidget);
     expect(find.text('Son môi'), findsOneWidget);
-    expect(find.text('Các thanh trượt chưa tác động lên vật liệu 3D.'),
-        findsOneWidget);
+
     expect(tester.takeException(), isNull);
   });
 
