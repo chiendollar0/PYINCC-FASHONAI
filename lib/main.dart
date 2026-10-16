@@ -8,9 +8,10 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 void main() => runApp(const PyinccApp());
 
-const cream = Color(0xFFF9F6F0);
-const coffee = Color(0xFF6E5749);
-const sand = Color(0xFFEDE3D7);
+const cream = Color(0xFFFFF9F6);
+const coffee = Color(0xFF422B37);
+const sand = Color(0xFFF1E3E7);
+const accent = Color(0xFFC65B82);
 
 class PyinccApp extends StatelessWidget {
   final bool requireAuthentication;
@@ -23,7 +24,7 @@ class PyinccApp extends StatelessWidget {
     theme: ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: cream,
-      colorScheme: ColorScheme.fromSeed(seedColor: coffee, surface: cream),
+      colorScheme: ColorScheme.fromSeed(seedColor: accent, surface: cream),
       appBarTheme: const AppBarTheme(backgroundColor: cream, centerTitle: false),
       cardTheme: CardThemeData(color: Colors.white, elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
@@ -45,8 +46,7 @@ class SampleAvatar3DScreen extends StatefulWidget {
 
 class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
   static const _primary = 'assets/avatars/pyincc_avatar_primary.glb';
-  static const _alternate = 'assets/avatars/pyincc_avatar_alternate.glb';
-  String _selected = _primary;
+  // One approved avatar only.
   late final Future<Set<String>> _available = _loadAssets();
 
   Future<Set<String>> _loadAssets() async {
@@ -67,7 +67,7 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         final available = snapshot.data!;
-        if (!available.contains(_selected)) {
+        if (!available.contains(_primary)) {
           return const Center(child: Padding(
             padding: EdgeInsets.all(24),
             child: Text('Chưa đóng gói GLB nữ PYINCC vào ứng dụng. '
@@ -76,23 +76,15 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
               textAlign: TextAlign.center)));
         }
         return Column(children: [
-          Padding(padding: const EdgeInsets.all(10),
-            child: SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: _primary, label: Text('Mẫu A')),
-                ButtonSegment(value: _alternate, label: Text('Mẫu B')),
-              ],
-              selected: {_selected},
-              onSelectionChanged: (selection) =>
-                setState(() => _selected = selection.first),
-            )),
           Expanded(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
-            key: ValueKey(_selected),
-            src: _selected,
+            key: const ValueKey(_primary),
+            src: _primary,
             alt: 'Nhân vật nữ PYINCC GLB quét 3D',
             backgroundColor: sand,
             cameraControls: true,
             autoRotate: false,
+            cameraOrbit: '0deg 90deg auto',
+            fieldOfView: '30deg',
             ar: false,
             loading: Loading.eager,
           )),
@@ -130,23 +122,26 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   // Home is the entry point for face identity and avatar setup.
-  int tab = 1;
+  int tab = 0;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(child: IndexedStack(index: tab, children: [
-      StoreScreen(onTryOn: () => setState(() => tab = 2)),
       const CharacterHomeScreen(),
       const UnifiedStudioScreen(),
+      StoreScreen(onTryOn: () => setState(() => tab = 1)),
       const ProfileScreen(),
     ])),
     bottomNavigationBar: NavigationBar(
+      backgroundColor: Colors.white,
+      indicatorColor: sand,
+      height: 68,
       selectedIndex: tab,
       onDestinationSelected: (i) => setState(() => tab = i),
       destinations: const [
-        NavigationDestination(icon: Icon(Icons.shopping_bag_outlined), label: 'Store'),
         NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
         NavigationDestination(icon: Icon(Icons.auto_awesome_outlined), label: 'Studio'),
+        NavigationDestination(icon: Icon(Icons.shopping_bag_outlined), label: 'Store'),
         NavigationDestination(icon: Icon(Icons.person_outline), label: 'Account'),
       ],
     ),
@@ -217,7 +212,7 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
 
   @override
   Widget build(BuildContext context) => SectionPage(
-    title: 'Home', subtitle: 'Khuôn mặt và nhân vật của bạn',
+    title: 'PYINCC', subtitle: 'Fashion Studio',
     children: [
       const Row(children: [
         Icon(Icons.face_retouching_natural_outlined, color: coffee),
@@ -265,13 +260,12 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (_) => const SampleAvatar3DScreen())),
         icon: const Icon(Icons.view_in_ar_outlined),
-        label: const Text('Xem avatar GLB mẫu · Xoay 360°'),
+        label: const Text('Xem nhân vật 3D'),
       ),
       const SizedBox(height: 16),
       const Text('Thông số nhân vật', style: TextStyle(
         fontSize: 18, fontWeight: FontWeight.w600)),
-      const Text('Giá trị tham khảo, không phải số đo cơ thể được suy ra từ ảnh.',
-        style: TextStyle(fontSize: 12, color: Colors.black54)),
+
       const SizedBox(height: 8),
       _measure('Chiều cao', _height, 120, 210, 'cm',
           (v) => setState(() => _height = v)),
@@ -289,9 +283,7 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
         onSelectionChanged: (v) => setState(() => _form = v.first),
       ),
       const SizedBox(height: 8),
-      const Text('Các thanh trượt chưa thay đổi mesh 3D. '
-        'Cần avatar tương thích morph targets để áp dụng thực tế.',
-        style: TextStyle(fontSize: 12, color: Colors.black54)),
+
     ],
   );
 }
@@ -337,10 +329,14 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   void _notice(String message) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(message)));
 
-  Widget _menu(String label, IconData icon) => ActionChip(
-    avatar: Icon(icon, size: 18, color: coffee),
-    label: Text(label),
-    onPressed: () => setState(() => _panel = _panel == label ? null : label),
+  Widget _menu(String label, IconData icon) => SizedBox(
+    width: 86,
+    child: ActionChip(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+      avatar: Icon(icon, size: 16, color: accent),
+      label: Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
+      onPressed: () => setState(() => _panel = _panel == label ? null : label),
+    ),
   );
 
   Widget _panelContent() {
@@ -423,6 +419,8 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 backgroundColor: sand,
                 cameraControls: true,
                 autoRotate: false,
+                cameraOrbit: '0deg 90deg auto',
+                fieldOfView: '30deg',
                 ar: false,
                 loading: Loading.eager,
               )),
@@ -437,23 +435,18 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           },
         ),
       )),
-      Padding(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: Wrap(alignment: WrapAlignment.center, spacing: 6,
-          runSpacing: 4, children: [
-            _menu('Tủ đồ', Icons.checkroom_outlined),
-            _menu('Shop', Icons.storefront_outlined),
-            _menu('Big Bag', Icons.shopping_bag_outlined),
-            _menu('Skin Care', Icons.auto_awesome_outlined),
-          ])),
+      Padding(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          _menu('Skin Care', Icons.auto_awesome_outlined),
+          _menu('Tủ đồ', Icons.checkroom_outlined),
+          _menu('Shop', Icons.storefront_outlined),
+          _menu('Big Bag', Icons.shopping_bag_outlined),
+        ])),
       if (_panel != null) Container(
         constraints: const BoxConstraints(maxHeight: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: SingleChildScrollView(child: _panelContent())),
-      const Padding(padding: EdgeInsets.fromLTRB(14, 0, 14, 8),
-        child: Text('Studio chỉ dùng mô hình 3D; không còn trình ghép ảnh 2D. '
-          'Thay trang phục mesh và Face Swap đang chờ tích hợp.',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11, color: Colors.black54))),
+
     ])),
   );
 }
