@@ -83,8 +83,8 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
             backgroundColor: sand,
             cameraControls: true,
             autoRotate: false,
-            cameraOrbit: '0deg 90deg auto',
-            fieldOfView: '30deg',
+            cameraOrbit: '0deg 90deg 120%',
+            fieldOfView: '32deg',
             ar: false,
             loading: Loading.eager,
           )),
@@ -320,15 +320,30 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   void _notice(String message) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(message)));
 
-  Widget _menu(String label, IconData icon) => SizedBox(
-    width: 86,
-    child: ActionChip(
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
-      avatar: Icon(icon, size: 16, color: accent),
-      label: Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
-      onPressed: () => setState(() => _panel = _panel == label ? null : label),
-    ),
-  );
+  Widget _menu(String label, IconData icon) {
+    final active = _panel == label;
+    return Expanded(child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Material(
+        color: active ? coffee : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => setState(() => _panel = active ? null : label),
+          child: SizedBox(height: 66, child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 22, color: active ? Colors.white : coffee),
+              const SizedBox(height: 5),
+              Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                  color: active ? Colors.white : coffee)),
+            ],
+          )),
+        ),
+      ),
+    ));
+  }
 
   Widget _panelContent() {
     switch (_panel) {
@@ -423,16 +438,19 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           },
         ),
       )),
-      Padding(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      Padding(padding: const EdgeInsets.fromLTRB(9, 10, 9, 10),
+        child: Row(children: [
           _menu('Skin Care', Icons.auto_awesome_outlined),
           _menu('Tủ đồ', Icons.checkroom_outlined),
           _menu('Shop', Icons.storefront_outlined),
           _menu('Big Bag', Icons.shopping_bag_outlined),
         ])),
       if (_panel != null) Container(
-        constraints: const BoxConstraints(maxHeight: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+        constraints: const BoxConstraints(maxHeight: 190),
+        decoration: BoxDecoration(color: Colors.white,
+          borderRadius: BorderRadius.circular(18)),
+        padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(child: _panelContent())),
 
     ])),
@@ -446,11 +464,11 @@ class SectionPage extends StatelessWidget {
   const SectionPage({super.key, required this.title, required this.subtitle, required this.children});
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: ListView(padding: const EdgeInsets.all(20), children: [
-    Text(title, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: coffee)),
-    const SizedBox(height: 6),
-    Text(subtitle, style: const TextStyle(color: Colors.black54)),
-    const SizedBox(height: 22),
+    body: ListView(padding: const EdgeInsets.fromLTRB(20, 18, 20, 28), children: [
+    Text(title, style: const TextStyle(fontSize: 27, fontWeight: FontWeight.w700, color: coffee)),
+    const SizedBox(height: 5),
+    Text(subtitle, style: const TextStyle(fontSize: 13, color: Colors.black54)),
+    const SizedBox(height: 18),
     ...children,
   ]));
 }
