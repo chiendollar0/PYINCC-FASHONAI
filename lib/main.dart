@@ -8,10 +8,10 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 void main() => runApp(const PyinccApp());
 
-const cream = Color(0xFFFFF9F6);
-const coffee = Color(0xFF422B37);
-const sand = Color(0xFFF1E3E7);
-const accent = Color(0xFFC65B82);
+const cream = Color(0xFFFAF7F1);
+const coffee = Color(0xFF42362F);
+const sand = Color(0xFFF0E9DD);
+const accent = Color(0xFFAA8563);
 
 class PyinccApp extends StatelessWidget {
   final bool requireAuthentication;
@@ -88,11 +88,7 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
             ar: false,
             loading: Loading.eager,
           )),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 10, 16, 18),
-            child: Text('Vuốt xoay 360° · Chụm phóng to. '
-              'Mesh quét tĩnh, chưa có Face Swap hay trang phục mesh riêng.',
-              textAlign: TextAlign.center)),
+
         ]);
       },
     )),
@@ -251,9 +247,7 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
             label: const Text('2. Face Swap lên avatar 3D'),
           ),
           const SizedBox(height: 8),
-          const Text('Chưa có kết quả Face Swap 3D. Ảnh trên là ảnh nguồn, '
-              'không phải khuôn mặt đã ánh xạ.',
-              style: TextStyle(fontSize: 12, color: Colors.black54)),
+    
         ]))),
       const SizedBox(height: 12),
       FilledButton.tonalIcon(
@@ -297,14 +291,11 @@ class StoreScreen extends StatelessWidget {
     title: 'Store',
     subtitle: 'Chọn trang phục thật để thử',
     children: [
-      const DemoNotice(),
-      const SizedBox(height: 16),
-      const PreviewPanel(
-        icon: Icons.shopping_bag_outlined,
-        title: 'Danh mục sản phẩm',
-        caption: 'Đang chờ nguồn dữ liệu sản phẩm và liên kết '
-          'Shopee / TikTok Shop được xác minh.',
-      ),
+      const Card(child: ListTile(
+        leading: Icon(Icons.link, color: accent),
+        title: Text('Nguồn sản phẩm'),
+        subtitle: Text('Shopee · Lazada · TikTok Shop'),
+      )), 
       const SizedBox(height: 16),
       OutlinedButton.icon(
         onPressed: onTryOn,
@@ -349,11 +340,9 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           label: const Text('Mở danh mục trang phục'),
         );
       case 'Shop':
-        return const Text('Trang phục đã chọn từ Store sẽ xuất hiện tại đây. '
-            'Chưa có dữ liệu sản phẩm đã xác minh.');
+        return const Center(child: Text('Chưa chọn sản phẩm'));
       case 'Big Bag':
-        return const Text('Kho ảnh trang phục cá nhân: chưa có pipeline '
-            'chuyển ảnh thành mesh quần áo 3D.');
+        return const Center(child: Text('Chưa có trang phục'));
       case 'Skin Care':
         return Column(children: [
           Row(children: [const SizedBox(width: 100, child: Text('Độ sáng')),
@@ -365,8 +354,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           Row(children: [const SizedBox(width: 100, child: Text('Son môi')),
             Expanded(child: Slider(value: _lip,
               onChanged: (v) => setState(() => _lip = v)))]),
-          const Text('Các thanh trượt chưa tác động lên vật liệu 3D.',
-            style: TextStyle(fontSize: 12, color: Colors.black54)),
+
         ]);
       default:
         return const SizedBox.shrink();
@@ -501,8 +489,11 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
         ChoiceChip(label: Text(x), selected: category == x,
           onSelected: (_) => setState(() => category = x))).toList()),
       const SizedBox(height: 16),
-      PreviewPanel(icon: Icons.inventory_2_outlined, title: 'Danh mục $category',
-        caption: 'Chưa có món đồ nào trong bản xem trước'),
+      Card(child: ListTile(
+        leading: const Icon(Icons.checkroom_outlined, color: accent),
+        title: Text(category),
+        subtitle: const Text('Chưa có trang phục'),
+      )),
       const SizedBox(height: 16),
       OutlinedButton.icon(onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Thêm ảnh trang phục sẽ được tích hợp ở bước xử lý ảnh cục bộ.'))),
@@ -522,7 +513,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) => SectionPage(
     title: 'Cá nhân', subtitle: 'Quyền riêng tư và dữ liệu',
     children: [
-      const DemoNotice(), const SizedBox(height: 14),
+
       const ListTile(leading: Icon(Icons.lock_outline), title: Text('Đăng nhập'),
         subtitle: Text('Firebase Authentication áp dụng cho bản production; bản debug dùng giao diện phát triển')),
       SwitchListTile(
