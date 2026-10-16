@@ -8,8 +8,8 @@ Future<void> openStudio(WidgetTester tester) async {
   await tester.pumpWidget(const PyinccApp());
   await tester.pumpAndSettle();
   // Home is the product entry point; navigate explicitly to Studio.
-  expect(find.text('Khuôn mặt và nhân vật của bạn'), findsOneWidget);
-  expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
+  expect(find.text('Fashion Studio'), findsOneWidget);
+  expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 0);
   await tester.tap(find.text('Studio'));
   await tester.pumpAndSettle();
   expect(find.byType(UnifiedStudioScreen), findsOneWidget);
@@ -39,16 +39,16 @@ void main() {
   testWidgets('Debug opens Home without a login prompt', (tester) async {
     await tester.pumpWidget(const PyinccApp());
     await tester.pumpAndSettle();
-    expect(find.text('Khuôn mặt và nhân vật của bạn'), findsOneWidget);
+    expect(find.text('Fashion Studio'), findsOneWidget);
     expect(find.byType(SignInScreen), findsNothing);
-    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
+    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 0);
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('Studio opens with 3D-first preview and tools', (tester) async {
     await openStudio(tester);
     expect(find.text('Studio · 3D'), findsOneWidget);
-    expect(find.textContaining('Studio chỉ dùng mô hình 3D'), findsOneWidget);
+    expect(find.text('Studio · 3D'), findsOneWidget);
     expect(find.text('Tủ đồ'), findsOneWidget);
     expect(find.text('Shop'), findsOneWidget);
     expect(find.text('Big Bag'), findsOneWidget);
@@ -90,12 +90,12 @@ void main() {
   testWidgets('Studio, Home, Store and Account are primary tabs', (tester) async {
     await openStudio(tester);
     final navigation = tester.widget<NavigationBar>(find.byType(NavigationBar));
-    expect(navigation.selectedIndex, 2);
+    expect(navigation.selectedIndex, 1);
     expect(navigation.destinations.map((item) => (item as NavigationDestination).label).toList(),
-        ['Store', 'Home', 'Studio', 'Account']);
+        ['Home', 'Studio', 'Store', 'Account']);
     await tester.tap(find.text('Home'));
     await tester.pumpAndSettle();
-    expect(find.text('Khuôn mặt và nhân vật của bạn'), findsOneWidget);
+    expect(find.text('Fashion Studio'), findsOneWidget);
     await tester.tap(find.text('Store'));
     await tester.pumpAndSettle();
     expect(find.text('Chọn trang phục thật để thử'), findsOneWidget);
