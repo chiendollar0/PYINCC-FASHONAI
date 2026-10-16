@@ -70,6 +70,21 @@ def prepare(root):
                 binary.extend(payload)
             elif image.get("mimeType") != "image/png":
                 raise RuntimeError(f"P0 FAIL: unsupported image type {image.get('mimeType')}")
+        # EXT_texture_webp stores its image index under extensions, not
+        # texture.source. Migrate references before dropping the extension.
+        for texture in doc["textures"]:
+            extensions = texture.get("extensions", {})
+            webp = extensions.pop("EXT_texture_webp", None)
+            if webp is not None:
+                source = webp.get("source")
+                if not isinstance(source, int) or not 0 <= source < len(images):
+                    raise RuntimeError(f"P0 FAIL: invalid WebP texture reference {source_name}")
+                texture["source"] = source
+            if not extensions:
+                texture.pop("extensions", None)
+            source = texture.get("source")
+            if not isinstance(source, int) or not 0 <= source < len(images):
+                raise RuntimeError(f"P0 FAIL: texture source unresolved {source_name}")
         doc["buffers"][0]["byteLength"] = len(binary)
         doc["extensionsRequired"] = [x for x in doc.get("extensionsRequired", []) if x != "EXT_texture_webp"]
         doc["extensionsUsed"] = [x for x in doc.get("extensionsUsed", []) if x != "EXT_texture_webp"]
@@ -82,6 +97,10 @@ def prepare(root):
         verify, _ = unpack(output.read_bytes())
         if verify["meshes"] != source_doc["meshes"] or verify.get("nodes") != source_doc.get("nodes") or verify.get("accessors") != source_doc.get("accessors"):
             raise RuntimeError(f"P0 FAIL: geometry changed {target}")
+        if any(t.get("source") is None or "EXT_texture_webp" in t.get("extensions", {}) for t in verify["textures"]):
+            raise RuntimeError(f"P0 FAIL: invalid PNG texture references {target}")
+        if "EXT_texture_webp" in verify.get("extensionsUsed", []) or "EXT_texture_webp" in verify.get("extensionsRequired", []):
+            raise RuntimeError(f"P0 FAIL: stale WebP extension {target}")
         if any(im.get("mimeType") != "image/png" for im in verify["images"]):
             raise RuntimeError(f"P0 FAIL: texture conversion {target}")
         print(f"ASSET_STRUCTURAL_PASS {target} bytes={output.stat().st_size} images={len(images)} sha256={hashlib.sha256(output.read_bytes()).hexdigest()}")
