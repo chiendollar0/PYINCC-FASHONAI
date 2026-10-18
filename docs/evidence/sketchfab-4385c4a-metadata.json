@@ -1,0 +1,34 @@
+{
+  "retrieved_at": "2026-10-18T17:49:00.445063+00:00",
+  "metadata_url": "https://api.sketchfab.com/v3/models/4385c4af843e43379df8b702d04634f9",
+  "source_short_url": "https://skfb.ly/6YvQ7",
+  "model": {
+    "uid": "4385c4af843e43379df8b702d04634f9",
+    "name": "Attractive woman in black bodysuit in A-pose 259",
+    "viewerUrl": "https://sketchfab.com/3d-models/attractive-woman-in-black-bodysuit-in-a-pose-259-4385c4af843e43379df8b702d04634f9",
+    "isDownloadable": false,
+    "downloadType": null,
+    "license": {
+      "uri": "https://api.sketchfab.com/v3/licenses/783b685da9bf457d81e829fa283f3567",
+      "label": "Standard",
+      "fullName": "Standard",
+      "requirements": "Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works",
+      "url": "https://sketchfab.com/licenses",
+      "slug": "st"
+    },
+    "vertexCount": 124866,
+    "faceCount": 249728,
+    "publishedAt": "2021-01-25T16:12:43.781771",
+    "updatedAt": "2022-07-15T17:13:00.583875"
+  },
+  "author": {
+    "uid": "ba2b53f9059244e3ab3a43595d4b1b0f",
+    "username": "deep3dstudio",
+    "displayName": "deep3dstudio",
+    "profileUrl": "https://sketchfab.com/deep3dstudio"
+  },
+  "fab_listing": "https://www.fab.com/listings/b6fe8d58-2c02-46d7-b2ff-0774ccab4fde",
+  "evidence_kind": "public_listing_metadata_only",
+  "license_grant_verified": false,
+  "asset_downloaded": false
+}

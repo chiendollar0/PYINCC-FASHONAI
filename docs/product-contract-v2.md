@@ -27,9 +27,10 @@ Consent -> face landmarks/segmentation -> face UV/texture mapping onto compatibl
 - https://github.com/google-ai-edge/mediapipe (face landmark research, check device and license)
 - https://github.com/blender/blender (offline garment modeling/UV/rig/export)
 
-**No verified free redistributable avatar + garment GLB pair with matching rig has yet been selected.** Verify license, skeleton, UV, pose, mesh separation, polygon count, and Android 10 6GB performance before importing.
+**No verified free redistributable avatar + garment GLB pair with matching rig has yet been selected.** The 18 October owner override selects one temporary Sketchfab candidate for technical UAT only; it does not approve final avatar quality, license entitlement, Face Swap or garment replacement. See `PROJECT_UI_P0_SOURCE_OF_TRUTH.md` and `config/avatar-asset.json`. Verify license, skeleton, UV, pose, mesh separation, polygon count, and Android 10 6GB performance before importing.
 
 ## Source cleanup / acceptance
 One shared StudioSession data model; avoid duplicate image pickers/state between Studio and 2D editor. Retain the working 2D editor as explicitly labeled fallback until 3D is verified. Remove dead demo screens and fake result UI, never remove consent/auth/privacy or tests. Acceptance requires real asset files, camera orbit, garment fit in A/T pose, complete unobstructed full-body view, offline fallback, session cleanup, CI and physical device evidence.
 
 Open questions: exact X/M/N form semantics; compatible redistributable GLB assets; face-to-avatar mapping accuracy; 2D garment-to-3D conversion; payment provider.
+

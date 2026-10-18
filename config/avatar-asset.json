@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "approval_status": "blocked",
+  "intended_use": "temporary_technical_uat_only",
+  "source_url": "https://skfb.ly/6YvQ7",
+  "model_uid": "4385c4af843e43379df8b702d04634f9",
+  "canonical_url": "https://sketchfab.com/3d-models/attractive-woman-in-black-bodysuit-in-a-pose-259-4385c4af843e43379df8b702d04634f9",
+  "author": "deep3dstudio",
+  "license": {
+    "id": "Standard",
+    "url": "https://sketchfab.com/licenses",
+    "note": "Public listing metadata is not proof of acquisition or permission to distribute this model."
+  },
+  "permissions": {
+    "download": false,
+    "commercial_use": false,
+    "app_distribution": false
+  },
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "evidence": {
+    "kind": "listing_metadata_only",
+    "path": "docs/evidence/sketchfab-4385c4a-metadata.json",
+    "sha256": null
+  },
+  "asset": {
+    "path": "assets/avatars/pyincc_avatar_primary.glb",
+    "bytes": null,
+    "sha256": null
+  },
+  "blocker": "Exact model identified. Public API isDownloadable=false; no acquired model file or reviewed license grant supplied. No substituted model or old-scan APK is authorized by this manifest."
+}

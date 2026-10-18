@@ -30,5 +30,16 @@ jobs:
         run: flutter analyze --no-fatal-infos
       - name: Run Flutter tests
         run: flutter test
+      - name: Require reviewed rights and sole approved GLB before simulator packaging
+        run: python3 scripts/avatar_gate.py --report build/evidence/avatar-gate-ios.json
+      - name: Preserve iOS asset gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fashionai-ios-asset-gate
+          path: build/evidence/avatar-gate-ios.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Check iOS simulator compilation (no signing)
         run: flutter build ios --simulator --no-codesign
+

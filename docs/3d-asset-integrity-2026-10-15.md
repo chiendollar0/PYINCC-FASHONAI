@@ -1,3 +1,13 @@
+# FashionAI asset identity — current gate and historical record
+
+## Current packaging authority (19 October 2026)
+
+`config/avatar-asset.json` is the current sole-asset identity/rights manifest. Status is BLOCKED: selected model has been identified, but there is no authorized GLB, license grant, asset byte count or SHA-256 to approve. The historical values below must not be used as current acceptance thresholds.
+
+Current acceptance requires exactly one approved primary, reviewed license-grant evidence, source hash/size validation, and an identical embedded GLB in the actual APK. Raw APK SHA-256 is recorded separately from GitHub artifact ZIP digest. Structural/packaging checks never imply visual or production PASS.
+
+## Historical record — superseded for current packaging
+
 # PYINCC FashionAI — 3D asset integrity manifest
 
 Verified from provided `PYINCC_FashionAI_3D_assets_ready.zip` on 2026-10-15.
@@ -18,3 +28,4 @@ Both files have a valid glTF binary header (`glTF`), version 2, and declared bin
 ## Ownership
 
 Engineering integration owns transferring the assets and CI validation. Do not ask the product owner to rename, upload, install SDKs, or debug build tools.
+

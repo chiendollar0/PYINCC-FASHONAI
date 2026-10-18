@@ -30,3 +30,11 @@ Current limitations: bundled scanned GLB is a renderer source, not evidence of s
 - Preserve existing GLB work and reference images; do not delete or claim avatar quality PASS.
 - Short URL could not be resolved or license verified in this session. Do not download, redistribute, bundle or publish the Sketchfab asset until the exact model, download permission and commercial/redistribution license are verified.
 - After obtaining an authorized GLB, bundle exactly one `assets/avatars/pyincc_avatar_primary.glb`; disable old scan regeneration and alternate-asset packaging. Validate geometry, texture, APK contents and physical Android render. Technical UAT is not final avatar acceptance.
+
+
+## Verified follow-up — 2026-10-19
+- The selected short URL now resolves to Sketchfab model UID `4385c4af843e43379df8b702d04634f9`, by `deep3dstudio`. Evidence: `docs/evidence/sketchfab-4385c4a-metadata.json`.
+- Live metadata reports `isDownloadable=false` and Standard license metadata. No acquired asset/license grant has been verified. Do not classify this candidate as a verified free redistributable download.
+- The sole-asset/rights contract is enforced by `scripts/avatar_gate.py` and `config/avatar-asset.json`. CI must not regenerate the old scan pair, package an alternate GLB or create a replacement avatar. Missing rights or exact approved asset blocks packaging.
+- Tests and source analysis may run while the asset is blocked. A successful test job does not unlock APK upload or physical Android acceptance.
+- Final skin/garment reconstruction remains deferred, not PASS. Temporary technical UAT, four-angle render and physical Android UAT remain separate unverified gates.

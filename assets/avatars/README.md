@@ -1,10 +1,7 @@
-# PYINCC scanned avatar assets
+# Sole approved FashionAI avatar
 
-Upload the two GLB files from the project asset bundle into this directory, keeping these exact names:
+Only `pyincc_avatar_primary.glb` may be packaged after rights review and exact byte/hash validation. The temporary candidate is pinned in `config/avatar-asset.json`; it is currently BLOCKED, with no authorized GLB imported.
 
-- `pyincc_avatar_primary.glb` (5,152,656 bytes)
-- `pyincc_avatar_alternate.glb` (4,672,404 bytes)
+Do not upload the historical scan pair or regenerate them here. They remain preserved at repository root. Engineering owns importing the authorized asset and recording its reviewed license evidence; the product owner does not need to rename files or debug build tools.
 
-GitHub supports files of these sizes in a normal repository; Git LFS is not necessary. For browser upload, open this folder on GitHub, select **Add file → Upload files**, select each extracted .glb, then commit. Do not upload the ZIP without extracting it: Flutter expects the individual .glb files.
-
-After upload, verify the file sizes in GitHub and trigger Android CI. The viewer loads assets locally. Face Swap and modular clothing are not implemented.
+The build gate enforces inventory, source identity, embedded texture structure and SHA-256. It does not verify final skin/garments, Face Swap, rendering or physical Android UAT.

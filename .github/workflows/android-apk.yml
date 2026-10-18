@@ -6,6 +6,33 @@ on:
   workflow_dispatch:
 
 jobs:
+  gate-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Test asset rights and actual APK integrity gates
+        run: python3 -m unittest discover -s tests -v
+
+  asset-gate:
+    needs: gate-tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Require reviewed rights and exactly one approved GLB
+        run: python3 scripts/avatar_gate.py --report build/evidence/avatar-gate.json
+      - name: Preserve asset gate evidence including BLOCKED reasons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fashionai-asset-gate
+          path: build/evidence/avatar-gate.json
+          if-no-files-found: error
+          retention-days: 14
+
   validate:
     runs-on: ubuntu-latest
     permissions:
@@ -20,14 +47,6 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Prepare GLB mesh UV and preserve embedded textures (fail closed)
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install 'Pillow>=10,<13'
-          python scripts/prepare_avatar_assets.py
-          test -s assets/avatars/pyincc_avatar_primary.glb
-          test -s assets/avatars/pyincc_avatar_alternate.glb
       - name: Generate Android scaffold without overwriting app dependencies
         shell: bash
         run: |
@@ -82,7 +101,7 @@ jobs:
         run: bash ./gradlew :app:compileDebugKotlin --stacktrace
 
   build:
-    needs: validate
+    needs: [validate, asset-gate]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -96,14 +115,8 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Prepare GLB mesh UV and preserve embedded textures (fail closed)
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install 'Pillow>=10,<13'
-          python scripts/prepare_avatar_assets.py
-          test -s assets/avatars/pyincc_avatar_primary.glb
-          test -s assets/avatars/pyincc_avatar_alternate.glb
+      - name: Recheck approved asset without regenerating old scans
+        run: python3 scripts/avatar_gate.py --report build/evidence/avatar-source.json
       - name: Generate Android scaffold without overwriting app dependencies
         shell: bash
         run: |
@@ -133,23 +146,41 @@ jobs:
         run: flutter pub get
       - name: Build debug APK only after tests pass
         run: flutter build apk --debug
-      - name: Verify GLBs embedded in APK
+      - name: Verify exact GLB bytes inside actual APK and record raw APK hash
+        run: python3 scripts/avatar_gate.py --apk build/app/outputs/flutter-apk/app-debug.apk --report build/evidence/apk-integrity.json
+      - name: Verify Android package identity and signature
         shell: bash
         run: |
-          python - <<'PY'
-          from zipfile import ZipFile
-          p = 'build/app/outputs/flutter-apk/app-debug.apk'
-          with ZipFile(p) as z:
-              names = set(z.namelist())
-              for f in ['pyincc_avatar_primary.glb', 'pyincc_avatar_alternate.glb']:
-                  key = 'assets/flutter_assets/assets/avatars/' + f
-                  if key not in names or z.getinfo(key).file_size < 100000:
-                      raise SystemExit('APK_ASSET_FAIL: ' + key)
-                  print('APK_ASSET_PASS', key, z.getinfo(key).file_size)
+          set -euo pipefail
+          FASHION_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          test -n "$FASHION_SDK"
+          FASHION_APKSIGNER="$(find "$FASHION_SDK/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          FASHION_ANALYZER="$(find "$FASHION_SDK/cmdline-tools" -type f -name apkanalyzer | sort -V | tail -n 1)"
+          test -x "$FASHION_APKSIGNER"
+          test -x "$FASHION_ANALYZER"
+          "$FASHION_APKSIGNER" verify --verbose --print-certs build/app/outputs/flutter-apk/app-debug.apk > build/evidence/apk-signature.txt
+          "$FASHION_ANALYZER" apk summary build/app/outputs/flutter-apk/app-debug.apk > build/evidence/apk-identity.txt
+          "$FASHION_ANALYZER" manifest min-sdk build/app/outputs/flutter-apk/app-debug.apk > build/evidence/apk-min-sdk.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          summary = Path('build/evidence/apk-identity.txt').read_text().split()
+          if not summary or summary[0] != 'com.pyincc.fashionai':
+              raise SystemExit('APK_IDENTITY_FAIL: package is not FashionAI')
+          if Path('build/evidence/apk-min-sdk.txt').read_text().strip() != '26':
+              raise SystemExit('APK_IDENTITY_FAIL: min SDK must be 26')
           PY
+      - name: Upload build identity and integrity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fashionai-build-evidence
+          path: build/evidence/
+          if-no-files-found: error
+          retention-days: 14
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: pyincc-fashionai-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
+
