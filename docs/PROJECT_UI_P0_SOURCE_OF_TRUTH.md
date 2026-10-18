@@ -24,3 +24,9 @@ Document precedence (do not reinterpret from CI or screenshots):
 5. Record regressions and fixes; do not invent extra scope or ask the owner to repeat established constraints.
 
 Current limitations: bundled scanned GLB is a renderer source, not evidence of successful Face Swap or separate 3D garment rigging. Existing debug builds are not production approvals.
+
+## Temporary avatar override — 2026-10-18
+- Owner authorized deferring final GLB mesh recreation and requested using https://skfb.ly/6YvQ7 as the sole temporary model for P0 technical UAT.
+- Preserve existing GLB work and reference images; do not delete or claim avatar quality PASS.
+- Short URL could not be resolved or license verified in this session. Do not download, redistribute, bundle or publish the Sketchfab asset until the exact model, download permission and commercial/redistribution license are verified.
+- After obtaining an authorized GLB, bundle exactly one `assets/avatars/pyincc_avatar_primary.glb`; disable old scan regeneration and alternate-asset packaging. Validate geometry, texture, APK contents and physical Android render. Technical UAT is not final avatar acceptance.
