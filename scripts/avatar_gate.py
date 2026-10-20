@@ -17,7 +17,7 @@ import sys
 from urllib.parse import urlparse
 from zipfile import BadZipFile, ZipFile
 
-MODEL_UID = '4385c4af843e43379df8b702d04634f9'
+MODEL_UID = '5e0c47f7f7fe453bb4d3c8c7eba356e8'
 PRIMARY = 'assets/avatars/pyincc_avatar_primary.glb'
 APK_KEY = 'assets/flutter_assets/' + PRIMARY
 MANIFEST = 'config/avatar-asset.json'
@@ -158,7 +158,7 @@ def validate_assets(root):
         m = json.loads(manifest_path.read_text(encoding='utf-8'))
         require(m.get('schema_version') == 1, 'unsupported manifest schema')
         require(m.get('approval_status') == 'verified', 'rights review pending: authorized model/GLB required')
-        require(m.get('model_uid') == MODEL_UID, 'model differs from owner-selected temporary candidate')
+        require(m.get('model_uid') == MODEL_UID, 'model differs from owner-selected Gracy Lee avatar')
         canonical = m.get('canonical_url')
         require(secure_url(canonical) and urlparse(canonical).hostname == 'sketchfab.com' and
                 urlparse(canonical).path.startswith('/3d-models/') and
