@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "approval_status": "blocked",
-  "intended_use": "owner_selected_gracy_lee_pending_asset_validation",
+  "intended_use": "owner_authorized_temporary_technical_uat_gracy_lee",
   "source_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
   "model_uid": "5e0c47f7f7fe453bb4d3c8c7eba356e8",
   "canonical_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
   "author": "hong227",
   "license": {
-    "id": "CC-BY-4.0-REPORTED-NOT-INDEPENDENTLY_VERIFIED",
+    "id": "CC-BY-4.0-GLB-METADATA",
     "url": "https://creativecommons.org/licenses/by/4.0/",
-    "note": "Historical project report only; exact asset license and attribution must be independently verified before approval."
+    "note": "License and attribution recorded in uploaded Gracy Lee GLB metadata. Independent source-page and distribution-rights review still pending."
   },
   "permissions": {
     "download": false,
@@ -19,14 +19,14 @@
   "reviewed_by": null,
   "reviewed_at": null,
   "evidence": {
-    "kind": "listing_metadata_only",
+    "kind": "uploaded_glb_metadata",
     "path": "docs/evidence/sketchfab-4385c4a-metadata.json",
     "sha256": null
   },
   "asset": {
     "path": "assets/avatars/pyincc_avatar_primary.glb",
-    "bytes": null,
-    "sha256": null
+    "bytes": 3291488,
+    "sha256": "cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc"
   },
-  "blocker": "Gracy Lee selected by owner. Actual licensed GLB, source provenance, exact SHA256, attribution and visual/device UAT remain unverified. No alternate model permitted."
+  "blocker": "Gracy Lee GLB uploaded and SHA256 locally verified. Repository binary not yet committed; license evidence and Android UAT still pending. AIPET is prohibited from FashionAI repository."
 }
