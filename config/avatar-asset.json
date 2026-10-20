@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "approval_status": "blocked",
-  "intended_use": "temporary_technical_uat_only",
-  "source_url": "https://skfb.ly/6YvQ7",
-  "model_uid": "4385c4af843e43379df8b702d04634f9",
-  "canonical_url": "https://sketchfab.com/3d-models/attractive-woman-in-black-bodysuit-in-a-pose-259-4385c4af843e43379df8b702d04634f9",
-  "author": "deep3dstudio",
+  "intended_use": "owner_selected_gracy_lee_pending_asset_validation",
+  "source_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "model_uid": "5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "canonical_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "author": "hong227",
   "license": {
-    "id": "Standard",
-    "url": "https://sketchfab.com/licenses",
-    "note": "Public listing metadata is not proof of acquisition or permission to distribute this model."
+    "id": "CC-BY-4.0-REPORTED-NOT-INDEPENDENTLY_VERIFIED",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "note": "Historical project report only; exact asset license and attribution must be independently verified before approval."
   },
   "permissions": {
     "download": false,
@@ -28,5 +28,5 @@
     "bytes": null,
     "sha256": null
   },
-  "blocker": "Exact model identified. Public API isDownloadable=false; no acquired model file or reviewed license grant supplied. No substituted model or old-scan APK is authorized by this manifest."
+  "blocker": "Gracy Lee selected by owner. Actual licensed GLB, source provenance, exact SHA256, attribution and visual/device UAT remain unverified. No alternate model permitted."
 }
