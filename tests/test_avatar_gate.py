@@ -16,7 +16,7 @@ try:
 except ImportError:
     gate = None
 
-UID = '4385c4af843e43379df8b702d04634f9'
+UID = '5e0c47f7f7fe453bb4d3c8c7eba356e8'
 PRIMARY = 'assets/avatars/pyincc_avatar_primary.glb'
 APK_KEY = 'assets/flutter_assets/' + PRIMARY
 
@@ -119,6 +119,12 @@ class AvatarGateTests(unittest.TestCase):
 
     def test_different_model_cannot_replace_owner_selection(self):
         self.manifest['model_uid'] = '0' * 32
+        self.write_manifest()
+        with self.rejected('model'):
+            gate.validate_assets(self.root)
+
+    def test_previous_temporary_model_is_rejected(self):
+        self.manifest['model_uid'] = '4385c4af843e43379df8b702d04634f9'
         self.write_manifest()
         with self.rejected('model'):
             gate.validate_assets(self.root)
