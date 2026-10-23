@@ -1,0 +1,47 @@
+{
+  "kind": "license_grant",
+  "review_scope": "Automated source/license review for temporary technical UAT APK redistribution; not a legal warranty or physical-device acceptance.",
+  "reviewed_by": "OpenAI Codex — automated evidence review",
+  "reviewed_at": "2026-10-23T05:40:13.838428+00:00",
+  "model_uid": "5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "title": "Gracy Lee",
+  "author": "hong227",
+  "source_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "legalcode_url": "https://creativecommons.org/licenses/by/4.0/legalcode.en"
+  },
+  "public_source_snapshot": {
+    "path": "docs/evidence/gracy-lee-sketchfab-api.json",
+    "sha256": "71658cc2df9c3da695e600b77e058b7d9ccdc6039c9b4e7eee03178fc529cebd",
+    "retrieved_at": "2026-10-23T05:36:57.198365+00:00",
+    "http_status": 200
+  },
+  "checks": {
+    "source_uid_author_license_matches_glb_extras": true,
+    "source_downloadable": true,
+    "license_allows_commercial_use": true,
+    "license_allows_redistribution_with_attribution": true,
+    "supplied_glb_bytes_unchanged": true
+  },
+  "embedded_provenance": {
+    "author": "hong227 (https://sketchfab.com/hong227)",
+    "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+    "source": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
+    "title": "Gracy Lee"
+  },
+  "asset": {
+    "path": "assets/avatars/pyincc_avatar_primary.glb",
+    "bytes": 3291488,
+    "sha256": "cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc"
+  },
+  "attribution": {
+    "path": "assets/avatars/GRACY_LEE_ATTRIBUTION.txt",
+    "sha256": "592dd40ce1f5113e73e2f0670adaa54cd9656d9c47298725e7a2642b41961fd1"
+  },
+  "limitations": [
+    "Supplied GLB was not independently downloaded again from Sketchfab; origin linkage is embedded provenance matching fresh public listing metadata.",
+    "No claim about third-party publicity/privacy rights, visual quality, Android runtime or production acceptance."
+  ]
+}

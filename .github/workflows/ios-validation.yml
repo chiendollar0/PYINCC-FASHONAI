@@ -29,7 +29,7 @@ jobs:
       - name: Analyze Flutter sources
         run: flutter analyze --no-fatal-infos
       - name: Run Flutter tests
-        run: flutter test
+        run: flutter test --dart-define=PYINCC_WIDGET_TEST=true
       - name: Require reviewed rights and sole approved GLB before simulator packaging
         run: python3 scripts/avatar_gate.py --report build/evidence/avatar-gate-ios.json
       - name: Preserve iOS asset gate evidence
@@ -42,4 +42,5 @@ jobs:
           retention-days: 14
       - name: Check iOS simulator compilation (no signing)
         run: flutter build ios --simulator --no-codesign
+
 

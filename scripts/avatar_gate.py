@@ -17,10 +17,12 @@ import sys
 from urllib.parse import urlparse
 from zipfile import BadZipFile, ZipFile
 
-MODEL_UID = '4385c4af843e43379df8b702d04634f9'
+MODEL_UID = '5e0c47f7f7fe453bb4d3c8c7eba356e8'
 PRIMARY = 'assets/avatars/pyincc_avatar_primary.glb'
 APK_KEY = 'assets/flutter_assets/' + PRIMARY
 MANIFEST = 'config/avatar-asset.json'
+ATTRIBUTION = 'assets/avatars/GRACY_LEE_ATTRIBUTION.txt'
+MAX_ATTRIBUTION_BYTES = 64 * 1024
 MAX_ASSET_BYTES = 128 * 1024 * 1024
 
 
@@ -177,6 +179,13 @@ def validate_assets(root):
         proof = repo_file(root, evidence.get('path'), 'evidence')
         require(re.fullmatch(r'[0-9a-f]{64}', evidence.get('sha256', '')) and
                 digest_file(proof) == evidence['sha256'], 'evidence hash mismatch')
+        credit = m.get('attribution', {})
+        require(credit.get('path') == ATTRIBUTION, 'attribution path must match bundled credit')
+        credit_file = repo_file(root, ATTRIBUTION, 'attribution')
+        credit_size = credit_file.stat().st_size
+        require(0 < credit_size <= MAX_ATTRIBUTION_BYTES, 'attribution size invalid')
+        require(re.fullmatch(r'[0-9a-f]{64}', credit.get('sha256', '')) and
+                digest_file(credit_file) == credit['sha256'], 'attribution hash mismatch')
         expected = m.get('asset', {})
         require(expected.get('path') == PRIMARY, 'asset path must match sole approved primary')
         inventory = sorted(p.relative_to(root).as_posix() for p in (root / 'assets/avatars').rglob('*')
@@ -193,6 +202,7 @@ def validate_assets(root):
                 'manifest_sha256': digest_file(manifest_path),
                 'asset': {'path': PRIMARY, 'bytes': asset.stat().st_size, 'sha256': sha},
                 'structure': structure, 'rights_review_recorded': True,
+                'attribution': {'path': ATTRIBUTION, 'bytes': credit_size, 'sha256': credit['sha256']},
                 'visual_verified': False, 'physical_android_verified': False, 'production_verified': False}
     except GateError:
         raise
@@ -219,6 +229,15 @@ def verify_apk(root, apk):
                     h.update(chunk)
             require(actual_size == evidence['asset']['bytes'] and h.hexdigest() == evidence['asset']['sha256'],
                     'packaged asset hash mismatch')
+            credit_key = 'assets/flutter_assets/' + ATTRIBUTION
+            require(credit_key in names, 'APK attribution missing')
+            credit_info = z.getinfo(credit_key)
+            require(credit_info.file_size == evidence['attribution']['bytes'], 'APK attribution size mismatch')
+            with z.open(credit_key) as f:
+                credit_data = f.read(MAX_ATTRIBUTION_BYTES + 1)
+            require(len(credit_data) == evidence['attribution']['bytes'] and
+                    hashlib.sha256(credit_data).hexdigest() == evidence['attribution']['sha256'],
+                    'APK attribution hash mismatch')
         evidence.update(status='VERIFIED_PACKAGING_ONLY',
                         apk={'path': apk.name, 'bytes': apk.stat().st_size, 'sha256': digest_file(apk)},
                         packaged_asset={'path': APK_KEY, 'bytes': actual_size, 'sha256': h.hexdigest()})
@@ -254,3 +273,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
