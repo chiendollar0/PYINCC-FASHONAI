@@ -28,5 +28,9 @@
     "bytes": 3291488,
     "sha256": "cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc"
   },
-  "blocker": "Temporary technical UAT only. Must not be interpreted as production avatar acceptance; physical Android visual UAT remains pending."
+  "blocker": "Temporary technical UAT only. Must not be interpreted as production avatar acceptance; physical Android visual UAT remains pending.",
+  "attribution": {
+    "path": "assets/avatars/GRACY_LEE_ATTRIBUTION.txt",
+    "sha256": "592dd40ce1f5113e73e2f0670adaa54cd9656d9c47298725e7a2642b41961fd1"
+  }
 }
