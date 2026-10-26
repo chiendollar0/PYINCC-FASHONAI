@@ -3,6 +3,8 @@ name: Test Debug and Build Android APK
 on:
   push:
     branches: [main, fix/fashionai-gracy-asset-gate-20261020]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
