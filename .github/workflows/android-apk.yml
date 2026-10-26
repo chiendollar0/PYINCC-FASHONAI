@@ -1,8 +1,10 @@
 name: Test Debug and Build Android APK
 
 on:
+  pull_request:
+    branches: [fashionai/gracy-20261023]
   push:
-    branches: [main, fashionai/gracy-20261023]
+    branches: [main, fashionai/gracy-20261023, fix/gracy-attribution-widget-test]
   workflow_dispatch:
 
 jobs:
