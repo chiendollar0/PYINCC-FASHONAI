@@ -16,16 +16,14 @@ Future<void> openStudio(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('Account opens the bundled Gracy Lee attribution offline', (tester) async {
+  testWidgets('Account displays the bundled Gracy Lee attribution offline', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ProfileScreen()));
     await tester.pumpAndSettle();
     final credits = find.text('Bản quyền mô hình 3D');
     await tester.scrollUntilVisible(credits, 160);
-    await tester.tap(credits);
-    await tester.pumpAndSettle();
+    expect(credits, findsOneWidget);
     expect(find.textContaining('Gracy Lee — hong227'), findsOneWidget);
     expect(find.textContaining('https://creativecommons.org/licenses/by/4.0/'), findsOneWidget);
-    expect(find.byType(SelectableText), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

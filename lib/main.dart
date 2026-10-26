@@ -544,6 +544,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         subtitle: Text('Ảnh cá nhân không được tự động tải lên Cloud')),
       const ListTile(leading: Icon(Icons.favorite_border), title: Text('Dream Wardrobe'),
         subtitle: Text('Danh sách yêu thích · Chưa triển khai lưu dữ liệu')),
+      const ListTile(
+        leading: Icon(Icons.copyright_outlined),
+        title: Text('Bản quyền mô hình 3D'),
+        subtitle: Text(
+          'Gracy Lee — hong227\n'
+          'Nguồn: https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8\n'
+          'Giấy phép: Creative Commons Attribution 4.0 International (CC BY 4.0)\n'
+          'https://creativecommons.org/licenses/by/4.0/',
+        ),
+        isThreeLine: true,
+      ),
     ],
   );
 }
