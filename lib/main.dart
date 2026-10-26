@@ -548,9 +548,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: Icon(Icons.copyright_outlined),
         title: Text('Bản quyền mô hình 3D'),
         subtitle: Text(
-          'Gracy Lee — hong227\\n'
-          'Nguồn: https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8\\n'
-          'Giấy phép: Creative Commons Attribution 4.0 International (CC BY 4.0)\\n'
+          'Gracy Lee — hong227\n'
+          'Nguồn: https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8\n'
+          'Giấy phép: Creative Commons Attribution 4.0 International (CC BY 4.0)\n'
           'https://creativecommons.org/licenses/by/4.0/',
         ),
         isThreeLine: true,
