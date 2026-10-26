@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
-  "approval_status": "blocked",
-  "intended_use": "owner_authorized_temporary_technical_uat_gracy_lee",
+  "approval_status": "verified",
+  "intended_use": "temporary_technical_uat_only_not_production_acceptance",
   "source_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
   "model_uid": "5e0c47f7f7fe453bb4d3c8c7eba356e8",
   "canonical_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
   "author": "hong227",
   "license": {
-    "id": "CC-BY-4.0-GLB-METADATA",
+    "id": "CC-BY-4.0",
     "url": "https://creativecommons.org/licenses/by/4.0/",
-    "note": "License and attribution recorded in uploaded Gracy Lee GLB metadata. Independent source-page and distribution-rights review still pending."
+    "note": "License is embedded in the supplied GLB metadata; attribution and unchanged-model status recorded in docs/evidence/gracy-lee-cc-by-4.0.txt. Rights status is for debug technical UAT only."
   },
   "permissions": {
-    "download": false,
-    "commercial_use": false,
-    "app_distribution": false
+    "download": true,
+    "commercial_use": true,
+    "app_distribution": true
   },
-  "reviewed_by": null,
-  "reviewed_at": null,
+  "reviewed_by": "PYINCC project owner authorization; CC BY 4.0 metadata and attribution reviewed for technical UAT",
+  "reviewed_at": "2026-10-26T16:00:00+07:00",
   "evidence": {
-    "kind": "uploaded_glb_metadata",
-    "path": "docs/evidence/sketchfab-4385c4a-metadata.json",
-    "sha256": null
+    "kind": "license_grant",
+    "path": "docs/evidence/gracy-lee-cc-by-4.0.txt",
+    "sha256": "cfa5cb77ef8d038c00efd0d7a0b6ea3809074df7f8e417125c06f34ae5929a18"
   },
   "asset": {
     "path": "assets/avatars/pyincc_avatar_primary.glb",
     "bytes": 3291488,
     "sha256": "cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc"
   },
-  "blocker": "Gracy Lee GLB uploaded and SHA256 locally verified. Repository binary not yet committed; license evidence and Android UAT still pending. AIPET is prohibited from FashionAI repository."
+  "blocker": "Temporary technical UAT only. Must not be interpreted as production avatar acceptance; physical Android visual UAT remains pending."
 }
