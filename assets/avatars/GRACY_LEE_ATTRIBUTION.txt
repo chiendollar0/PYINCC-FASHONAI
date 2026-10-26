@@ -1,0 +1,9 @@
+Gracy Lee — hong227
+Source: https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8
+Author: https://sketchfab.com/hong227
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+
+Copyright remains with the original rights holders. No endorsement is implied.
+Changes by PYINCC FashionAI: renamed the supplied GLB to pyincc_avatar_primary.glb; model bytes unchanged. Embedded source metadata retained.
+This model is supplied under CC BY 4.0. Recipients may use and redistribute it under that license, including commercial use, with attribution. No additional restrictions are imposed on this asset.
