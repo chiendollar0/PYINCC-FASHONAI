@@ -1,0 +1,18 @@
+PYINCC FashionAI — third-party asset license evidence
+
+Asset: Gracy Lee (unmodified Sketchfab GLB)
+Creator attribution: hong227 (https://sketchfab.com/hong227)
+Canonical model page: https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8
+Source archive supplied by project owner: https://drive.google.com/file/d/14A5sSxNTRgyK7MdlykIRen9OtwXLVOdF/view
+License declared inside GLB metadata: Creative Commons Attribution 4.0 International (CC BY 4.0)
+License text: https://creativecommons.org/licenses/by/4.0/
+
+Scope and conditions:
+- The model's embedded asset.extras metadata identifies the title, creator, source URL and CC-BY-4.0 license.
+- CC BY 4.0 permits sharing and adaptation, including commercial use, provided appropriate attribution, a license link, and indication of changes are supplied. The GLB is used unmodified in this technical UAT build.
+- The app/repository must preserve this attribution notice. If the model is changed later, the change must be stated.
+- Project owner authorized using the owner-supplied file for FashionAI technical UAT on 2026-10-26. This does not certify avatar visual quality or production acceptance.
+- Build gate approval here records the license and attribution basis for packaging a debug UAT APK; it is not a claim of legal advice or a production-quality approval.
+
+Pinned source archive: 2,934,844 bytes; SHA-256 ce4e222ae6f759f99ab3d0a0b5211033aa0f1d479c037adcb1f6428364611677
+Pinned GLB: 3,291,488 bytes; SHA-256 cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc

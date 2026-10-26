@@ -544,6 +544,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
         subtitle: Text('Ảnh cá nhân không được tự động tải lên Cloud')),
       const ListTile(leading: Icon(Icons.favorite_border), title: Text('Dream Wardrobe'),
         subtitle: Text('Danh sách yêu thích · Chưa triển khai lưu dữ liệu')),
+      ListTile(
+        leading: const Icon(Icons.copyright_outlined),
+        title: const Text('Bản quyền mô hình 3D'),
+        subtitle: const Text('Gracy Lee · hong227 · CC BY 4.0'),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const ModelCreditsScreen(),
+        )),
+      ),
     ],
+  );
+}
+
+/// Offline attribution for the bundled temporary Gracy Lee technical-UAT model.
+class ModelCreditsScreen extends StatelessWidget {
+  const ModelCreditsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Bản quyền mô hình 3D')),
+    body: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: FutureBuilder<String>(
+          future: rootBundle.loadString('assets/avatars/GRACY_LEE_ATTRIBUTION.txt'),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError || !snapshot.hasData) {
+              return const Text(
+                'Không thể đọc thông tin ghi công đi kèm mô hình. '
+                'Không nên phân phối mô hình khi chưa khôi phục được thông tin này.',
+              );
+            }
+            return SingleChildScrollView(
+              child: SelectableText(
+                snapshot.data!,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            );
+          },
+        ),
+      ),
+    ),
   );
 }

@@ -1,32 +1,36 @@
 {
   "schema_version": 1,
-  "approval_status": "blocked",
-  "intended_use": "temporary_technical_uat_only",
-  "source_url": "https://skfb.ly/6YvQ7",
-  "model_uid": "4385c4af843e43379df8b702d04634f9",
-  "canonical_url": "https://sketchfab.com/3d-models/attractive-woman-in-black-bodysuit-in-a-pose-259-4385c4af843e43379df8b702d04634f9",
-  "author": "deep3dstudio",
+  "approval_status": "verified",
+  "intended_use": "temporary_technical_uat_only_not_production_acceptance",
+  "source_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "model_uid": "5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "canonical_url": "https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8",
+  "author": "hong227",
   "license": {
-    "id": "Standard",
-    "url": "https://sketchfab.com/licenses",
-    "note": "Public listing metadata is not proof of acquisition or permission to distribute this model."
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "note": "License is embedded in the supplied GLB metadata; attribution and unchanged-model status recorded in docs/evidence/gracy-lee-cc-by-4.0.txt. Rights status is for debug technical UAT only."
   },
   "permissions": {
-    "download": false,
-    "commercial_use": false,
-    "app_distribution": false
+    "download": true,
+    "commercial_use": true,
+    "app_distribution": true
   },
-  "reviewed_by": null,
-  "reviewed_at": null,
+  "reviewed_by": "PYINCC project owner authorization; CC BY 4.0 metadata and attribution reviewed for technical UAT",
+  "reviewed_at": "2026-10-26T16:00:00+07:00",
   "evidence": {
-    "kind": "listing_metadata_only",
-    "path": "docs/evidence/sketchfab-4385c4a-metadata.json",
-    "sha256": null
+    "kind": "license_grant",
+    "path": "docs/evidence/gracy-lee-cc-by-4.0.txt",
+    "sha256": "cfa5cb77ef8d038c00efd0d7a0b6ea3809074df7f8e417125c06f34ae5929a18"
   },
   "asset": {
     "path": "assets/avatars/pyincc_avatar_primary.glb",
-    "bytes": null,
-    "sha256": null
+    "bytes": 3291488,
+    "sha256": "cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc"
   },
-  "blocker": "Exact model identified. Public API isDownloadable=false; no acquired model file or reviewed license grant supplied. No substituted model or old-scan APK is authorized by this manifest."
+  "blocker": "Temporary technical UAT only. Must not be interpreted as production avatar acceptance; physical Android visual UAT remains pending.",
+  "attribution": {
+    "path": "assets/avatars/GRACY_LEE_ATTRIBUTION.txt",
+    "sha256": "592dd40ce1f5113e73e2f0670adaa54cd9656d9c47298725e7a2642b41961fd1"
+  }
 }

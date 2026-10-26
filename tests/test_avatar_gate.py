@@ -16,7 +16,7 @@ try:
 except ImportError:
     gate = None
 
-UID = '4385c4af843e43379df8b702d04634f9'
+UID = '5e0c47f7f7fe453bb4d3c8c7eba356e8'
 PRIMARY = 'assets/avatars/pyincc_avatar_primary.glb'
 APK_KEY = 'assets/flutter_assets/' + PRIMARY
 
@@ -58,6 +58,8 @@ class AvatarGateTests(unittest.TestCase):
         evidence = self.root / 'docs/evidence/unit-test-rights.txt'
         evidence.parent.mkdir(parents=True)
         evidence.write_text('UNIT TEST FIXTURE ONLY. This is not a real asset license.')
+        credit = self.root / 'assets/avatars/GRACY_LEE_ATTRIBUTION.txt'
+        credit.write_text('UNIT TEST attribution; not a real license.')
         self.manifest = {'schema_version': 1, 'approval_status': 'verified',
                          'model_uid': UID, 'source_url': 'https://skfb.ly/6YvQ7',
                          'canonical_url': 'https://sketchfab.com/3d-models/test-fixture-' + UID,
@@ -66,6 +68,7 @@ class AvatarGateTests(unittest.TestCase):
                          'permissions': {'download': True, 'commercial_use': True, 'app_distribution': True},
                          'reviewed_by': 'UNIT TEST', 'reviewed_at': '2026-10-19T00:00:00+07:00',
                          'evidence': {'kind': 'license_grant', 'path': 'docs/evidence/unit-test-rights.txt', 'sha256': hashlib.sha256(evidence.read_bytes()).hexdigest()},
+                         'attribution': {'path': 'assets/avatars/GRACY_LEE_ATTRIBUTION.txt', 'sha256': hashlib.sha256(credit.read_bytes()).hexdigest()},
                          'asset': {'path': PRIMARY, 'bytes': self.asset.stat().st_size, 'sha256': hashlib.sha256(self.asset.read_bytes()).hexdigest()}}
         self.write_manifest()
 
@@ -85,7 +88,12 @@ class AvatarGateTests(unittest.TestCase):
     def apk(self, entries=None):
         p = self.root / 'unit-test.apk'
         with ZipFile(p, 'w') as z:
-            for name, data in entries or [(APK_KEY, self.asset.read_bytes())]:
+            default_entries = [
+                (APK_KEY, self.asset.read_bytes()),
+                ('assets/flutter_assets/assets/avatars/GRACY_LEE_ATTRIBUTION.txt',
+                 (self.root / 'assets/avatars/GRACY_LEE_ATTRIBUTION.txt').read_bytes()),
+            ]
+            for name, data in entries or default_entries:
                 z.writestr(name, data)
         return p
 
@@ -93,6 +101,30 @@ class AvatarGateTests(unittest.TestCase):
         d = gate.validate_assets(self.root)
         self.assertEqual(d['asset']['sha256'], hashlib.sha256(self.asset.read_bytes()).hexdigest())
         self.assertFalse(d['production_verified'])
+
+    def test_missing_attribution_blocks(self):
+        self.manifest.pop('attribution')
+        self.write_manifest()
+        with self.rejected('attribution'):
+            gate.validate_assets(self.root)
+
+    def test_changed_attribution_blocks(self):
+        (self.root / 'assets/avatars/GRACY_LEE_ATTRIBUTION.txt').write_text('changed')
+        with self.rejected('attribution'):
+            gate.validate_assets(self.root)
+
+    def test_missing_apk_attribution_blocks(self):
+        p = self.apk([(APK_KEY, self.asset.read_bytes())])
+        with self.rejected('attribution'):
+            gate.verify_apk(self.root, p)
+
+    def test_altered_apk_attribution_blocks(self):
+        p = self.apk([
+            (APK_KEY, self.asset.read_bytes()),
+            ('assets/flutter_assets/assets/avatars/GRACY_LEE_ATTRIBUTION.txt', b'changed'),
+        ])
+        with self.rejected('attribution'):
+            gate.verify_apk(self.root, p)
 
     def test_missing_manifest_blocks(self):
         (self.root / 'config/avatar-asset.json').unlink()
@@ -119,6 +151,12 @@ class AvatarGateTests(unittest.TestCase):
 
     def test_different_model_cannot_replace_owner_selection(self):
         self.manifest['model_uid'] = '0' * 32
+        self.write_manifest()
+        with self.rejected('model'):
+            gate.validate_assets(self.root)
+
+    def test_previous_temporary_model_is_rejected(self):
+        self.manifest['model_uid'] = '4385c4af843e43379df8b702d04634f9'
         self.write_manifest()
         with self.rejected('model'):
             gate.validate_assets(self.root)

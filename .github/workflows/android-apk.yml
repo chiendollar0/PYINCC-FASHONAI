@@ -2,8 +2,12 @@ name: Test Debug and Build Android APK
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/fashionai-gracy-asset-gate-20261020]
   workflow_dispatch:
+
+concurrency:
+  group: fashionai-android-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   gate-tests:
@@ -22,6 +26,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
+      - name: Download and verify owner-selected Gracy Lee GLB
+        run: python3 scripts/fetch_gracy_lee.py
       - name: Require reviewed rights and exactly one approved GLB
         run: python3 scripts/avatar_gate.py --report build/evidence/avatar-gate.json
       - name: Preserve asset gate evidence including BLOCKED reasons
@@ -39,6 +45,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
+      - name: Download and verify owner-selected Gracy Lee GLB
+        run: python3 scripts/fetch_gracy_lee.py
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -107,6 +115,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
+      - name: Download and verify owner-selected Gracy Lee GLB
+        run: python3 scripts/fetch_gracy_lee.py
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
