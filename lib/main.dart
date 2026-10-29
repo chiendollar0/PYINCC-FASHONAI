@@ -426,7 +426,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 backgroundColor: sand,
                 // Keep the avatar anchored in the viewport; slow auto-rotation
                 // lets users inspect the model without dragging it off-center.
-                cameraControls: false,
+                cameraControls: true,
                 autoRotate: true,
                 cameraOrbit: '0deg 90deg 145%',
                 fieldOfView: '38deg',
