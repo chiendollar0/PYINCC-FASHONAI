@@ -327,19 +327,24 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
       child: Material(
         color: active ? coffee : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () => setState(() => _panel = active ? null : label),
-          child: SizedBox(height: 66, child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 22, color: active ? Colors.white : coffee),
-              const SizedBox(height: 5),
-              Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: active ? Colors.white : coffee)),
-            ],
-          )),
+        child: Semantics(
+          button: true,
+          selected: active,
+          label: label,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () => setState(() => _panel = active ? null : label),
+            child: SizedBox(height: 66, child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 22, color: active ? Colors.white : coffee),
+                const SizedBox(height: 5),
+                Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                    color: active ? Colors.white : coffee)),
+              ],
+            )),
+          ),
         ),
       ),
     ));
@@ -453,11 +458,27 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         ])),
       if (_panel != null) Container(
         margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
-        constraints: const BoxConstraints(maxHeight: 220),
+        constraints: const BoxConstraints(maxHeight: 240),
         decoration: BoxDecoration(color: Colors.white,
           borderRadius: BorderRadius.circular(18)),
-        padding: const EdgeInsets.all(12),
-        child: SingleChildScrollView(child: _panelContent())),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(children: [
+              Expanded(child: Text(_panel!,
+                style: const TextStyle(fontSize: 14,
+                  fontWeight: FontWeight.w700, color: coffee))),
+              IconButton(
+                tooltip: 'Đóng bảng công cụ',
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.close, size: 20),
+                onPressed: () => setState(() => _panel = null),
+              ),
+            ]),
+            Flexible(child: SingleChildScrollView(child: _panelContent())),
+          ],
+        )),
 
     ]))),
   );
