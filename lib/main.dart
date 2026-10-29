@@ -327,19 +327,24 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
       child: Material(
         color: active ? coffee : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () => setState(() => _panel = active ? null : label),
-          child: SizedBox(height: 66, child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 22, color: active ? Colors.white : coffee),
-              const SizedBox(height: 5),
-              Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: active ? Colors.white : coffee)),
-            ],
-          )),
+        child: Semantics(
+          button: true,
+          selected: active,
+          label: label,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () => setState(() => _panel = active ? null : label),
+            child: SizedBox(height: 66, child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 22, color: active ? Colors.white : coffee),
+                const SizedBox(height: 5),
+                Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                    color: active ? Colors.white : coffee)),
+              ],
+            )),
+          ),
         ),
       ),
     ));
@@ -378,7 +383,9 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(child: Column(children: [
+    body: SafeArea(child: SingleChildScrollView(child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
       Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
         child: Row(children: [
           const Expanded(child: Text('Studio · 3D',
@@ -391,7 +398,9 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
               _panel = null; _brightness = .5; _blush = .2; _lip = .2;
             })),
         ])),
-      Expanded(child: Container(
+      SizedBox(
+        height: (MediaQuery.sizeOf(context).height * 0.48).clamp(320.0, 520.0),
+        child: Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 12),
         clipBehavior: Clip.antiAlias,
@@ -420,10 +429,12 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 src: model,
                 alt: 'Avatar PYINCC toàn thân xoay 360 độ',
                 backgroundColor: sand,
+                // Keep the avatar anchored in the viewport; slow auto-rotation
+                // lets users inspect the model without dragging it off-center.
                 cameraControls: true,
-                autoRotate: false,
-                cameraOrbit: '0deg 90deg auto',
-                fieldOfView: '30deg',
+                autoRotate: true,
+                cameraOrbit: '0deg 90deg 145%',
+                fieldOfView: '38deg',
                 ar: false,
                 loading: Loading.eager,
               )),
@@ -446,14 +457,30 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           _menu('Big Bag', Icons.shopping_bag_outlined),
         ])),
       if (_panel != null) Container(
-        margin: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-        constraints: const BoxConstraints(maxHeight: 190),
+        margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+        constraints: const BoxConstraints(maxHeight: 240),
         decoration: BoxDecoration(color: Colors.white,
           borderRadius: BorderRadius.circular(18)),
-        padding: const EdgeInsets.all(12),
-        child: SingleChildScrollView(child: _panelContent())),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(children: [
+              Expanded(child: Text(_panel!,
+                style: const TextStyle(fontSize: 14,
+                  fontWeight: FontWeight.w700, color: coffee))),
+              IconButton(
+                tooltip: 'Đóng bảng công cụ',
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.close, size: 20),
+                onPressed: () => setState(() => _panel = null),
+              ),
+            ]),
+            Flexible(child: SingleChildScrollView(child: _panelContent())),
+          ],
+        )),
 
-    ])),
+    ]))),
   );
 }
 
