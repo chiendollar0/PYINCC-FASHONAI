@@ -13,6 +13,47 @@ const coffee = Color(0xFF42362F);
 const sand = Color(0xFFF0E9DD);
 const accent = Color(0xFFAA8563);
 
+const List<StudioMenuItem> kStudioMenuItems = [
+  StudioMenuItem(
+    key: 'skin-care',
+    label: 'Skin Care',
+    icon: Icons.auto_awesome_outlined,
+    accessibilityLabel: 'Mở điều khiển Skin Care',
+  ),
+  StudioMenuItem(
+    key: 'wardrobe',
+    label: 'Tủ đồ',
+    icon: Icons.checkroom_outlined,
+    accessibilityLabel: 'Mở danh mục Tủ đồ',
+  ),
+  StudioMenuItem(
+    key: 'shop',
+    label: 'Shop',
+    icon: Icons.storefront_outlined,
+    accessibilityLabel: 'Mở Shop',
+  ),
+  StudioMenuItem(
+    key: 'big-bag',
+    label: 'Big Bag',
+    icon: Icons.shopping_bag_outlined,
+    accessibilityLabel: 'Mở Big Bag',
+  ),
+];
+
+class StudioMenuItem {
+  final String key;
+  final String label;
+  final IconData icon;
+  final String accessibilityLabel;
+
+  const StudioMenuItem({
+    required this.key,
+    required this.label,
+    required this.icon,
+    required this.accessibilityLabel,
+  });
+}
+
 class PyinccApp extends StatelessWidget {
   final bool requireAuthentication;
   const PyinccApp({super.key, this.requireAuthentication = false});
@@ -82,7 +123,7 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
             alt: 'Nhân vật nữ PYINCC GLB quét 3D',
             backgroundColor: sand,
             cameraControls: true,
-            autoRotate: false,
+            autoRotate: true,
             cameraOrbit: '0deg 90deg 120%',
             fieldOfView: '32deg',
             ar: false,
@@ -320,45 +361,55 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   void _notice(String message) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(message)));
 
-  Widget _menu(String label, IconData icon) {
-    final active = _panel == label;
-    return Expanded(child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: Material(
-        color: active ? coffee : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () => setState(() => _panel = active ? null : label),
-          child: SizedBox(height: 66, child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 22, color: active ? Colors.white : coffee),
-              const SizedBox(height: 5),
-              Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: active ? Colors.white : coffee)),
-            ],
-          )),
+  Widget _menuButton(StudioMenuItem item) {
+    final active = _panel == item.key;
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3),
+        child: Semantics(
+          button: true,
+          selected: active,
+          label: item.accessibilityLabel,
+          child: Material(
+            color: active ? coffee : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => setState(() => _panel = active ? null : item.key),
+              child: SizedBox(
+                height: 66,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(item.icon, size: 22, color: active ? Colors.white : coffee),
+                    const SizedBox(height: 5),
+                    Text(item.label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                        color: active ? Colors.white : coffee)),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _panelContent() {
     switch (_panel) {
-      case 'Tủ đồ':
+      case 'wardrobe':
         return OutlinedButton.icon(
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const WardrobeScreen())),
           icon: const Icon(Icons.inventory_2_outlined),
           label: const Text('Mở danh mục trang phục'),
         );
-      case 'Shop':
+      case 'shop':
         return const Center(child: Text('Chưa chọn sản phẩm'));
-      case 'Big Bag':
+      case 'big-bag':
         return const Center(child: Text('Chưa có trang phục'));
-      case 'Skin Care':
+      case 'skin-care':
         return Column(children: [
           Row(children: [const SizedBox(width: 100, child: Text('Độ sáng')),
             Expanded(child: Slider(value: _brightness,
@@ -376,6 +427,57 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
     }
   }
 
+  Widget _viewport() {
+    return Container(
+      width: double.infinity,
+      height: 340,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(color: sand,
+        borderRadius: BorderRadius.circular(22)),
+      child: FutureBuilder<AssetManifest>(
+        future: AssetManifest.loadFromAssetBundle(rootBundle),
+        builder: (context, snapshot) {
+          const model = 'assets/avatars/pyincc_avatar_primary.glb';
+          if (snapshot.hasError) {
+            return const Center(child: Text('Không đọc được asset 3D.'));
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.data!.listAssets().contains(model)) {
+            return const Center(child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text('Chưa có GLB PYINCC trong bản build. '
+                'Thêm assets/avatars/pyincc_avatar_primary.glb để '
+                'hiển thị avatar 3D offline.',
+                textAlign: TextAlign.center)));
+          }
+          return Stack(children: [
+            Positioned.fill(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
+              src: model,
+              alt: 'Avatar PYINCC toàn thân xoay 360 độ',
+              backgroundColor: sand,
+              cameraControls: true,
+              autoRotate: true,
+              cameraOrbit: '0deg 90deg auto',
+              fieldOfView: '30deg',
+              ar: false,
+              loading: Loading.eager,
+            )),
+            Positioned(top: 8, right: 8, child: IconButton.filledTonal(
+              tooltip: 'Xem toàn màn hình',
+              icon: const Icon(Icons.fullscreen),
+              onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) =>
+                  const SampleAvatar3DScreen())),
+            )),
+          ]);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(child: Column(children: [
@@ -391,60 +493,13 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
               _panel = null; _brightness = .5; _blush = .2; _lip = .2;
             })),
         ])),
-      Expanded(child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 12),
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(color: sand,
-          borderRadius: BorderRadius.circular(22)),
-        child: FutureBuilder<AssetManifest>(
-          future: AssetManifest.loadFromAssetBundle(rootBundle),
-          builder: (context, snapshot) {
-            const model = 'assets/avatars/pyincc_avatar_primary.glb';
-            if (snapshot.hasError) {
-              return const Center(child: Text('Không đọc được asset 3D.'));
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (!snapshot.data!.listAssets().contains(model)) {
-              return const Center(child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text('Chưa có GLB PYINCC trong bản build. '
-                  'Thêm assets/avatars/pyincc_avatar_primary.glb để '
-                  'hiển thị avatar 3D offline.',
-                  textAlign: TextAlign.center)));
-            }
-            return Stack(children: [
-              Positioned.fill(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
-                src: model,
-                alt: 'Avatar PYINCC toàn thân xoay 360 độ',
-                backgroundColor: sand,
-                cameraControls: true,
-                autoRotate: false,
-                cameraOrbit: '0deg 90deg auto',
-                fieldOfView: '30deg',
-                ar: false,
-                loading: Loading.eager,
-              )),
-              Positioned(top: 8, right: 8, child: IconButton.filledTonal(
-                tooltip: 'Xem toàn màn hình',
-                icon: const Icon(Icons.fullscreen),
-                onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) =>
-                    const SampleAvatar3DScreen())),
-              )),
-            ]);
-          },
+      _viewport(),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(9, 10, 9, 10),
+        child: Row(
+          children: kStudioMenuItems.map(_menuButton).toList(),
         ),
-      )),
-      Padding(padding: const EdgeInsets.fromLTRB(9, 10, 9, 10),
-        child: Row(children: [
-          _menu('Skin Care', Icons.auto_awesome_outlined),
-          _menu('Tủ đồ', Icons.checkroom_outlined),
-          _menu('Shop', Icons.storefront_outlined),
-          _menu('Big Bag', Icons.shopping_bag_outlined),
-        ])),
+      ),
       if (_panel != null) Container(
         margin: const EdgeInsets.fromLTRB(12, 0, 12, 10),
         constraints: const BoxConstraints(maxHeight: 190),
