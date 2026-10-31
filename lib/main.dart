@@ -8,10 +8,11 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 void main() => runApp(const PyinccApp());
 
-const cream = Color(0xFFFAF7F1);
-const coffee = Color(0xFF42362F);
-const sand = Color(0xFFF0E9DD);
-const accent = Color(0xFFAA8563);
+const cream = Color(0xFFFFF8FC);
+const coffee = Color(0xFF51445B);
+const sand = Color(0xFFEAF8F8);
+const accent = Color(0xFFD98EAF);
+const aqua = Color(0xFF8FD4D5);
 
 const List<StudioMenuItem> kStudioMenuItems = [
   StudioMenuItem(
@@ -66,7 +67,7 @@ class PyinccApp extends StatelessWidget {
       useMaterial3: true,
       scaffoldBackgroundColor: cream,
       colorScheme: ColorScheme.fromSeed(seedColor: accent, surface: cream),
-      appBarTheme: const AppBarTheme(backgroundColor: cream, centerTitle: false),
+      appBarTheme: const AppBarTheme(backgroundColor: cream, centerTitle: false, foregroundColor: coffee),
       cardTheme: CardThemeData(color: Colors.white, elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
     ),
@@ -251,6 +252,11 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
   Widget build(BuildContext context) => SectionPage(
     title: 'PYINCC', subtitle: 'Fashion Studio',
     children: [
+      ClipRRect(borderRadius: BorderRadius.circular(20), child: Image.asset(
+        'assets/branding/fashionai-navigation-reference.webp',
+        width: double.infinity, fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink())),
+      const SizedBox(height: 12),
       const Row(children: [
         Icon(Icons.face_retouching_natural_outlined, color: coffee),
         SizedBox(width: 10),
@@ -480,9 +486,13 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(child: Column(children: [
+    body: SafeArea(child: SingleChildScrollView(child: Column(children: [
       Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
         child: Row(children: [
+          ClipRRect(borderRadius: BorderRadius.circular(14), child: Image.asset(
+            'assets/branding/pyincc-fashionai-mark.webp', width: 42, height: 42,
+            fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.auto_awesome, color: aqua, size: 32))),
+          const SizedBox(width: 10),
           const Expanded(child: Text('Studio · 3D',
             style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600,
               color: coffee))),
@@ -508,7 +518,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(child: _panelContent())),
 
-    ])),
+    ]))),
   );
 }
 
@@ -520,7 +530,16 @@ class SectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: ListView(padding: const EdgeInsets.fromLTRB(20, 18, 20, 28), children: [
-    Text(title, style: const TextStyle(fontSize: 27, fontWeight: FontWeight.w700, color: coffee)),
+    Row(children: [
+      ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset(
+        'assets/branding/pyincc-fashionai-mark.webp', width: 56, height: 56,
+        fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.auto_awesome, size: 42, color: aqua))),
+      const SizedBox(width: 12),
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w700, color: coffee)),
+        Text('PYINCC · Fashion-AI', style: TextStyle(fontSize: 12, color: coffee.withValues(alpha: .65))),
+      ])),
+    ]),
     const SizedBox(height: 5),
     Text(subtitle, style: const TextStyle(fontSize: 13, color: Colors.black54)),
     const SizedBox(height: 18),
