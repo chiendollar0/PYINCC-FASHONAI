@@ -252,6 +252,11 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
   Widget build(BuildContext context) => SectionPage(
     title: 'PYINCC', subtitle: 'Fashion Studio',
     children: [
+      ClipRRect(borderRadius: BorderRadius.circular(20), child: Image.asset(
+        'assets/branding/fashionai-navigation-reference.webp',
+        width: double.infinity, fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink())),
+      const SizedBox(height: 12),
       const Row(children: [
         Icon(Icons.face_retouching_natural_outlined, color: coffee),
         SizedBox(width: 10),
