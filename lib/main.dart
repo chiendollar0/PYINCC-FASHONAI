@@ -486,7 +486,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(child: Column(children: [
+    body: SafeArea(child: SingleChildScrollView(child: Column(children: [
       Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
         child: Row(children: [
           ClipRRect(borderRadius: BorderRadius.circular(14), child: Image.asset(
@@ -518,7 +518,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(child: _panelContent())),
 
-    ])),
+    ]))),
   );
 }
 
