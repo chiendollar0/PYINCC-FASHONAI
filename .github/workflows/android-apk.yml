@@ -2,7 +2,7 @@ name: Test Debug and Build Android APK
 
 on:
   push:
-    branches: [main, fashionai/gracy-20261023]
+    branches: [main, fashionai/gracy-20261023, fix/studio-fixed-viewport-auto-rotate]
   workflow_dispatch:
 
 jobs:
@@ -183,5 +183,3 @@ jobs:
           name: pyincc-fashionai-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
-
-

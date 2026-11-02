@@ -16,16 +16,13 @@ Future<void> openStudio(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('Account opens the bundled Gracy Lee attribution offline', (tester) async {
+  testWidgets('Account shows local-first privacy without asserting unverified asset rights', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ProfileScreen()));
     await tester.pumpAndSettle();
-    final credits = find.text('Bản quyền mô hình 3D');
-    await tester.scrollUntilVisible(credits, 160);
-    await tester.tap(credits);
-    await tester.pumpAndSettle();
-    expect(find.textContaining('Gracy Lee — hong227'), findsOneWidget);
-    expect(find.textContaining('https://creativecommons.org/licenses/by/4.0/'), findsOneWidget);
-    expect(find.byType(SelectableText), findsOneWidget);
+    expect(find.text('Local-first'), findsOneWidget);
+    expect(find.textContaining('Ảnh cá nhân không được tự động tải lên Cloud'), findsOneWidget);
+    // Asset attribution must only be shown from an independently verified rights record.
+    expect(find.text('Bản quyền mô hình 3D'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -81,7 +78,9 @@ void main() {
     await openStudio(tester);
     await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Mở danh mục trang phục'));
+    final openCatalog = find.text('Mở danh mục trang phục');
+    await tester.ensureVisible(openCatalog);
+    await tester.tap(openCatalog);
     await tester.pumpAndSettle();
     expect(find.text('Tủ Đồ AI'), findsOneWidget);
     expect(find.text('Áo'), findsWidgets);
