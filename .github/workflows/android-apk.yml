@@ -2,8 +2,14 @@ name: Test Debug and Build Android APK
 
 on:
   push:
-    branches: [main, fashionai/gracy-20261023, fix/studio-fixed-viewport-auto-rotate]
+    branches: [fashionai/gracy-20261023]
   workflow_dispatch:
+    inputs:
+      build_apk:
+        description: "Explicitly authorize an Android APK build after P1 fixes"
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   gate-tests:
@@ -101,6 +107,7 @@ jobs:
         run: bash ./gradlew :app:compileDebugKotlin --stacktrace
 
   build:
+    if: github.event_name == 'workflow_dispatch' && inputs.build_apk == true
     needs: [validate, asset-gate]
     runs-on: ubuntu-latest
     permissions:
