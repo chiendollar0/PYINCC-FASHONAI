@@ -10,7 +10,7 @@ Future<void> openStudio(WidgetTester tester) async {
   // Home is the product entry point; navigate explicitly to Studio.
   expect(find.text('Fashion Studio'), findsOneWidget);
   expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 0);
-  await tester.tap(find.text('Studio'));
+  await tester.tap(find.widgetWithText(NavigationDestination, 'Studio'));
   await tester.pumpAndSettle();
   expect(find.byType(UnifiedStudioScreen), findsOneWidget);
 }
