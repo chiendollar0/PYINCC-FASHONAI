@@ -123,7 +123,11 @@ class _HomeShellState extends State<HomeShell> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(child: IndexedStack(index: tab, children: [
-      const CharacterHomeScreen(),
+      CharacterHomeScreen(
+        onOpenStudio: () => setState(() => tab = 1),
+        onOpenStore: () => setState(() => tab = 2),
+        onOpenAccount: () => setState(() => tab = 3),
+      ),
       const UnifiedStudioScreen(),
       StoreScreen(onTryOn: () => setState(() => tab = 1)),
       const ProfileScreen(),
@@ -147,7 +151,15 @@ class _HomeShellState extends State<HomeShell> {
 /// Home owns the face image and avatar preferences for this app session.
 /// A selected photo is never represented as a completed 3D face swap.
 class CharacterHomeScreen extends StatefulWidget {
-  const CharacterHomeScreen({super.key});
+  final VoidCallback onOpenStudio;
+  final VoidCallback onOpenStore;
+  final VoidCallback onOpenAccount;
+  const CharacterHomeScreen({
+    super.key,
+    required this.onOpenStudio,
+    required this.onOpenStore,
+    required this.onOpenAccount,
+  });
   @override
   State<CharacterHomeScreen> createState() => _CharacterHomeScreenState();
 }
@@ -204,6 +216,13 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
   Widget build(BuildContext context) => SectionPage(
     title: 'PYINCC', subtitle: 'Fashion Studio',
     children: [
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        ActionChip(avatar: const Icon(Icons.auto_awesome_outlined), label: const Text('Studio'), onPressed: widget.onOpenStudio),
+        ActionChip(avatar: const Icon(Icons.storefront_outlined), label: const Text('Store'), onPressed: widget.onOpenStore),
+        ActionChip(avatar: const Icon(Icons.checkroom_outlined), label: const Text('Tủ đồ'), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WardrobeScreen()))),
+        ActionChip(avatar: const Icon(Icons.person_outline), label: const Text('Account'), onPressed: widget.onOpenAccount),
+      ]),
+      const SizedBox(height: 12),
       const Row(children: [
         Icon(Icons.face_retouching_natural_outlined, color: coffee),
         SizedBox(width: 10),
@@ -311,13 +330,13 @@ class UnifiedStudioScreen extends StatefulWidget {
 }
 
 class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
-  String? _panel;
+  StudioTool? _activeTool;
 
   void _notice(String message) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(message)));
 
-  Widget _menu(String label, IconData icon) {
-    final active = _panel == label;
+  Widget _menu(StudioTool tool) {
+    final active = _activeTool?.key == tool.key;
     return Expanded(child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: Material(
@@ -326,50 +345,53 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         child: Semantics(
           button: true,
           selected: active,
-          label: label,
-          child: InkWell(
+          label: tool.semanticsLabel,
+          child: Tooltip(
+            message: tool.semanticsLabel,
+            child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: () => setState(() => _panel = active ? null : label),
+            onTap: () => setState(() => _activeTool = active ? null : tool),
             child: SizedBox(height: 66, child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 22, color: active ? Colors.white : coffee),
+                Icon(tool.icon, size: 22, color: active ? Colors.white : coffee),
                 const SizedBox(height: 5),
-                Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                Text(tool.label, maxLines: 1, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
                     color: active ? Colors.white : coffee)),
               ],
             )),
+          ),
           ),
         ),
       ),
     ));
   }
 
-  Widget _panelContent() {
-    switch (_panel) {
-      case 'Tủ đồ':
+  Widget _panelContent(StudioTool tool) {
+    switch (tool.action) {
+      case StudioToolAction.wardrobe:
         return OutlinedButton.icon(
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const WardrobeScreen())),
           icon: const Icon(Icons.inventory_2_outlined),
           label: const Text('Mở danh mục trang phục'),
         );
-      case 'Shop':
+      case StudioToolAction.shop:
         return const Center(child: Padding(
           padding: EdgeInsets.all(12),
           child: Text('Chưa có catalog sản phẩm đã xác minh. '
             'Không hiển thị giá hoặc sản phẩm mẫu giả.',
             textAlign: TextAlign.center),
         ));
-      case 'Big Bag':
+      case StudioToolAction.bigBag:
         return const Center(child: Padding(
           padding: EdgeInsets.all(12),
           child: Text('Tủ đồ hiện chưa có trang phục 3D. '
             'Chưa thể thử đồ hoặc tạo phối cảnh giả.',
             textAlign: TextAlign.center),
         ));
-      case 'Skin Care':
+      case StudioToolAction.skinCare:
         return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           const Text('Các hiệu ứng Skin Care chưa được kết nối với vật liệu GLB. '
             'Điều khiển đang khóa để tránh tạo cảm giác đã chỉnh sửa avatar.',
@@ -397,7 +419,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           IconButton(tooltip: 'Hoàn tác', icon: const Icon(Icons.undo),
             onPressed: () => _notice('Chưa có thao tác phối đồ để hoàn tác.')),
           IconButton(tooltip: 'Đặt lại', icon: const Icon(Icons.restart_alt),
-            onPressed: () => setState(() => _panel = null)),
+            onPressed: () => setState(() => _activeTool = null)),
         ])),
       SizedBox(
         height: (MediaQuery.sizeOf(context).height * 0.48).clamp(320.0, 520.0),
@@ -452,12 +474,9 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
       )),
       Padding(padding: const EdgeInsets.fromLTRB(9, 10, 9, 10),
         child: Row(children: [
-          _menu('Skin Care', Icons.auto_awesome_outlined),
-          _menu('Tủ đồ', Icons.checkroom_outlined),
-          _menu('Shop', Icons.storefront_outlined),
-          _menu('Big Bag', Icons.shopping_bag_outlined),
+          ...StudioTool.all.map(_menu),
         ])),
-      if (_panel != null) Container(
+      if (_activeTool != null) Container(
         margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
         constraints: const BoxConstraints(maxHeight: 240),
         decoration: BoxDecoration(color: Colors.white,
@@ -467,7 +486,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(children: [
-              Expanded(child: Text(_panel!,
+              Expanded(child: Text(_activeTool!.label,
                 style: const TextStyle(fontSize: 14,
                   fontWeight: FontWeight.w700, color: coffee))),
               IconButton(
@@ -477,12 +496,31 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 onPressed: () => setState(() => _panel = null),
               ),
             ]),
-            Flexible(child: SingleChildScrollView(child: _panelContent())),
+            Flexible(child: SingleChildScrollView(child: _panelContent(_activeTool!))),
           ],
         )),
 
     ]))),
   );
+}
+
+enum StudioToolAction { skinCare, wardrobe, shop, bigBag }
+
+class StudioTool {
+  final String key;
+  final String label;
+  final String semanticsLabel;
+  final IconData icon;
+  final StudioToolAction action;
+  const StudioTool({required this.key, required this.label,
+    required this.semanticsLabel, required this.icon, required this.action});
+
+  static const all = <StudioTool>[
+    StudioTool(key: 'skin-care', label: 'Skin Care', semanticsLabel: 'Mở công cụ Skin Care', icon: Icons.auto_awesome_outlined, action: StudioToolAction.skinCare),
+    StudioTool(key: 'wardrobe', label: 'Tủ đồ', semanticsLabel: 'Mở công cụ Tủ đồ', icon: Icons.checkroom_outlined, action: StudioToolAction.wardrobe),
+    StudioTool(key: 'shop', label: 'Shop', semanticsLabel: 'Mở công cụ Shop', icon: Icons.storefront_outlined, action: StudioToolAction.shop),
+    StudioTool(key: 'big-bag', label: 'Big Bag', semanticsLabel: 'Mở công cụ Big Bag', icon: Icons.shopping_bag_outlined, action: StudioToolAction.bigBag),
+  ];
 }
 
 class _UnavailableEffectControl extends StatelessWidget {
