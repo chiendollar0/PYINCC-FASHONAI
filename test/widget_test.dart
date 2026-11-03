@@ -78,6 +78,10 @@ void main() {
     expect(find.text('Shop'), findsOneWidget);
     expect(find.text('Big Bag'), findsOneWidget);
     expect(find.text('Skin Care'), findsOneWidget);
+    expect(find.bySemanticsLabel('Mở công cụ Skin Care'), findsOneWidget);
+    expect(find.bySemanticsLabel('Mở công cụ Tủ đồ'), findsOneWidget);
+    expect(find.bySemanticsLabel('Mở công cụ Shop'), findsOneWidget);
+    expect(find.bySemanticsLabel('Mở công cụ Big Bag'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -85,7 +89,7 @@ void main() {
     await openStudio(tester);
     await tester.tap(find.text('Big Bag'));
     await tester.pumpAndSettle();
-    expect(find.text('Chưa có trang phục'), findsOneWidget);
+    expect(find.textContaining('Tủ đồ hiện chưa có trang phục 3D'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
