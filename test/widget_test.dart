@@ -165,7 +165,7 @@ void main() {
 
   testWidgets('Cloud backup remains disabled', (tester) async {
     await openStudio(tester);
-    await tester.tap(find.text('Account'));
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Account'));
     await tester.pumpAndSettle();
     final backup = tester.widget<SwitchListTile>(find.byType(SwitchListTile));
     expect(backup.value, isFalse);
