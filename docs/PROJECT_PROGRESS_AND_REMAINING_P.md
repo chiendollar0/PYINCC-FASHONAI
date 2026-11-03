@@ -52,7 +52,8 @@ Các commit mã nguồn liên quan:
 - Các run #117–#121 phát hiện lỗi test/analyze trong các commit trung gian; đã truy nguyên các nguyên nhân: test còn kỳ vọng empty-state cũ, tham chiếu state `_panel` chưa đổi hết, constructor test chưa cập nhật và finder `Studio` bị trùng sau khi thêm Home shortcut.
 - Run #122 trên commit `391c430d1f7e14e4c0c3768d25330e181c8b21dd`: static analysis PASS, widget tests FAIL do finder `find.text('Studio')` khớp đồng thời Home shortcut và bottom tab. Đã sửa helper để chọn đúng `NavigationDestination` trong commit `736c729cea7f39cd18afa3a037c5236560d48fad`.
 - Run #124 trên commit `736c729cea7f39cd18afa3a037c5236560d48fad`: static analysis PASS, widget tests còn 2 lỗi finder: semantics label không có trong semantics tree mặc định và test tab Store bị trùng với Home shortcut. Đã đổi test để kiểm tra metadata trên widget `Semantics` trực tiếp và chọn đúng `NavigationDestination` cho Store/Account trong commit `60f7b9b2604dadd3044ac5497efa247393042b31`.
-- Run #126 (sau commit test-fix mới) là lượt xác minh tiếp theo. Chưa ghi PASS cho đến khi validate hoàn tất.
+- Run #126 trên commit `60f7b9b2604dadd3044ac5497efa247393042b31`: gate-tests PASS, asset-gate PASS, static analysis PASS, widget tests PASS; Android Gradle compile check đang chạy tại thời điểm kiểm tra. Job build APK không được chạy.
+- Sau đó sửa thêm finder Account trong test Cloud Backup ở commit `ac1d8b6326d25cc7f5ba2d1c4795792d54c4ba80`. Run #128 đang xác minh head mới này; chưa ghi toàn bộ CI PASS cho đến khi Gradle compile check và run #128 hoàn tất.
 - Asset gate thành công ở các run đã kiểm tra; điều này không xác nhận hình ảnh hiển thị đúng trên thiết bị.
 - Build job bị skip trên push theo thiết kế. Không tạo APK mới trong giai đoạn sửa P1.
 
