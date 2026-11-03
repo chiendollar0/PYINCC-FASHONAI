@@ -145,7 +145,7 @@ void main() {
     )));
     await tester.pumpAndSettle();
     final action = find.widgetWithText(FilledButton, 'Face Swap 3D chưa khả dụng');
-    await tester.scrollUntilVisible(action, 140);
+    await tester.ensureVisible(action);
     expect(tester.widget<FilledButton>(action).onPressed, isNull);
     expect(find.textContaining('Chưa có engine Face Swap 3D đã kiểm chứng'), findsOneWidget);
     expect(tester.takeException(), isNull);
