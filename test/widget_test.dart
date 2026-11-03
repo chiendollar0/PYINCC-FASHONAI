@@ -60,20 +60,38 @@ void main() {
   testWidgets('Home exposes direct routes to Studio, Store, Wardrobe and Account', (tester) async {
     await tester.pumpWidget(const PyinccApp());
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(ActionChip, 'Studio'), findsOneWidget);
-    expect(find.widgetWithText(ActionChip, 'Store'), findsOneWidget);
-    expect(find.widgetWithText(ActionChip, 'Tủ đồ'), findsOneWidget);
-    expect(find.widgetWithText(ActionChip, 'Account'), findsOneWidget);
-    await tester.tap(find.widgetWithText(ActionChip, 'Studio'));
+    expect(find.widgetWithText(Card, 'Studio'), findsOneWidget);
+    expect(find.widgetWithText(Card, 'Store'), findsOneWidget);
+    expect(find.widgetWithText(Card, 'Tủ đồ'), findsOneWidget);
+    expect(find.widgetWithText(Card, 'Account'), findsOneWidget);
+    expect(find.text('Cân nặng'), findsNothing);
+    expect(find.text('Chiều cao'), findsNothing);
+    expect(find.text('Form nhân vật · X / M / N'), findsNothing);
+    await tester.tap(find.widgetWithText(Card, 'Studio'));
     await tester.pumpAndSettle();
     expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Home remains usable on a compact 320x640 viewport', (tester) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const PyinccApp());
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(Card, 'Studio'), findsOneWidget);
+    expect(find.widgetWithText(Card, 'Store'), findsOneWidget);
+    expect(find.widgetWithText(Card, 'Tủ đồ'), findsOneWidget);
+    expect(find.widgetWithText(Card, 'Account'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('Studio opens with 3D-first preview and tools', (tester) async {
     await openStudio(tester);
     expect(find.text('Studio · 3D'), findsOneWidget);
-    expect(find.text('Studio · 3D'), findsOneWidget);
+    expect(find.text('Xoay tự động chậm · Kéo một ngón để đổi góc nhìn'), findsOneWidget);
+    expect(find.byTooltip('Hoàn tác'), findsNothing);
     expect(find.text('Tủ đồ'), findsOneWidget);
     expect(find.text('Shop'), findsOneWidget);
     expect(find.text('Big Bag'), findsOneWidget);
