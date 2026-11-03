@@ -46,6 +46,21 @@ Các commit mã nguồn liên quan:
 - `5485272a4b6b3ac60496e8eaa51accdf378169ad` — test Home và menu accessibility.
 - `391c430d1f7e14e4c0c3768d25330e181c8b21dd` — hoàn tất migration tool registry, loại bỏ tham chiếu state cũ.
 
+### P1 tiếp tục — Home và Studio (2026-11-04)
+
+Commit mã nguồn: `81b0e78c78cd7ce980431d0594148b3625652f4b`  
+Commit kiểm thử: `97991b9ebcb0c6befa853e30ec8e6c3f2bf4219d`
+
+- Home chuyển từ các chip rời sang lưới 2×2 có icon, nhãn và mô tả; bốn đường dẫn Studio, Store, Tủ đồ, Account vẫn điều hướng trực tiếp.
+- Loại bỏ các trường chiều cao/cân nặng và lựa chọn form chưa được nối với avatar GLB; thay bằng thông báo rõ cấu hình mô hình chưa được tích hợp. Không giữ các điều khiển không tạo ra thay đổi thực tế.
+- Bỏ checkbox xác nhận quyền ảnh không có tác vụ xử lý tương ứng; thay bằng thông báo ảnh chỉ hiển thị trong phiên và chưa gửi lên máy chủ.
+- Bỏ nút Undo chỉ hiển thị thông báo giả khi chưa có lịch sử thao tác.
+- Model Viewer dùng `rotationPerSecond: 10deg`, `autoRotateDelay: 0`, khóa pan/zoom và giới hạn góc camera; mục tiêu là hạn chế avatar bị kéo lệch trong lúc xem.
+- Cache `AssetManifest` trong state của Studio để tránh tạo lại Future mỗi lần đổi công cụ.
+- Bổ sung widget test Home ở viewport 320×640 và kiểm tra các điều khiển không khả dụng không xuất hiện.
+
+Run #130 đang kiểm tra các commit mới. Không có lệnh build APK trong workflow push; chờ validate hoàn tất trước khi kết luận P1 này PASS.
+
 ## 3. Bằng chứng CI và giới hạn
 
 - Workflow #115 trên commit cũ `c741bd8f2a8110d69bbe32aed72ef150eaffe784` đã thành công; build debug APK ở thời điểm đó đã chạy. Đây là bằng chứng lịch sử, không phải bản APK của các thay đổi P1 mới.
