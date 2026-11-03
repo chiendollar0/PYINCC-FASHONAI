@@ -15,6 +15,8 @@ Future<void> openStudio(WidgetTester tester) async {
   expect(find.byType(UnifiedStudioScreen), findsOneWidget);
 }
 
+void _testNoop() {}
+
 void main() {
   testWidgets('Account shows local-first privacy without asserting unverified asset rights', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ProfileScreen()));
@@ -52,6 +54,19 @@ void main() {
     expect(find.text('Fashion Studio'), findsOneWidget);
     expect(find.byType(SignInScreen), findsNothing);
     expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Home exposes direct routes to Studio, Store, Wardrobe and Account', (tester) async {
+    await tester.pumpWidget(const PyinccApp());
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(ActionChip, 'Studio'), findsOneWidget);
+    expect(find.widgetWithText(ActionChip, 'Store'), findsOneWidget);
+    expect(find.widgetWithText(ActionChip, 'Tủ đồ'), findsOneWidget);
+    expect(find.widgetWithText(ActionChip, 'Account'), findsOneWidget);
+    await tester.tap(find.widgetWithText(ActionChip, 'Studio'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
     expect(tester.takeException(), isNull);
   });
 
@@ -101,7 +116,11 @@ void main() {
   });
 
   testWidgets('Face Swap is visibly unavailable instead of presenting a fake action', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: CharacterHomeScreen()));
+    await tester.pumpWidget(const MaterialApp(home: CharacterHomeScreen(
+      onOpenStudio: _testNoop,
+      onOpenStore: _testNoop,
+      onOpenAccount: _testNoop,
+    )));
     await tester.pumpAndSettle();
     final action = find.widgetWithText(FilledButton, 'Face Swap 3D chưa khả dụng');
     await tester.scrollUntilVisible(action, 140);
