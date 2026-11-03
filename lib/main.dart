@@ -190,12 +190,6 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
     }
   }
 
-  void _faceSwapStatus() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Chưa có engine Face Swap 3D đã kiểm chứng. '
-          'Không ghép giả hoặc gửi ảnh lên máy chủ.')));
-  }
-
   Widget _measure(String label, double value, double min, double max,
       String unit, ValueChanged<double> onChanged) => Column(
     crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -213,7 +207,7 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
       const Row(children: [
         Icon(Icons.face_retouching_natural_outlined, color: coffee),
         SizedBox(width: 10),
-        Expanded(child: Text('Fake · Face Swap',
+        Expanded(child: Text('Ảnh khuôn mặt',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
       ]),
       const SizedBox(height: 10),
@@ -242,10 +236,13 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
             controlAffinity: ListTileControlAffinity.leading,
           ),
           FilledButton.icon(
-            onPressed: _face != null && _consent ? _faceSwapStatus : null,
-            icon: const Icon(Icons.face_outlined),
-            label: const Text('2. Face Swap lên avatar 3D'),
+            onPressed: null,
+            icon: const Icon(Icons.lock_outline),
+            label: const Text('Face Swap 3D chưa khả dụng'),
           ),
+          const Text('Ảnh chỉ được xem trong phiên hiện tại. Chưa có engine '
+            'Face Swap 3D đã kiểm chứng; không tạo kết quả giả.',
+            style: TextStyle(fontSize: 12, color: Colors.black54)),
           const SizedBox(height: 8),
     
         ]))),
@@ -292,9 +289,9 @@ class StoreScreen extends StatelessWidget {
     subtitle: 'Chọn trang phục thật để thử',
     children: [
       const Card(child: ListTile(
-        leading: Icon(Icons.link, color: accent),
-        title: Text('Nguồn sản phẩm'),
-        subtitle: Text('Shopee · Lazada · TikTok Shop'),
+        leading: Icon(Icons.inventory_2_outlined, color: accent),
+        title: Text('Danh mục sản phẩm chưa kết nối'),
+        subtitle: Text('Chưa có catalog, giá hoặc liên kết mua hàng đã xác minh.'),
       )), 
       const SizedBox(height: 16),
       OutlinedButton.icon(
@@ -315,7 +312,6 @@ class UnifiedStudioScreen extends StatefulWidget {
 
 class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   String? _panel;
-  double _brightness = .5, _blush = .2, _lip = .2;
 
   void _notice(String message) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(message)));
@@ -360,21 +356,28 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           label: const Text('Mở danh mục trang phục'),
         );
       case 'Shop':
-        return const Center(child: Text('Chưa chọn sản phẩm'));
+        return const Center(child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Text('Chưa có catalog sản phẩm đã xác minh. '
+            'Không hiển thị giá hoặc sản phẩm mẫu giả.',
+            textAlign: TextAlign.center),
+        ));
       case 'Big Bag':
-        return const Center(child: Text('Chưa có trang phục'));
+        return const Center(child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Text('Tủ đồ hiện chưa có trang phục 3D. '
+            'Chưa thể thử đồ hoặc tạo phối cảnh giả.',
+            textAlign: TextAlign.center),
+        ));
       case 'Skin Care':
-        return Column(children: [
-          Row(children: [const SizedBox(width: 100, child: Text('Độ sáng')),
-            Expanded(child: Slider(value: _brightness,
-              onChanged: (v) => setState(() => _brightness = v)))]),
-          Row(children: [const SizedBox(width: 100, child: Text('Má hồng')),
-            Expanded(child: Slider(value: _blush,
-              onChanged: (v) => setState(() => _blush = v)))]),
-          Row(children: [const SizedBox(width: 100, child: Text('Son môi')),
-            Expanded(child: Slider(value: _lip,
-              onChanged: (v) => setState(() => _lip = v)))]),
-
+        return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const Text('Các hiệu ứng Skin Care chưa được kết nối với vật liệu GLB. '
+            'Điều khiển đang khóa để tránh tạo cảm giác đã chỉnh sửa avatar.',
+            style: TextStyle(fontSize: 12, color: Colors.black54)),
+          const SizedBox(height: 8),
+          const _UnavailableEffectControl(label: 'Độ sáng', value: .5),
+          const _UnavailableEffectControl(label: 'Má hồng', value: .2),
+          const _UnavailableEffectControl(label: 'Son môi', value: .2),
         ]);
       default:
         return const SizedBox.shrink();
@@ -394,9 +397,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           IconButton(tooltip: 'Hoàn tác', icon: const Icon(Icons.undo),
             onPressed: () => _notice('Chưa có thao tác phối đồ để hoàn tác.')),
           IconButton(tooltip: 'Đặt lại', icon: const Icon(Icons.restart_alt),
-            onPressed: () => setState(() {
-              _panel = null; _brightness = .5; _blush = .2; _lip = .2;
-            })),
+            onPressed: () => setState(() => _panel = null)),
         ])),
       SizedBox(
         height: (MediaQuery.sizeOf(context).height * 0.48).clamp(320.0, 520.0),
@@ -482,6 +483,20 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
 
     ]))),
   );
+}
+
+class _UnavailableEffectControl extends StatelessWidget {
+  final String label;
+  final double value;
+  const _UnavailableEffectControl({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) => Row(children: [
+    SizedBox(width: 100, child: Text(label)),
+    Expanded(child: Slider(value: value, onChanged: null)),
+    const SizedBox(width: 8),
+    const Icon(Icons.lock_outline, size: 16, color: Colors.black45),
+  ]);
 }
 
 class SectionPage extends StatelessWidget {
