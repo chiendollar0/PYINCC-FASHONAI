@@ -78,10 +78,10 @@ void main() {
     expect(find.text('Shop'), findsOneWidget);
     expect(find.text('Big Bag'), findsOneWidget);
     expect(find.text('Skin Care'), findsOneWidget);
-    expect(find.bySemanticsLabel('Mở công cụ Skin Care'), findsOneWidget);
-    expect(find.bySemanticsLabel('Mở công cụ Tủ đồ'), findsOneWidget);
-    expect(find.bySemanticsLabel('Mở công cụ Shop'), findsOneWidget);
-    expect(find.bySemanticsLabel('Mở công cụ Big Bag'), findsOneWidget);
+    expect(find.byWidgetPredicate((widget) => widget is Semantics && widget.properties.label == 'Mở công cụ Skin Care'), findsOneWidget);
+    expect(find.byWidgetPredicate((widget) => widget is Semantics && widget.properties.label == 'Mở công cụ Tủ đồ'), findsOneWidget);
+    expect(find.byWidgetPredicate((widget) => widget is Semantics && widget.properties.label == 'Mở công cụ Shop'), findsOneWidget);
+    expect(find.byWidgetPredicate((widget) => widget is Semantics && widget.properties.label == 'Mở công cụ Big Bag'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -155,10 +155,10 @@ void main() {
     await tester.tap(find.text('Home'));
     await tester.pumpAndSettle();
     expect(find.text('Fashion Studio'), findsOneWidget);
-    await tester.tap(find.text('Store'));
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Store'));
     await tester.pumpAndSettle();
     expect(find.text('Chọn trang phục thật để thử'), findsOneWidget);
-    await tester.tap(find.text('Account'));
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Account'));
     await tester.pumpAndSettle();
     expect(find.text('Local-first'), findsOneWidget);
   });
