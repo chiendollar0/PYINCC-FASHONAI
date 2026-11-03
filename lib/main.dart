@@ -82,8 +82,14 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
             alt: 'Nhân vật nữ PYINCC GLB quét 3D',
             backgroundColor: sand,
             cameraControls: true,
-            autoRotate: false,
+            disablePan: true,
+            disableZoom: true,
+            autoRotate: true,
+            autoRotateDelay: 0,
+            rotationPerSecond: '10deg',
             cameraOrbit: '0deg 90deg 120%',
+            minCameraOrbit: '-180deg 65deg 120%',
+            maxCameraOrbit: '180deg 115deg 120%',
             fieldOfView: '32deg',
             ar: false,
             loading: Loading.eager,
@@ -168,10 +174,7 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _face;
   bool _loading = false;
-  bool _consent = false;
-  double _height = 165;
-  double _weight = 60;
-  String _form = 'M';
+
 
   Future<void> _selectFace() async {
     if (_loading) return;
@@ -202,26 +205,29 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
     }
   }
 
-  Widget _measure(String label, double value, double min, double max,
-      String unit, ValueChanged<double> onChanged) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(label), Text('${value.round()} $unit'),
-      ]),
-      Slider(value: value, min: min, max: max, onChanged: onChanged),
-    ],
-  );
-
   @override
   Widget build(BuildContext context) => SectionPage(
     title: 'PYINCC', subtitle: 'Fashion Studio',
     children: [
-      Wrap(spacing: 8, runSpacing: 8, children: [
-        ActionChip(avatar: const Icon(Icons.auto_awesome_outlined), label: const Text('Studio'), onPressed: widget.onOpenStudio),
-        ActionChip(avatar: const Icon(Icons.storefront_outlined), label: const Text('Store'), onPressed: widget.onOpenStore),
-        ActionChip(avatar: const Icon(Icons.checkroom_outlined), label: const Text('Tủ đồ'), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WardrobeScreen()))),
-        ActionChip(avatar: const Icon(Icons.person_outline), label: const Text('Account'), onPressed: widget.onOpenAccount),
-      ]),
+      GridView.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1.65,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          _HomeQuickAction(icon: Icons.auto_awesome_outlined, title: 'Studio',
+            subtitle: 'Không gian 3D', onTap: widget.onOpenStudio),
+          _HomeQuickAction(icon: Icons.storefront_outlined, title: 'Store',
+            subtitle: 'Danh mục sản phẩm', onTap: widget.onOpenStore),
+          _HomeQuickAction(icon: Icons.checkroom_outlined, title: 'Tủ đồ',
+            subtitle: 'Quản lý trang phục', onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const WardrobeScreen()))),
+          _HomeQuickAction(icon: Icons.person_outline, title: 'Account',
+            subtitle: 'Cài đặt cá nhân', onTap: widget.onOpenAccount),
+        ],
+      ),
       const SizedBox(height: 12),
       const Row(children: [
         Icon(Icons.face_retouching_natural_outlined, color: coffee),
@@ -246,14 +252,8 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
             icon: const Icon(Icons.upload_file_outlined),
             label: Text(_face == null ? '1. Tải ảnh khuôn mặt' : 'Đổi ảnh khuôn mặt'),
           ),
-          CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            value: _consent,
-            onChanged: (value) => setState(() => _consent = value ?? false),
-            title: const Text('Tôi có quyền sử dụng khuôn mặt trong ảnh'),
-            subtitle: const Text('Ảnh chỉ dùng trong phiên hiện tại; chưa tải lên cloud.'),
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
+          const Text('Ảnh chỉ được xem trong phiên hiện tại và chưa gửi lên máy chủ.',
+            style: TextStyle(fontSize: 12, color: Colors.black54)),
           FilledButton.icon(
             onPressed: null,
             icon: const Icon(Icons.lock_outline),
@@ -273,32 +273,54 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
         label: const Text('Xem nhân vật 3D'),
       ),
       const SizedBox(height: 16),
-      const Text('Thông số nhân vật', style: TextStyle(
-        fontSize: 18, fontWeight: FontWeight.w600)),
-
-      const SizedBox(height: 8),
-      _measure('Chiều cao', _height, 120, 210, 'cm',
-          (v) => setState(() => _height = v)),
-      _measure('Cân nặng', _weight, 30, 150, 'kg',
-          (v) => setState(() => _weight = v)),
-      const Text('Form nhân vật · X / M / N'),
-      const SizedBox(height: 8),
-      SegmentedButton<String>(
-        segments: const [
-          ButtonSegment(value: 'X', label: Text('X')),
-          ButtonSegment(value: 'M', label: Text('M')),
-          ButtonSegment(value: 'N', label: Text('N')),
-        ],
-        selected: {_form},
-        onSelectionChanged: (v) => setState(() => _form = v.first),
-      ),
-      const SizedBox(height: 8),
+      const Card(child: ListTile(
+        leading: Icon(Icons.tune_outlined, color: accent),
+        title: Text('Tùy chỉnh mô hình 3D'),
+        subtitle: Text('Cấu hình tạo hình sẽ mở khi model PYINCC cuối cùng được tích hợp. '
+          'Các thông số chưa được nối với GLB nên hiện chưa hiển thị điều khiển giả.'),
+      )),
 
     ],
   );
 }
 
 /// Store deliberately contains no invented prices, brands or purchase URLs.
+class _HomeQuickAction extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  const _HomeQuickAction({required this.icon, required this.title,
+    required this.subtitle, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    color: Colors.white,
+    clipBehavior: Clip.antiAlias,
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: coffee, size: 24),
+            const SizedBox(height: 5),
+            Text(title, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700,
+                color: coffee)),
+            const SizedBox(height: 2),
+            Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 10, color: Colors.black54)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class StoreScreen extends StatelessWidget {
   final VoidCallback onTryOn;
   const StoreScreen({super.key, required this.onTryOn});
@@ -331,9 +353,13 @@ class UnifiedStudioScreen extends StatefulWidget {
 
 class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   StudioTool? _activeTool;
+  late final Future<AssetManifest> _assetManifest;
 
-  void _notice(String message) => ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text(message)));
+  @override
+  void initState() {
+    super.initState();
+    _assetManifest = AssetManifest.loadFromAssetBundle(rootBundle);
+  }
 
   Widget _menu(StudioTool tool) {
     final active = _activeTool?.key == tool.key;
@@ -414,9 +440,8 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           const Expanded(child: Text('Studio · 3D',
             style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600,
               color: coffee))),
-          IconButton(tooltip: 'Hoàn tác', icon: const Icon(Icons.undo),
-            onPressed: () => _notice('Chưa có thao tác phối đồ để hoàn tác.')),
-          IconButton(tooltip: 'Đặt lại', icon: const Icon(Icons.restart_alt),
+          IconButton(tooltip: 'Đóng công cụ đang mở',
+            icon: const Icon(Icons.restart_alt),
             onPressed: () => setState(() => _activeTool = null)),
         ])),
       SizedBox(
@@ -428,7 +453,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
         decoration: BoxDecoration(color: sand,
           borderRadius: BorderRadius.circular(22)),
         child: FutureBuilder<AssetManifest>(
-          future: AssetManifest.loadFromAssetBundle(rootBundle),
+          future: _assetManifest,
           builder: (context, snapshot) {
             const model = 'assets/avatars/pyincc_avatar_primary.glb';
             if (snapshot.hasError) {
@@ -453,8 +478,14 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 // Keep the avatar anchored in the viewport; slow auto-rotation
                 // lets users inspect the model without dragging it off-center.
                 cameraControls: true,
+                disablePan: true,
+                disableZoom: true,
                 autoRotate: true,
+                autoRotateDelay: 0,
+                rotationPerSecond: '10deg',
                 cameraOrbit: '0deg 90deg 145%',
+                minCameraOrbit: '-180deg 65deg 145%',
+                maxCameraOrbit: '180deg 115deg 145%',
                 fieldOfView: '38deg',
                 ar: false,
                 loading: Loading.eager,
@@ -470,7 +501,12 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           },
         ),
       )),
-      Padding(padding: const EdgeInsets.fromLTRB(9, 10, 9, 10),
+      const Padding(
+        padding: EdgeInsets.fromLTRB(16, 4, 16, 2),
+        child: Text('Xoay tự động chậm · Kéo một ngón để đổi góc nhìn',
+          style: TextStyle(fontSize: 11, color: Colors.black54)),
+      ),
+      Padding(padding: const EdgeInsets.fromLTRB(9, 8, 9, 10),
         child: Row(children: [
           ...StudioTool.all.map(_menu),
         ])),
