@@ -87,14 +87,39 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Studio displays Skin Care controls without claiming 3D effects', (tester) async {
+  testWidgets('Skin Care controls stay locked until GLB material effects exist', (tester) async {
     await openStudio(tester);
+    await tester.ensureVisible(find.text('Skin Care'));
     await tester.tap(find.text('Skin Care'));
     await tester.pumpAndSettle();
     expect(find.text('Độ sáng'), findsOneWidget);
     expect(find.text('Má hồng'), findsOneWidget);
     expect(find.text('Son môi'), findsOneWidget);
+    expect(find.textContaining('chưa được kết nối với vật liệu GLB'), findsOneWidget);
+    expect(tester.widgetList<Slider>(find.byType(Slider)).every((slider) => slider.onChanged == null), isTrue);
+    expect(tester.takeException(), isNull);
+  });
 
+  testWidgets('Face Swap is visibly unavailable instead of presenting a fake action', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CharacterHomeScreen()));
+    await tester.pumpAndSettle();
+    final action = find.widgetWithText(FilledButton, 'Face Swap 3D chưa khả dụng');
+    await tester.scrollUntilVisible(action, 140);
+    expect(tester.widget<FilledButton>(action).onPressed, isNull);
+    expect(find.textContaining('Chưa có engine Face Swap 3D đã kiểm chứng'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Studio remains scroll-safe on a compact Android-sized viewport', (tester) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await openStudio(tester);
+    await tester.ensureVisible(find.text('Skin Care'));
+    await tester.tap(find.text('Skin Care'));
+    await tester.pumpAndSettle();
+    expect(find.text('Độ sáng'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
