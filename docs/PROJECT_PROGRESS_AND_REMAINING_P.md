@@ -1,6 +1,6 @@
 # PYINCC FashionAI — tiến độ Android và backlog P1
 
-Ngày cập nhật: 2026-11-03  
+Ngày cập nhật: 2026-11-04  
 Nhánh làm việc: `fashionai/gracy-20261023`  
 Nhánh iOS: `ios` (giữ riêng, tạm dừng)  
 Phạm vi: Android UI/P1; **không build APK trong giai đoạn này**.
@@ -15,7 +15,15 @@ Phạm vi: Android UI/P1; **không build APK trong giai đoạn này**.
 
 Commit khóa build: `3362d343248f7f8aa3b34e7bcaf3d75e5b5b633b`.
 
-## 2. Các thay đổi P1 đã ghi vào mã nguồn
+## 2. Quy định GLB — phân biệt asset build/test và avatar chính thức
+
+- **GLB đang có trong dự án (Gracy Lee):** chỉ là mô hình kỹ thuật tạm thời để build APK, kiểm tra pipeline tải asset, hiển thị Model Viewer, camera, xoay 3D và hiệu năng. Không đại diện cho avatar PYINCC chính thức; không dùng hình ảnh hoặc kết quả với GLB này để tuyên bố avatar cuối cùng đã hoàn thiện.
+- **GLB thật của PYINCC:** chủ dự án đang tự xây dựng và sẽ bổ sung vào dự án sau. Hiện chưa được bàn giao nên chưa thể kiểm tra cấu trúc, UV, texture, chất lượng hình ảnh, dung lượng, quyền sử dụng hoặc khả năng render trên thiết bị.
+- **Quy tắc thay thế:** tiếp tục dùng GLB Gracy Lee cho build/test ứng dụng trong giai đoạn hiện tại. Khi GLB PYINCC chính thức được bổ sung, cập nhật asset/config tương ứng và chạy lại asset gate, kiểm tra trực quan bốn góc, kiểm tra quyền sử dụng và UAT Android.
+- **Phân tách cổng nghiệm thu:** việc GLB chính thức đang được xây dựng **không chặn** công việc UI/P1 hoặc build APK dùng GLB test. Avatar PYINCC chính thức vẫn là hạng mục riêng, chưa nghiệm thu cho đến khi asset thật được bổ sung và kiểm tra.
+- Không đổi tên, ghi nhãn hoặc mô tả GLB test thành avatar PYINCC chính thức.
+
+## 3. Các thay đổi P1 đã ghi vào mã nguồn
 
 ### Home
 - Thêm lối tắt có nhãn trực tiếp tới Studio, Store, Tủ đồ và Account.
@@ -61,7 +69,7 @@ Commit kiểm thử: `97991b9ebcb0c6befa853e30ec8e6c3f2bf4219d`
 
 Run #130 đang kiểm tra các commit mới. Không có lệnh build APK trong workflow push; chờ validate hoàn tất trước khi kết luận P1 này PASS.
 
-## 3. Bằng chứng CI và giới hạn
+## 4. Bằng chứng CI và giới hạn
 
 - Workflow #115 trên commit cũ `c741bd8f2a8110d69bbe32aed72ef150eaffe784` đã thành công; build debug APK ở thời điểm đó đã chạy. Đây là bằng chứng lịch sử, không phải bản APK của các thay đổi P1 mới.
 - Các run #117–#121 phát hiện lỗi test/analyze trong các commit trung gian; đã truy nguyên các nguyên nhân: test còn kỳ vọng empty-state cũ, tham chiếu state `_panel` chưa đổi hết, constructor test chưa cập nhật và finder `Studio` bị trùng sau khi thêm Home shortcut.
@@ -72,7 +80,7 @@ Run #130 đang kiểm tra các commit mới. Không có lệnh build APK trong w
 - Asset gate thành công ở các run đã kiểm tra; điều này không xác nhận hình ảnh hiển thị đúng trên thiết bị.
 - Build job bị skip trên push theo thiết kế. Không tạo APK mới trong giai đoạn sửa P1.
 
-## 4. P1 còn cần nghiệm thu
+## 5. P1 còn cần nghiệm thu
 
 | Hạng mục | Trạng thái |
 |---|---|
@@ -83,24 +91,24 @@ Run #130 đang kiểm tra các commit mới. Không có lệnh build APK trong w
 | Ảnh chụp Home/Studio trên thiết bị thật | Chưa có bằng chứng mới |
 | Tương tác 3D thực tế, độ ổn định WebView và hiệu năng | Chưa nghiệm thu |
 
-## 5. Các giới hạn sản phẩm không được đánh dấu hoàn thành
+## 6. Các giới hạn sản phẩm không được đánh dấu hoàn thành
 
 - Face Swap 3D chưa có engine đã kiểm chứng.
 - Skin Care chưa được nối với material/texture của GLB.
 - Store chưa có catalog và liên kết sản phẩm đã xác minh.
 - Tủ đồ/Big Bag chưa có pipeline lưu trang phục và garment 3D.
-- GLB Gracy Lee hiện tại chỉ là asset kỹ thuật tạm thời; chưa phải model PYINCC cuối cùng.
+- GLB Gracy Lee hiện tại là asset build/test tạm thời; GLB PYINCC chính thức đang được chủ dự án xây dựng và sẽ bổ sung sau. Không dùng việc thiếu GLB chính thức để chặn build/test ứng dụng bằng asset tạm.
 - Production authentication, dữ liệu/persistence và kiểm thử thiết bị cần các đợt riêng.
 
-## 6. Điều kiện chuyển sang giai đoạn APK/UAT
+## 7. Điều kiện chuyển sang giai đoạn APK/UAT
 
 Chỉ khi:
-1. CI trên commit cuối cùng đạt gate-tests, asset-gate, static analysis và widget tests.
-2. P1 Home/Studio được kiểm tra trên kích thước màn hình Android mục tiêu; không có overflow, che khuất hoặc lỗi điều hướng.
+1. CI trên commit cuối cùng đạt gate-tests, asset-gate, static analysis và widget tests. Asset gate ở giai đoạn này xác minh asset test đang dùng, không chứng nhận avatar PYINCC cuối cùng.
+2. P1 Home/Studio được kiểm tra trên kích thước màn hình Android mục tiêu; không có overflow, che khuất hoặc lỗi điều hướng. APK giai đoạn này được phép dùng GLB test hiện tại.
 3. Chủ dự án cho phép chuyển sang giai đoạn build APK.
 
-Sau đó mới chạy workflow thủ công với `build_apk=true`, kiểm tra APK package/signature/asset hash và cài lên thiết bị để ghi nhận ảnh chụp, tương tác, render 3D, hiệu năng và lỗi thực tế.
+Sau đó mới chạy workflow thủ công với `build_apk=true`, kiểm tra APK package/signature/asset hash và cài lên thiết bị để ghi nhận ảnh chụp, tương tác, render GLB test, hiệu năng và lỗi thực tế. UAT avatar PYINCC chính thức sẽ thực hiện riêng sau khi GLB thật được bổ sung.
 
-## 7. Branch cleanup
+## 8. Branch cleanup
 
 Mục tiêu giữ Android và iOS làm hai nhánh làm việc. Các nhánh cũ và PR chưa xử lý cần được đối chiếu ancestry/PR trước khi xóa. Không xóa nhánh mặc định `main` trước khi chuyển default branch và xác nhận không còn phụ thuộc. Việc xóa refs chưa được thực hiện trong lần cập nhật này.
