@@ -401,8 +401,6 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           const _UnavailableEffectControl(label: 'Má hồng', value: .2),
           const _UnavailableEffectControl(label: 'Son môi', value: .2),
         ]);
-      default:
-        return const SizedBox.shrink();
     }
   }
 
@@ -493,7 +491,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 tooltip: 'Đóng bảng công cụ',
                 visualDensity: VisualDensity.compact,
                 icon: const Icon(Icons.close, size: 20),
-                onPressed: () => setState(() => _panel = null),
+                onPressed: () => setState(() => _activeTool = null),
               ),
             ]),
             Flexible(child: SingleChildScrollView(child: _panelContent(_activeTool!))),
