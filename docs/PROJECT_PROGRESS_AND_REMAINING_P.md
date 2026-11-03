@@ -51,7 +51,8 @@ Các commit mã nguồn liên quan:
 - Workflow #115 trên commit cũ `c741bd8f2a8110d69bbe32aed72ef150eaffe784` đã thành công; build debug APK ở thời điểm đó đã chạy. Đây là bằng chứng lịch sử, không phải bản APK của các thay đổi P1 mới.
 - Các run #117–#121 phát hiện lỗi test/analyze trong các commit trung gian; đã truy nguyên các nguyên nhân: test còn kỳ vọng empty-state cũ, tham chiếu state `_panel` chưa đổi hết, constructor test chưa cập nhật và finder `Studio` bị trùng sau khi thêm Home shortcut.
 - Run #122 trên commit `391c430d1f7e14e4c0c3768d25330e181c8b21dd`: static analysis PASS, widget tests FAIL do finder `find.text('Studio')` khớp đồng thời Home shortcut và bottom tab. Đã sửa helper để chọn đúng `NavigationDestination` trong commit `736c729cea7f39cd18afa3a037c5236560d48fad`.
-- Run #124 trên commit test-fix `736c729cea7f39cd18afa3a037c5236560d48fad` đang xác minh lại. Run #123 dùng test helper cũ nên không phải kết quả nghiệm thu cuối. Chưa ghi PASS cho đến khi run #124 hoàn tất.
+- Run #124 trên commit `736c729cea7f39cd18afa3a037c5236560d48fad`: static analysis PASS, widget tests còn 2 lỗi finder: semantics label không có trong semantics tree mặc định và test tab Store bị trùng với Home shortcut. Đã đổi test để kiểm tra metadata trên widget `Semantics` trực tiếp và chọn đúng `NavigationDestination` cho Store/Account trong commit `60f7b9b2604dadd3044ac5497efa247393042b31`.
+- Run #126 (sau commit test-fix mới) là lượt xác minh tiếp theo. Chưa ghi PASS cho đến khi validate hoàn tất.
 - Asset gate thành công ở các run đã kiểm tra; điều này không xác nhận hình ảnh hiển thị đúng trên thiết bị.
 - Build job bị skip trên push theo thiết kế. Không tạo APK mới trong giai đoạn sửa P1.
 
