@@ -18,13 +18,24 @@ Future<void> openStudio(WidgetTester tester) async {
 void _testNoop() {}
 
 void main() {
-  testWidgets('Account shows local-first privacy without asserting unverified asset rights', (tester) async {
+  testWidgets('Account shows local-first privacy and selectable, openable 3D attribution', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ProfileScreen()));
     await tester.pumpAndSettle();
+
     expect(find.text('Local-first'), findsOneWidget);
     expect(find.textContaining('Ảnh cá nhân không được tự động tải lên Cloud'), findsOneWidget);
-    // Asset attribution must only be shown from an independently verified rights record.
-    expect(find.text('Bản quyền mô hình 3D'), findsNothing);
+    expect(find.text('Bản quyền mô hình 3D'), findsOneWidget);
+    expect(find.text('Gracy Lee — hong227 · mô hình thử nghiệm kỹ thuật'), findsOneWidget);
+
+    final sourceUrl = 'https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8';
+    final licenseUrl = 'https://creativecommons.org/licenses/by/4.0/';
+    expect(find.widgetWithText(SelectableText, sourceUrl), findsOneWidget);
+    expect(find.widgetWithText(SelectableText, licenseUrl), findsOneWidget);
+
+    final sourceButton = tester.widget<TextButton>(find.widgetWithText(TextButton, 'Mở nguồn mô hình'));
+    final licenseButton = tester.widget<TextButton>(find.widgetWithText(TextButton, 'Mở giấy phép CC BY 4.0'));
+    expect(sourceButton.onPressed, isNotNull);
+    expect(licenseButton.onPressed, isNotNull);
     expect(tester.takeException(), isNull);
   });
 

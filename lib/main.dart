@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'production_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const PyinccApp());
 
@@ -694,24 +695,111 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 class _ProfileScreenState extends State<ProfileScreen> {
+  static final Uri _modelSource = Uri.parse(
+    'https://sketchfab.com/3d-models/gracy-lee-5e0c47f7f7fe453bb4d3c8c7eba356e8');
+  static final Uri _modelLicense = Uri.parse(
+    'https://creativecommons.org/licenses/by/4.0/');
+
   bool cloudBackup = false;
+
+  Future<void> _openAttributionLink(Uri uri) async {
+    try {
+      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!opened && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không mở được liên kết. Bạn có thể sao chép URL bên dưới.')),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không mở được liên kết. Bạn có thể sao chép URL bên dưới.')),
+        );
+      }
+    }
+  }
+
+  Widget _attributionLink({required String label, required Uri uri}) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      SelectableText(
+        uri.toString(),
+        style: const TextStyle(fontSize: 12, color: Colors.black87),
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: TextButton.icon(
+          onPressed: () => _openAttributionLink(uri),
+          icon: const Icon(Icons.open_in_new, size: 18),
+          label: Text(label),
+        ),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) => SectionPage(
     title: 'Cá nhân', subtitle: 'Quyền riêng tư và dữ liệu',
     children: [
-
-      const ListTile(leading: Icon(Icons.lock_outline), title: Text('Đăng nhập'),
-        subtitle: Text('Firebase Authentication áp dụng cho bản production; bản debug dùng giao diện phát triển')),
+      const ListTile(
+        leading: Icon(Icons.lock_outline),
+        title: Text('Đăng nhập'),
+        subtitle: Text('Firebase Authentication áp dụng cho bản production; bản debug dùng giao diện phát triển'),
+      ),
       SwitchListTile(
         value: cloudBackup,
         onChanged: null,
         title: const Text('Cloud Backup'),
         subtitle: const Text('Mặc định TẮT · Chưa triển khai · Không tự động tải dữ liệu'),
       ),
-      const ListTile(leading: Icon(Icons.phone_android), title: Text('Local-first'),
-        subtitle: Text('Ảnh cá nhân không được tự động tải lên Cloud')),
-      const ListTile(leading: Icon(Icons.favorite_border), title: Text('Dream Wardrobe'),
-        subtitle: Text('Danh sách yêu thích · Chưa triển khai lưu dữ liệu')),
+      const ListTile(
+        leading: Icon(Icons.phone_android),
+        title: Text('Local-first'),
+        subtitle: Text('Ảnh cá nhân không được tự động tải lên Cloud'),
+      ),
+      const ListTile(
+        leading: Icon(Icons.favorite_border),
+        title: Text('Dream Wardrobe'),
+        subtitle: Text('Danh sách yêu thích · Chưa triển khai lưu dữ liệu'),
+      ),
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.copyright_outlined, color: accent),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Bản quyền mô hình 3D',
+                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text('Gracy Lee — hong227 · mô hình thử nghiệm kỹ thuật'),
+              const SizedBox(height: 8),
+              const Text('Nguồn mô hình', style: TextStyle(fontWeight: FontWeight.w600)),
+              _attributionLink(label: 'Mở nguồn mô hình', uri: _modelSource),
+              const Divider(),
+              const Text(
+                'Giấy phép: Creative Commons Attribution 4.0 International (CC BY 4.0)',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              _attributionLink(label: 'Mở giấy phép CC BY 4.0', uri: _modelLicense),
+              const SizedBox(height: 4),
+              const Text(
+                'Đây là asset tạm thời phục vụ kiểm thử kỹ thuật, không phải avatar PYINCC chính thức.',
+                style: TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            ],
+          ),
+        ),
+      ),
     ],
   );
 }
