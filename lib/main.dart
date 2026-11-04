@@ -554,9 +554,10 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
                 _viewerGeneration++;
               }),
             ),
-            const Text('Xoay tự động chậm · Kéo một ngón để đổi góc nhìn',
-              style: TextStyle(fontSize: 10, color: Colors.black54)),
           ]),
+          const Text('Xoay tự động chậm · Kéo một ngón để đổi góc nhìn',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 10, color: Colors.black54)),
         ]),
       ),
       Padding(padding: const EdgeInsets.fromLTRB(9, 8, 9, 10),
