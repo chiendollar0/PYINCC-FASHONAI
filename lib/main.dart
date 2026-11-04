@@ -46,7 +46,9 @@ class SampleAvatar3DScreen extends StatefulWidget {
 
 class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
   static const _primary = 'assets/avatars/pyincc_avatar_primary.glb';
-  // One approved avatar only.
+  // Gracy Lee is a temporary technical test asset, not the official PYINCC avatar.
+  bool _autoRotate = true;
+  int _viewerGeneration = 0;
   late final Future<Set<String>> _available = _loadAssets();
 
   Future<Set<String>> _loadAssets() async {
@@ -70,21 +72,21 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
         if (!available.contains(_primary)) {
           return const Center(child: Padding(
             padding: EdgeInsets.all(24),
-            child: Text('Chưa đóng gói GLB nữ PYINCC vào ứng dụng. '
-              'Cần thêm file trong assets/avatars/ và build lại. '
-              'Không sử dụng nhân vật demo thay thế.',
+            child: Text('Chưa đóng gói GLB test vào ứng dụng. '
+              'Kiểm tra assets/avatars/pyincc_avatar_primary.glb. '
+              'GLB PYINCC chính thức sẽ được bổ sung sau.',
               textAlign: TextAlign.center)));
         }
         return Column(children: [
           Expanded(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
-            key: const ValueKey(_primary),
+            key: ValueKey('$_primary-$_viewerGeneration'),
             src: _primary,
-            alt: 'Nhân vật nữ PYINCC GLB quét 3D',
+            alt: 'Mô hình GLB thử nghiệm Gracy Lee',
             backgroundColor: sand,
             cameraControls: true,
             disablePan: true,
             disableZoom: true,
-            autoRotate: true,
+            autoRotate: _autoRotate,
             autoRotateDelay: 0,
             rotationPerSecond: '10deg',
             cameraOrbit: '0deg 90deg 120%',
@@ -94,7 +96,30 @@ class _SampleAvatar3DScreenState extends State<SampleAvatar3DScreen> {
             ar: false,
             loading: Loading.eager,
           )),
-
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+            child: Column(children: [
+              const Text('GLB Gracy Lee — mô hình thử nghiệm kỹ thuật. '
+                'Avatar PYINCC chính thức sẽ được bổ sung sau.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Colors.black54)),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                IconButton.filledTonal(
+                  tooltip: _autoRotate ? 'Tạm dừng xoay tự động' : 'Tiếp tục xoay tự động',
+                  icon: Icon(_autoRotate ? Icons.pause : Icons.play_arrow),
+                  onPressed: () => setState(() => _autoRotate = !_autoRotate),
+                ),
+                IconButton.filledTonal(
+                  tooltip: 'Đặt lại góc nhìn 3D',
+                  icon: const Icon(Icons.restart_alt),
+                  onPressed: () => setState(() {
+                    _autoRotate = true;
+                    _viewerGeneration++;
+                  }),
+                ),
+              ]),
+            ]),
+          ),
         ]);
       },
     )),
@@ -355,6 +380,8 @@ class UnifiedStudioScreen extends StatefulWidget {
 
 class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
   StudioTool? _activeTool;
+  bool _autoRotate = true;
+  int _viewerGeneration = 0;
   late final Future<AssetManifest> _assetManifest;
 
   @override
@@ -443,7 +470,7 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
             style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600,
               color: coffee))),
           IconButton(tooltip: 'Đóng công cụ đang mở',
-            icon: const Icon(Icons.restart_alt),
+            icon: const Icon(Icons.close),
             onPressed: () => setState(() => _activeTool = null)),
         ])),
       SizedBox(
@@ -467,22 +494,23 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
             if (!snapshot.data!.listAssets().contains(model)) {
               return const Center(child: Padding(
                 padding: EdgeInsets.all(24),
-                child: Text('Chưa có GLB PYINCC trong bản build. '
-                  'Thêm assets/avatars/pyincc_avatar_primary.glb để '
-                  'hiển thị avatar 3D offline.',
+                child: Text('Chưa có GLB test trong bản build. '
+                  'Kiểm tra assets/avatars/pyincc_avatar_primary.glb. '
+                  'GLB PYINCC chính thức sẽ được bổ sung sau.',
                   textAlign: TextAlign.center)));
             }
             return Stack(children: [
               Positioned.fill(child: const bool.fromEnvironment('PYINCC_WIDGET_TEST') ? const SizedBox.expand() : ModelViewer(
+                key: ValueKey('studio-avatar-$_viewerGeneration'),
                 src: model,
-                alt: 'Avatar PYINCC toàn thân xoay 360 độ',
+                alt: 'Mô hình GLB thử nghiệm Gracy Lee',
                 backgroundColor: sand,
                 // Keep the avatar anchored in the viewport; slow auto-rotation
                 // lets users inspect the model without dragging it off-center.
                 cameraControls: true,
                 disablePan: true,
                 disableZoom: true,
-                autoRotate: true,
+                autoRotate: _autoRotate,
                 autoRotateDelay: 0,
                 rotationPerSecond: '10deg',
                 cameraOrbit: '0deg 90deg 145%',
@@ -503,10 +531,33 @@ class _UnifiedStudioScreenState extends State<UnifiedStudioScreen> {
           },
         ),
       )),
-      const Padding(
-        padding: EdgeInsets.fromLTRB(16, 4, 16, 2),
-        child: Text('Xoay tự động chậm · Kéo một ngón để đổi góc nhìn',
-          style: TextStyle(fontSize: 11, color: Colors.black54)),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 2),
+        child: Column(children: [
+          const Text('GLB Gracy Lee — mô hình thử nghiệm kỹ thuật. '
+            'Avatar PYINCC chính thức sẽ được bổ sung sau.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 11, color: Colors.black54)),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            IconButton(
+              tooltip: _autoRotate ? 'Tạm dừng xoay tự động' : 'Tiếp tục xoay tự động',
+              visualDensity: VisualDensity.compact,
+              icon: Icon(_autoRotate ? Icons.pause : Icons.play_arrow),
+              onPressed: () => setState(() => _autoRotate = !_autoRotate),
+            ),
+            IconButton(
+              tooltip: 'Đặt lại góc nhìn 3D',
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(Icons.restart_alt),
+              onPressed: () => setState(() {
+                _autoRotate = true;
+                _viewerGeneration++;
+              }),
+            ),
+            const Text('Xoay tự động chậm · Kéo một ngón để đổi góc nhìn',
+              style: TextStyle(fontSize: 10, color: Colors.black54)),
+          ]),
+        ]),
       ),
       Padding(padding: const EdgeInsets.fromLTRB(9, 8, 9, 10),
         child: Row(children: [
