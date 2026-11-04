@@ -1,26 +1,33 @@
 # PYINCC FashionAI
 
-Flutter Android/iOS foundation. Runtime 3D viewing uses `model_viewer_plus` 1.9.3 and a bundled GLB. Face Swap, final avatar appearance, garment replacement and physical-device UAT are not verified production capabilities.
+Flutter Android/iOS application foundation. Android is the active delivery priority; iOS remains a separate workstream.
 
-## Current source and scope
+## Start here when resuming work
 
-Read `docs/PROJECT_UI_P0_SOURCE_OF_TRUTH.md` and `docs/product-contract-v2.md` first. Latest owner decision (18 October 2026): defer final GLB reconstruction and use the single selected Sketchfab candidate for temporary technical UAT, subject to verified rights. Tabs remain **Home | Studio | Store | Account**.
+**Read `docs/PROJECT_PROGRESS_AND_REMAINING_P.md` first.** It is the single current project checkpoint: authoritative Android branch, last verified commit/workflow, asset identity, open blockers and the next action. Do not reconstruct progress from old chat messages, old plans or unrelated branches.
 
-The selected candidate has been identified, but an authorized GLB and reviewed license grant are not available. See `config/avatar-asset.json` and `docs/evidence/sketchfab-4385c4a-metadata.json`. Public listing metadata does not establish download or distribution entitlement.
+Then read:
+1. `docs/PROJECT_UI_P0_SOURCE_OF_TRUTH.md` — product/UI intent and current implementation limits.
+2. `docs/product-contract-v2.md` — locked target product contract, not proof of delivered functionality.
+3. `docs/3d-avatar-integration.md` and `docs/3d-asset-integrity-2026-10-15.md` — current test-asset identity and acceptance gates.
 
-## Build gates
+## Current source branches
 
-- `python3 -m unittest discover -s tests -v`: regression tests for rights, structural and APK integrity gates. Unit fixtures are temporary, never app assets.
-- `python3 scripts/avatar_gate.py --report build/evidence/avatar-gate.json`: require a reviewed rights manifest and exactly one matching `assets/avatars/pyincc_avatar_primary.glb`. Exit 2 means BLOCKED; no fallback model is generated.
-- Android source validation runs independently. APK packaging requires both source validation and the asset gate; actual APK GLB bytes and raw APK SHA-256 are checked before upload. Package, minimum SDK and signing evidence are also captured.
-- iOS checks source/tests, then requires the same asset gate before unsigned simulator compilation. Simulator compilation is not physical-device UAT.
+- Android working branch: `fashionai/gracy-20261023`.
+- iOS working branch: `ios`, kept separate.
+- The repository default branch `main` is not the current Android working branch. Do not switch Android work to `main`, merge it into the Android branch, or create another branch without a specific need and owner approval.
 
-The historical root-level scan files and `scripts/prepare_avatar_assets.py` remain preserved for reference. Automatic scan regeneration and alternate-GLB packaging are disabled in CI.
+## Current 3D asset status
 
-## When an authorized asset is available
+The bundled Gracy Lee GLB is a **temporary technical build/UAT asset only**. Its current identity, recorded CC BY 4.0 evidence, attribution file and exact SHA-256 are pinned in `config/avatar-asset.json` and `docs/evidence/`. The asset gate verifies structural/packaging prerequisites; this is not a legal warranty, a visual-quality approval, or acceptance of the official PYINCC avatar.
 
-Engineering records the exact model ID, author, applicable license, reviewed permissions and license-grant evidence; imports the sole primary GLB; and pins byte size/SHA-256 in the manifest. Local preflight must pass before CI packages it. Do not replace pending evidence with invented approval, a sample or a generated placeholder.
+The official PYINCC GLB is being created by the project owner and will be supplied later. Its absence does not block Android UI work or a temporary-asset technical APK build. Never relabel the Gracy Lee test model as the official PYINCC avatar.
 
-After a successful build, physical Android evidence must identify the APK, device/Android/WebView and logcat, and demonstrate full-body rendering, four angles, camera interaction and offline behavior. Passing CI is never production or visual approval.
+## Build and acceptance boundaries
 
-Local-first controls and explicit consent remain required. Firebase, identity mapping, merchant integration, final avatar skin/garments and payment are not certified by these gates.
+- Android push workflow runs source/gate validation; it intentionally skips APK packaging.
+- APK packaging requires manually dispatching `.github/workflows/android-apk.yml` with `build_apk=true`.
+- CI PASS is not APK PASS. APK PASS is not physical-device UAT. Physical-device UAT is not production acceptance.
+- Current code limitations and the exact next step are recorded in `docs/PROJECT_PROGRESS_AND_REMAINING_P.md`.
+
+FashionAI is separate from AIPET. Do not import AIPET code, assets, workflows, branches, build artifacts or test evidence into this repository.

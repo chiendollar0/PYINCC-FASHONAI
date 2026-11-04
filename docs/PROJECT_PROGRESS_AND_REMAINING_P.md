@@ -1,114 +1,168 @@
-# PYINCC FashionAI — tiến độ Android và backlog P1
+# PYINCC FashionAI — project checkpoint and session handoff
 
-Ngày cập nhật: 2026-11-04  
-Nhánh làm việc: `fashionai/gracy-20261023`  
-Nhánh iOS: `ios` (giữ riêng, tạm dừng)  
-Phạm vi: Android UI/P1; **không build APK trong giai đoạn này**.
+**Checkpoint date:** 2026-11-04  
+**Repository:** `chiendollar0/PYINCC-FASHONAI`  
+**Android working branch:** `fashionai/gracy-20261023`  
+**iOS working branch:** `ios` (separate)  
+**Last validated application-code commit:** `c3d8dde0b288c3261a456337e8cee16cff5b9596`  
+**Last verified Android workflow:** [Run #140](https://github.com/chiendollar0/PYINCC-FASHONAI/actions/runs/41773896173)
 
-## 1. Quy tắc build đã áp dụng
+This document is the single execution checkpoint for resuming FashionAI after a chat/session change. Update this file when the actual baseline or acceptance evidence changes. Do not create a second competing progress document.
 
-- Workflow: `.github/workflows/android-apk.yml`.
-- Push lên nhánh Android chạy asset gate, Flutter analyze và widget tests.
-- Job APK có điều kiện: chỉ chạy từ `workflow_dispatch` khi người vận hành bật rõ `build_apk=true`.
-- Mặc định workflow dispatch không build APK.
-- Không dùng build CI hoặc widget test để tuyên bố đã nghiệm thu trên điện thoại.
+## 1. Source-of-truth rules
 
-Commit khóa build: `3362d343248f7f8aa3b34e7bcaf3d75e5b5b633b`.
+Use this order:
 
-## 2. Quy định GLB — phân biệt asset build/test và avatar chính thức
+1. Latest explicit owner instructions.
+2. This checkpoint for current implementation state, branch, CI, blockers and next action.
+3. `docs/PROJECT_UI_P0_SOURCE_OF_TRUTH.md` for product/UI intent and non-negotiable behavior.
+4. `docs/product-contract-v2.md` for the locked target scope.
+5. The asset manifest and hashed evidence for the exact bundled test asset.
+6. Current source code, workflow runs and test results as implementation evidence.
 
-- **GLB đang có trong dự án (Gracy Lee):** chỉ là mô hình kỹ thuật tạm thời để build APK, kiểm tra pipeline tải asset, hiển thị Model Viewer, camera, xoay 3D và hiệu năng. Không đại diện cho avatar PYINCC chính thức; không dùng hình ảnh hoặc kết quả với GLB này để tuyên bố avatar cuối cùng đã hoàn thiện.
-- **GLB thật của PYINCC:** chủ dự án đang tự xây dựng và sẽ bổ sung vào dự án sau. Hiện chưa được bàn giao nên chưa thể kiểm tra cấu trúc, UV, texture, chất lượng hình ảnh, dung lượng, quyền sử dụng hoặc khả năng render trên thiết bị.
-- **Quy tắc thay thế:** tiếp tục dùng GLB Gracy Lee cho build/test ứng dụng trong giai đoạn hiện tại. Khi GLB PYINCC chính thức được bổ sung, cập nhật asset/config tương ứng và chạy lại asset gate, kiểm tra trực quan bốn góc, kiểm tra quyền sử dụng và UAT Android.
-- **Phân tách cổng nghiệm thu:** việc GLB chính thức đang được xây dựng **không chặn** công việc UI/P1 hoặc build APK dùng GLB test. Avatar PYINCC chính thức vẫn là hạng mục riêng, chưa nghiệm thu cho đến khi asset thật được bổ sung và kiểm tra.
-- Không đổi tên, ghi nhãn hoặc mô tả GLB test thành avatar PYINCC chính thức.
+Older plans, old chat summaries, stale branches and historical workflow runs must not override the current branch and exact latest evidence. If two documents disagree, fix the stale document and update this checkpoint; do not start another implementation branch to work around documentation drift.
 
-## 3. Các thay đổi P1 đã ghi vào mã nguồn
+## 2. Authoritative code baseline
 
-### Home
-- Thêm lối tắt có nhãn trực tiếp tới Studio, Store, Tủ đồ và Account.
-- Giữ bốn tab chính Home / Studio / Store / Account.
-
-### Studio tool menu
-- Tập trung metadata công cụ trong `StudioTool.all`: stable key, label, accessibility label, icon và action.
-- Selected state dùng stable key thay vì so sánh chuỗi nhãn.
-- Menu gọi action theo enum; bổ sung tooltip và semantics label.
-
-### Trạng thái tính năng trung thực
-- Face Swap 3D được khóa và ghi rõ chưa khả dụng vì chưa có engine đã kiểm chứng.
-- Skin Care controls bị khóa cho đến khi có hiệu ứng vật liệu GLB thực sự; không cho phép UI giả lập thao tác đã áp dụng lên avatar.
-- Store hiển thị trạng thái catalog chưa kết nối; không đưa ra danh sách sàn/giá/liên kết như thể đã tích hợp.
-- Big Bag nêu rõ chưa có trang phục 3D để thử.
-
-### Kiểm thử bổ sung
-- Home shortcuts và điều hướng.
-- Accessibility labels của bốn công cụ Studio.
-- Skin Care disabled-state.
-- Face Swap disabled-state.
-- Compact viewport 320×640 và kiểm tra Flutter exception.
-
-Các commit mã nguồn liên quan:
-- `285bb7fec76314c56d434c6bc229dff65dc0a72c` — trạng thái tính năng trung thực.
-- `0f13011cc97d1ea9bd23e7c8e9b9a61482b18a18` — test cho disabled-state và viewport nhỏ.
-- `80e2b155c9d3c686c8620a7f82ec04e5553624a0` — Home shortcuts và Studio tool registry.
-- `5485272a4b6b3ac60496e8eaa51accdf378169ad` — test Home và menu accessibility.
-- `391c430d1f7e14e4c0c3768d25330e181c8b21dd` — hoàn tất migration tool registry, loại bỏ tham chiếu state cũ.
-
-### P1 tiếp tục — Home và Studio (2026-11-04)
-
-Commit mã nguồn: `81b0e78c78cd7ce980431d0594148b3625652f4b`  
-Commit kiểm thử: `97991b9ebcb0c6befa853e30ec8e6c3f2bf4219d`
-
-- Home chuyển từ các chip rời sang lưới 2×2 có icon, nhãn và mô tả; bốn đường dẫn Studio, Store, Tủ đồ, Account vẫn điều hướng trực tiếp.
-- Loại bỏ các trường chiều cao/cân nặng và lựa chọn form chưa được nối với avatar GLB; thay bằng thông báo rõ cấu hình mô hình chưa được tích hợp. Không giữ các điều khiển không tạo ra thay đổi thực tế.
-- Bỏ checkbox xác nhận quyền ảnh không có tác vụ xử lý tương ứng; thay bằng thông báo ảnh chỉ hiển thị trong phiên và chưa gửi lên máy chủ.
-- Bỏ nút Undo chỉ hiển thị thông báo giả khi chưa có lịch sử thao tác.
-- Model Viewer dùng `rotationPerSecond: 10deg`, `autoRotateDelay: 0`, khóa pan/zoom và giới hạn góc camera; mục tiêu là hạn chế avatar bị kéo lệch trong lúc xem.
-- Cache `AssetManifest` trong state của Studio để tránh tạo lại Future mỗi lần đổi công cụ.
-- Bổ sung widget test Home ở viewport 320×640 và kiểm tra các điều khiển không khả dụng không xuất hiện.
-
-Run #130 đang kiểm tra các commit mới. Không có lệnh build APK trong workflow push; chờ validate hoàn tất trước khi kết luận P1 này PASS.
-
-## 4. Bằng chứng CI và giới hạn
-
-- Workflow #115 trên commit cũ `c741bd8f2a8110d69bbe32aed72ef150eaffe784` đã thành công; build debug APK ở thời điểm đó đã chạy. Đây là bằng chứng lịch sử, không phải bản APK của các thay đổi P1 mới.
-- Các run #117–#121 phát hiện lỗi test/analyze trong các commit trung gian; đã truy nguyên các nguyên nhân: test còn kỳ vọng empty-state cũ, tham chiếu state `_panel` chưa đổi hết, constructor test chưa cập nhật và finder `Studio` bị trùng sau khi thêm Home shortcut.
-- Run #122 trên commit `391c430d1f7e14e4c0c3768d25330e181c8b21dd`: static analysis PASS, widget tests FAIL do finder `find.text('Studio')` khớp đồng thời Home shortcut và bottom tab. Đã sửa helper để chọn đúng `NavigationDestination` trong commit `736c729cea7f39cd18afa3a037c5236560d48fad`.
-- Run #124 trên commit `736c729cea7f39cd18afa3a037c5236560d48fad`: static analysis PASS, widget tests còn 2 lỗi finder: semantics label không có trong semantics tree mặc định và test tab Store bị trùng với Home shortcut. Đã đổi test để kiểm tra metadata trên widget `Semantics` trực tiếp và chọn đúng `NavigationDestination` cho Store/Account trong commit `60f7b9b2604dadd3044ac5497efa247393042b31`.
-- Run #126 trên commit `60f7b9b2604dadd3044ac5497efa247393042b31`: gate-tests PASS, asset-gate PASS, static analysis PASS, widget tests PASS; Android Gradle compile check đang chạy tại thời điểm kiểm tra. Job build APK không được chạy.
-- Sau đó sửa thêm finder Account trong test Cloud Backup ở commit `ac1d8b6326d25cc7f5ba2d1c4795792d54c4ba80`. Run #128 đang xác minh head mới này; chưa ghi toàn bộ CI PASS cho đến khi Gradle compile check và run #128 hoàn tất.
-- Asset gate thành công ở các run đã kiểm tra; điều này không xác nhận hình ảnh hiển thị đúng trên thiết bị.
-- Build job bị skip trên push theo thiết kế. Không tạo APK mới trong giai đoạn sửa P1.
-
-## 5. P1 còn cần nghiệm thu
-
-| Hạng mục | Trạng thái |
+| Item | Current value |
 |---|---|
-| Home có lối tắt tới 4 khu vực | Đã cập nhật mã; chờ CI xác nhận |
-| Registry icon/action/accessibility của Studio | Đã cập nhật mã; chờ CI xác nhận |
-| Empty state và trạng thái tính năng không gây hiểu nhầm | Đã cập nhật mã; chờ CI xác nhận |
-| Đánh giá hierarchy, spacing và panel trên màn hình Android thực | Chưa nghiệm thu |
-| Ảnh chụp Home/Studio trên thiết bị thật | Chưa có bằng chứng mới |
-| Tương tác 3D thực tế, độ ổn định WebView và hiệu năng | Chưa nghiệm thu |
+| Android source branch | `fashionai/gracy-20261023` |
+| Validated application-code commit | `c3d8dde0b288c3261a456337e8cee16cff5b9596` |
+| Latest run | [#140](https://github.com/chiendollar0/PYINCC-FASHONAI/actions/runs/41773896173) |
+| Run result | `completed / success` |
+| Android application ID configured by workflow | `com.pyincc.fashionai` |
+| Minimum Android SDK configured by workflow | API 26 |
+| iOS branch | `ios`, independent of Android |
 
-## 6. Các giới hạn sản phẩm không được đánh dấu hoàn thành
+At the time of this checkpoint, `main` is still the repository default branch but is not the Android implementation source. Comparison reported Android branch `27` commits ahead and `7` behind `main`. Do not merge `main` into the Android working branch as a routine sync; inspect each unique change first.
 
-- Face Swap 3D chưa có engine đã kiểm chứng.
-- Skin Care chưa được nối với material/texture của GLB.
-- Store chưa có catalog và liên kết sản phẩm đã xác minh.
-- Tủ đồ/Big Bag chưa có pipeline lưu trang phục và garment 3D.
-- GLB Gracy Lee hiện tại là asset build/test tạm thời; GLB PYINCC chính thức đang được chủ dự án xây dựng và sẽ bổ sung sau. Không dùng việc thiếu GLB chính thức để chặn build/test ứng dụng bằng asset tạm.
-- Production authentication, dữ liệu/persistence và kiểm thử thiết bị cần các đợt riêng.
+Any documentation-only commit made after the validated code commit does not change the application code tested by Run #140. When resuming, fetch the live branch ref and confirm that later commits are documentation-only before reusing the Run #140 evidence.
 
-## 7. Điều kiện chuyển sang giai đoạn APK/UAT
+## 3. Latest CI result — Run #140
 
-Chỉ khi:
-1. CI trên commit cuối cùng đạt gate-tests, asset-gate, static analysis và widget tests. Asset gate ở giai đoạn này xác minh asset test đang dùng, không chứng nhận avatar PYINCC cuối cùng.
-2. P1 Home/Studio được kiểm tra trên kích thước màn hình Android mục tiêu; không có overflow, che khuất hoặc lỗi điều hướng. APK giai đoạn này được phép dùng GLB test hiện tại.
-3. Chủ dự án cho phép chuyển sang giai đoạn build APK.
+Run ID: `41773896173`  
+Commit: `c3d8dde0b288c3261a456337e8cee16cff5b9596`  
+Event: `push`  
+Workflow: `.github/workflows/android-apk.yml`
 
-Sau đó mới chạy workflow thủ công với `build_apk=true`, kiểm tra APK package/signature/asset hash và cài lên thiết bị để ghi nhận ảnh chụp, tương tác, render GLB test, hiệu năng và lỗi thực tế. UAT avatar PYINCC chính thức sẽ thực hiện riêng sau khi GLB thật được bổ sung.
+| Job | Result | Evidence |
+|---|---|---|
+| `gate-tests` | PASS | Python asset/APK gate regression suite completed |
+| `asset-gate` | PASS | Reviewed temporary asset manifest, evidence, attribution and exact GLB identity accepted by the gate |
+| `validate` | PASS | Flutter dependency resolution, static analysis, unit/widget tests and Android Gradle Kotlin compile check completed |
+| `build` | SKIPPED | Expected for a push event; APK job requires manual dispatch with `build_apk=true` |
 
-## 8. Branch cleanup
+Run #140 produced the `fashionai-asset-gate` evidence artifact only. It did **not** produce a new APK. Do not report this run as APK build success or device acceptance.
 
-Mục tiêu giữ Android và iOS làm hai nhánh làm việc. Các nhánh cũ và PR chưa xử lý cần được đối chiếu ancestry/PR trước khi xóa. Không xóa nhánh mặc định `main` trước khi chuyển default branch và xác nhận không còn phụ thuộc. Việc xóa refs chưa được thực hiện trong lần cập nhật này.
+Historical APK results from earlier runs/PR merge refs are not APK evidence for this current code commit.
+
+## 4. Current 3D asset identity and rights boundary
+
+The active manifest is `config/avatar-asset.json`.
+
+| Field | Recorded value |
+|---|---|
+| Model | Gracy Lee |
+| Source UID | `5e0c47f7f7fe453bb4d3c8c7eba356e8` |
+| Author | `hong227` |
+| License recorded | CC BY 4.0 |
+| Intended use | Temporary technical UAT only |
+| GLB path | `assets/avatars/pyincc_avatar_primary.glb` |
+| GLB size | 3,291,488 bytes |
+| GLB SHA-256 | `cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc` |
+| Attribution file | `assets/avatars/GRACY_LEE_ATTRIBUTION.txt` |
+| Rights evidence | `docs/evidence/gracy-lee-license-grant.json` |
+| Public source snapshot | `docs/evidence/gracy-lee-sketchfab-api.json` |
+
+The manifest's `approval_status=verified` and Run #140 asset-gate PASS apply only to recorded rights/identity and technical packaging prerequisites for this temporary asset. The evidence records that the supplied GLB was **not independently downloaded again** from Sketchfab; origin linkage is based on embedded provenance matching the saved public metadata snapshot. It makes no claim about third-party publicity/privacy rights, visual quality, runtime behavior or production acceptance.
+
+The official PYINCC GLB is being built by the owner and has not yet been supplied. It is a separate acceptance gate. Its absence does not block the current Android UI/P1 work or building a technical APK using the temporary Gracy Lee asset. Do not use any old candidate with UID `4385c4af843e43379df8b702d04634f9`; that October 18/19 candidate was superseded.
+
+## 5. Application implementation state at the validated code commit
+
+### Implemented in the current Android code
+
+- Home is the entry point and exposes routes to Studio, Store, Wardrobe and Account.
+- Main navigation remains Home / Studio / Store / Account.
+- Studio is 3D-first and uses the bundled temporary Gracy Lee model; the UI labels it as a technical test model and states that the official PYINCC avatar will be added later.
+- Studio has slow automatic rotation, pause/resume, reset-view controls and bounded camera settings. The viewer disables pan/zoom to reduce accidental displacement.
+- Studio tool definitions are centralized with stable keys, labels, semantics and actions.
+- Compact Home/Studio widget tests and the latest interaction tests pass in Run #140.
+- Unavailable features are presented as disabled or not integrated, rather than claiming a completed result.
+
+### Not implemented or not accepted as production capabilities
+
+- Face Swap / face-to-3D mapping engine.
+- Real Skin Care effects applied to GLB materials/textures.
+- Rigged 3D garment try-on, wardrobe persistence and complete Big Bag pipeline.
+- Connected product catalog, verified merchant links and checkout.
+- Cloud Backup persistence and production cloud data flow.
+- Live production Firebase authentication on a configured real project/device.
+- Final PYINCC avatar quality and physical-device visual acceptance.
+
+### Attribution UI discrepancy that must not be lost
+
+The current `test/widget_test.dart` explicitly asserts that the Account page does **not** show “Bản quyền mô hình 3D”. The license/attribution text file is bundled and checked by the asset gate, but a user-accessible attribution screen is not present in the active code snapshot. PR #2 contains an earlier attempt at this feature and has a review finding that the source/license links must remain selectable. Do not mark Account attribution UI as complete. Review and implement the small required change directly on the existing Android branch; do not merge the stale PR branch wholesale.
+
+## 6. Acceptance matrix
+
+| Gate | Current status | What is still required |
+|---|---|---|
+| Python asset/APK regression gate | PASS in #140 | No re-run unless code/gate changes |
+| Flutter static analysis | PASS in #140 | No re-run unless code changes |
+| Flutter unit/widget tests | PASS in #140 | No re-run unless code/tests change |
+| Android Gradle Kotlin compile | PASS in #140 | No re-run unless Android source/config changes |
+| Temporary GLB structural/rights gate | PASS in #140 | Temporary technical-UAT scope only |
+| New APK from current source | NOT BUILT | Manual `workflow_dispatch`, `build_apk=true` |
+| APK SHA/package/signature/embedded GLB on current source | NOT AVAILABLE | Verify actual APK artifact after build |
+| Galaxy A11 physical UAT | NOT RUN | Install exact APK and record device/render/log evidence |
+| Official PYINCC GLB | PENDING OWNER ASSET | Inspect real asset and re-run separate official-avatar gate |
+| Production release | NOT ACCEPTED | Requires all applicable runtime, privacy, asset and device gates |
+
+## 7. Next work order — one canonical sequence
+
+1. **Resolve the Account attribution UI discrepancy** on `fashionai/gracy-20261023`: add the bundled credit page with selectable source/license links and a widget regression; preserve the current GLB viewer and all existing passing tests.
+2. Batch the related code/test changes into one coherent commit. Run one complete Android workflow and repair any failure from its actual log before reporting.
+3. After validation is green, dispatch `.github/workflows/android-apk.yml` manually with `build_apk=true`. Push-triggered runs do not build APKs.
+4. Inspect the resulting APK artifact: package ID, minSdk, debug signature, raw APK SHA-256, exact embedded GLB size/SHA-256 and attribution bytes.
+5. Install that exact APK on Galaxy A11 and record real render, camera interaction, offline behavior, logcat and stability. Keep physical UAT separate from CI.
+6. When the official PYINCC GLB is supplied, evaluate it independently and replace the temporary asset only after identity, rights, mesh, UV, textures, hash and Android render checks pass.
+
+Do not restart already passing Home/Studio work without a new regression. Do not create a new Android branch for these tasks.
+
+## 8. Branches, PRs and issue tracking
+
+Current branch inventory was checked on 2026-11-04:
+
+| Branch / PR | Current relationship or status | Handling |
+|---|---|---|
+| `fashionai/gracy-20261023` | Active Android source; validated code commit above | Continue here |
+| `ios` / PR #5 | Separate iOS workstream; PR targets `main` | Keep separate; do not combine with Android |
+| `main` | Default branch; diverged from active Android branch | Not the Android work base |
+| `android` | 6 commits ahead / 27 behind the active branch | Do not switch to it; inspect unique commits before cleanup |
+| `aipet-render-audit-20261017` | 0 ahead / 29 behind active branch | Owner previously authorized removal; branch still exists. Current connector has no branch-delete action, so removal was not performed |
+| `fix/studio-fixed-viewport-auto-rotate` | 5 ahead / 26 behind active branch; related PR #4 is already merged | Historical branch; do not merge again; cleanup requires a delete-ref capability |
+| `fix/gracy-attribution-widget-test` / PR #2 | 6 ahead / 26 behind active branch; still open | Review only the needed attribution behavior; do not merge the stale branch wholesale |
+| `fix/fashionai-gracy-asset-gate-20261020` / PR #1 | Still open against `main`; contains an older alternate asset-fetch/workflow path | Do not merge automatically; active branch already uses the pinned owner-supplied GLB and current gate |
+
+Issue #3 remains the main Android P0/P1 tracker. Do not create duplicate issues for the same work. PR #5 is the separate iOS workflow change. No branch deletion, PR merge or history rewrite was performed during this checkpoint update.
+
+## 9. Workflow and session-resumption rules
+
+### Android workflow behavior
+
+- Push to `fashionai/gracy-20261023`: run Python gate tests, asset gate, Flutter analysis/tests and Android Gradle compile check.
+- Manual dispatch with `build_apk=true`: run the same prerequisites, then build the debug APK and verify the actual packaged asset, package identity, minSdk and signature.
+- The current connector can inspect workflow runs/jobs and source files, but does not expose a workflow-dispatch action. Do not claim the APK job has been started unless GitHub reports a real run.
+
+### Required steps at the start of every new session
+
+1. Read this file before editing anything.
+2. Fetch the live ref for `fashionai/gracy-20261023`; record its exact HEAD SHA.
+3. Compare that HEAD with the last checkpoint. Inspect only new commits/diffs since the checkpoint.
+4. Check the latest workflow for the current HEAD. Reuse PASS evidence when the source has not changed; do not re-run fixed items without a regression.
+5. Continue on the existing Android branch. Keep `ios` separate. Never create a new branch merely because a chat session changed.
+6. Batch related repairs into one commit and one validation cycle. Fix CI errors from the actual failing step/log; update this checkpoint after the result is verified.
+7. Give the owner one consolidated report after the work batch: progress, final commit, CI, APK/device status and remaining blockers.
+
+**Do not treat a new chat session as a new project baseline.** The Git branch, exact commit, this checkpoint and the latest verified workflow are the persistent handoff.

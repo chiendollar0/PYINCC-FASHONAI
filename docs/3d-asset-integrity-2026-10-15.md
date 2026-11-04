@@ -1,31 +1,41 @@
 # FashionAI asset identity — current gate and historical record
 
-## Current packaging authority (19 October 2026)
+**Current authority:** `config/avatar-asset.json` and the evidence files it hashes.  
+**Current code baseline:** `c3d8dde0b288c3261a456337e8cee16cff5b9596`.  
+**Latest gate:** Android workflow #140 — PASS for the temporary technical-UAT asset.
 
-`config/avatar-asset.json` is the current sole-asset identity/rights manifest. Status is BLOCKED: selected model has been identified, but there is no authorized GLB, license grant, asset byte count or SHA-256 to approve. The historical values below must not be used as current acceptance thresholds.
+## Current manifest state
 
-Current acceptance requires exactly one approved primary, reviewed license-grant evidence, source hash/size validation, and an identical embedded GLB in the actual APK. Raw APK SHA-256 is recorded separately from GitHub artifact ZIP digest. Structural/packaging checks never imply visual or production PASS.
+The current manifest records:
+- `approval_status: verified`
+- `intended_use: temporary_technical_uat_only`
+- Model UID: `5e0c47f7f7fe453bb4d3c8c7eba356e8`
+- Author: `hong227`
+- License: CC BY 4.0
+- Asset: `assets/avatars/pyincc_avatar_primary.glb`
+- Exact size: 3,291,488 bytes
+- Exact SHA-256: `cba9ea4f3db8961609fdb4ef6fda33b9a7af818cea3e65f534a37047d0f5f2dc`
+- Attribution file: `assets/avatars/GRACY_LEE_ATTRIBUTION.txt`
 
-## Historical record — superseded for current packaging
+Evidence files:
+- `docs/evidence/gracy-lee-license-grant.json`
+- `docs/evidence/gracy-lee-sketchfab-api.json`
 
-# PYINCC FashionAI — 3D asset integrity manifest
+The asset gate verifies the manifest, evidence hash, attribution hash, exact one-GLB inventory, GLB binary structure, embedded texture data and source-to-APK equality when an actual APK is supplied. Run #140 passed the source asset gate. It did not build an APK.
 
-Verified from provided `PYINCC_FashionAI_3D_assets_ready.zip` on 2026-10-15.
+## Limits
 
-| Path | Bytes | SHA-256 |
-| --- | ---: | --- |
-| `assets/avatars/pyincc_avatar_primary.glb` | 5152656 | `919421af91f4d155da84ba9e47670d5aac7739cac9fac959ab5add7d5381b983` |
-| `assets/avatars/pyincc_avatar_alternate.glb` | 4672404 | `b8c964e38a097e5ca1f88773235af74f2a55db5c6e5c9ac388dd04e4d2388e6a` |
+This is a recorded source/rights review and structural packaging gate for temporary technical UAT only. The evidence records that the supplied GLB was not independently downloaded again; embedded provenance was matched against the saved public source snapshot. The gate does not certify legal entitlement beyond the recorded evidence, third-party publicity/privacy rights, visual quality, physical Android runtime or production acceptance.
 
-Both files have a valid glTF binary header (`glTF`), version 2, and declared binary length matching actual length. These are prepared neutralized static mesh assets, not a rigged avatar, Face Swap, or true outfit-change implementation.
+The official PYINCC GLB is not yet in the repository. It remains a separate owner-supplied asset and acceptance gate. Do not use the temporary Gracy Lee hash as the official PYINCC asset hash.
 
-## P0 gate
+## Historical record — superseded
 
-**BLOCKED:** The two binary GLBs have not yet been committed to this repository. A manifest or passing Flutter build must never be presented as asset integration PASS.
+On 2026-10-15, a previously supplied archive was recorded with these old prepared neutralized static-mesh files:
 
-**P0 PASS requires:** GitHub tree contains both GLBs at exact paths, matching byte sizes and SHA-256; downstream CI must verify them before packaging.
+| Historical path | Bytes | SHA-256 |
+|---|---:|---|
+| `assets/avatars/pyincc_avatar_primary.glb` | 5,152,656 | `919421af91f4d155da84ba9e47670d5aac7739cac9fac959ab5add7d5381b983` |
+| `assets/avatars/pyincc_avatar_alternate.glb` | 4,674,404 | `b8c964e38a097e5ca1f88773235af74f2a55db5c6e5c9ac388dd04e4d2388e6a` |
 
-## Ownership
-
-Engineering integration owns transferring the assets and CI validation. Do not ask the product owner to rename, upload, install SDKs, or debug build tools.
-
+These values are historical and must not be used as current thresholds. They are not proof of a rigged avatar, Face Swap, garment replacement or current asset integration.
