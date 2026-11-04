@@ -103,6 +103,34 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Studio labels the test GLB and supports pause, resume and reset', (tester) async {
+    await openStudio(tester);
+    expect(find.textContaining('GLB Gracy Lee — mô hình thử nghiệm kỹ thuật.'), findsOneWidget);
+    expect(find.byTooltip('Tạm dừng xoay tự động'), findsOneWidget);
+    await tester.tap(find.byTooltip('Tạm dừng xoay tự động'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Tiếp tục xoay tự động'), findsOneWidget);
+    await tester.tap(find.byTooltip('Đặt lại góc nhìn 3D'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Tạm dừng xoay tự động'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Fullscreen viewer keeps test GLB attribution and rotation controls', (tester) async {
+    await openStudio(tester);
+    await tester.tap(find.byTooltip('Xem toàn màn hình'));
+    await tester.pumpAndSettle();
+    expect(find.text('PYINCC · Nhân vật 3D'), findsOneWidget);
+    expect(find.textContaining('GLB Gracy Lee — mô hình thử nghiệm kỹ thuật.'), findsOneWidget);
+    await tester.tap(find.byTooltip('Tạm dừng xoay tự động'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Tiếp tục xoay tự động'), findsOneWidget);
+    await tester.tap(find.byTooltip('Đặt lại góc nhìn 3D'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Tạm dừng xoay tự động'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Big Bag states the 3D garment pipeline is unavailable', (tester) async {
     await openStudio(tester);
     await tester.tap(find.text('Big Bag'));
