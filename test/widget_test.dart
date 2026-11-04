@@ -144,8 +144,14 @@ void main() {
       onOpenAccount: _testNoop,
     )));
     await tester.pumpAndSettle();
+    final actionLabel = find.text('Face Swap 3D chưa khả dụng');
+    await tester.scrollUntilVisible(
+      actionLabel,
+      160,
+      scrollable: find.byType(Scrollable).first,
+    );
     final action = find.widgetWithText(FilledButton, 'Face Swap 3D chưa khả dụng');
-    await tester.ensureVisible(action);
+    expect(action, findsOneWidget);
     expect(tester.widget<FilledButton>(action).onPressed, isNull);
     expect(find.textContaining('Chưa có engine Face Swap 3D đã kiểm chứng'), findsOneWidget);
     expect(tester.takeException(), isNull);
