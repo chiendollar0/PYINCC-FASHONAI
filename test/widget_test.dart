@@ -133,6 +133,7 @@ void main() {
 
   testWidgets('Big Bag states the 3D garment pipeline is unavailable', (tester) async {
     await openStudio(tester);
+    await tester.ensureVisible(find.text('Big Bag'));
     await tester.tap(find.text('Big Bag'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Tủ đồ hiện chưa có trang phục 3D'), findsOneWidget);
@@ -141,6 +142,7 @@ void main() {
 
   testWidgets('Studio opens wardrobe catalog', (tester) async {
     await openStudio(tester);
+    await tester.ensureVisible(find.text('Tủ đồ'));
     await tester.tap(find.text('Tủ đồ'));
     await tester.pumpAndSettle();
     final openCatalog = find.text('Mở danh mục trang phục');
