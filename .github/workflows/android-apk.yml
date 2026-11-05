@@ -87,7 +87,7 @@ jobs:
           app = Path('android/app/build.gradle.kts')
           s = settings.read_text()
           a = app.read_text()
-          kotlin_plugin = re.search(r'id\(["']org\.jetbrains\.kotlin\.android["']\) version ["'][^"']+["'] apply false', s)
+          kotlin_plugin = re.search(r"""id\(["']org\.jetbrains\.kotlin\.android["']\) version ["'][^"']+["'] apply false""", s)
           if not kotlin_plugin:
               raise SystemExit('GOOGLE_SERVICES_FAIL: Kotlin plugin declaration not found')
           if 'com.google.gms.google-services' not in s:
