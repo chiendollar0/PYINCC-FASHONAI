@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1091724695016",
+    "project_id": "pyincc-fashionai",
+    "storage_bucket": "pyincc-fashionai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091724695016:android:3960796dcdfbfe2e58405d",
+        "android_client_info": {
+          "package_name": "com.pyincc.fashionai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGfDw4HcXDMAaOG-ZQK-j8RCHQYQ5vUNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
