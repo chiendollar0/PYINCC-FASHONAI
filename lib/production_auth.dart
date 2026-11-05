@@ -12,18 +12,29 @@ class ProductionAuthGate extends StatefulWidget {
 class _ProductionAuthGateState extends State<ProductionAuthGate> {
   late final Future<FirebaseApp> _initialization = _initialize();
   Future<FirebaseApp> _initialize() async {
-    const apiKey = String.fromEnvironment('FIREBASE_API_KEY');
-    const appId = String.fromEnvironment('FIREBASE_APP_ID');
-    const senderId = String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID');
-    const projectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
-    if ([apiKey, appId, senderId, projectId].any((v) => v.isEmpty)) {
-      throw StateError('Missing Firebase configuration');
+    // Android configuration is generated from android/app/google-services.json
+    // by the Google Services Gradle plugin. iOS keeps explicit FlutterFire
+    // options until its native Firebase plist is added.
+    final Future<FirebaseApp> initialization;
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      initialization = Firebase.initializeApp();
+    } else {
+      const apiKey = String.fromEnvironment('FIREBASE_API_KEY');
+      const appId = String.fromEnvironment('FIREBASE_APP_ID');
+      const senderId = String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID');
+      const projectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
+      if ([apiKey, appId, senderId, projectId].any((v) => v.isEmpty)) {
+        throw StateError('Missing Firebase configuration for this platform');
+      }
+      initialization = Firebase.initializeApp(options: const FirebaseOptions(
+        apiKey: apiKey,
+        appId: appId,
+        messagingSenderId: senderId,
+        projectId: projectId,
+        iosBundleId: 'com.pyincc.fashionai',
+      ));
     }
-    return Firebase.initializeApp(options: const FirebaseOptions(
-      apiKey: apiKey, appId: appId, messagingSenderId: senderId,
-      projectId: projectId,
-      iosBundleId: 'com.pyincc.fashionai',
-    )).timeout(const Duration(seconds: 20));
+    return initialization.timeout(const Duration(seconds: 20));
   }
 
   @override
