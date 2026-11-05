@@ -51,8 +51,12 @@ jobs:
         shell: bash
         run: |
           cp pubspec.yaml /tmp/pyincc-pubspec.yaml
+          test -s android/app/google-services.json
+          cp android/app/google-services.json /tmp/pyincc-google-services.json
           flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai --no-pub .
           cp /tmp/pyincc-pubspec.yaml pubspec.yaml
+          mkdir -p android/app
+          cp /tmp/pyincc-google-services.json android/app/google-services.json
           rm -f pubspec.lock
       - name: Configure Android application ID
         run: |
@@ -72,6 +76,33 @@ jobs:
           set -euo pipefail
           sed -i -E 's/minSdk = flutter.minSdkVersion/minSdk = 26/' android/app/build.gradle.kts
           grep -Eq 'minSdk = 26' android/app/build.gradle.kts
+      - name: Configure Firebase Google Services plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          settings = Path('android/settings.gradle.kts')
+          app = Path('android/app/build.gradle.kts')
+          s = settings.read_text()
+          a = app.read_text()
+          kotlin_plugin = re.search(r'id\(["']org\.jetbrains\.kotlin\.android["']\) version ["'][^"']+["'] apply false', s)
+          if not kotlin_plugin:
+              raise SystemExit('GOOGLE_SERVICES_FAIL: Kotlin plugin declaration not found')
+          if 'com.google.gms.google-services' not in s:
+              s = s[:kotlin_plugin.end()] + '\\n    id("com.google.gms.google-services") version "4.4.2" apply false' + s[kotlin_plugin.end():]
+          if 'id("com.google.gms.google-services")' not in a:
+              gradle_plugin = 'id("dev.flutter.flutter-gradle-plugin")'
+              if gradle_plugin not in a:
+                  raise SystemExit('GOOGLE_SERVICES_FAIL: Flutter Gradle plugin declaration not found')
+              a = a.replace(gradle_plugin, gradle_plugin + '\\n    id("com.google.gms.google-services")', 1)
+          settings.write_text(s)
+          app.write_text(a)
+          PY
+          test -s android/app/google-services.json
+          grep -q 'com.google.gms.google-services' android/settings.gradle.kts
+          grep -q 'id("com.google.gms.google-services")' android/app/build.gradle.kts
       - name: Validate launcher configuration
         shell: bash
         run: |
@@ -121,8 +152,12 @@ jobs:
         shell: bash
         run: |
           cp pubspec.yaml /tmp/pyincc-pubspec.yaml
+          test -s android/app/google-services.json
+          cp android/app/google-services.json /tmp/pyincc-google-services.json
           flutter create --platforms=android --org com.pyincc --project-name pyincc_fashionai --no-pub .
           cp /tmp/pyincc-pubspec.yaml pubspec.yaml
+          mkdir -p android/app
+          cp /tmp/pyincc-google-services.json android/app/google-services.json
           rm -f pubspec.lock
       - name: Configure Android application ID
         run: |
@@ -142,6 +177,33 @@ jobs:
           set -euo pipefail
           sed -i -E 's/minSdk = flutter.minSdkVersion/minSdk = 26/' android/app/build.gradle.kts
           grep -Eq 'minSdk = 26' android/app/build.gradle.kts
+      - name: Configure Firebase Google Services plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          settings = Path('android/settings.gradle.kts')
+          app = Path('android/app/build.gradle.kts')
+          s = settings.read_text()
+          a = app.read_text()
+          kotlin_plugin = re.search(r'id\(["']org\.jetbrains\.kotlin\.android["']\) version ["'][^"']+["'] apply false', s)
+          if not kotlin_plugin:
+              raise SystemExit('GOOGLE_SERVICES_FAIL: Kotlin plugin declaration not found')
+          if 'com.google.gms.google-services' not in s:
+              s = s[:kotlin_plugin.end()] + '\\n    id("com.google.gms.google-services") version "4.4.2" apply false' + s[kotlin_plugin.end():]
+          if 'id("com.google.gms.google-services")' not in a:
+              gradle_plugin = 'id("dev.flutter.flutter-gradle-plugin")'
+              if gradle_plugin not in a:
+                  raise SystemExit('GOOGLE_SERVICES_FAIL: Flutter Gradle plugin declaration not found')
+              a = a.replace(gradle_plugin, gradle_plugin + '\\n    id("com.google.gms.google-services")', 1)
+          settings.write_text(s)
+          app.write_text(a)
+          PY
+          test -s android/app/google-services.json
+          grep -q 'com.google.gms.google-services' android/settings.gradle.kts
+          grep -q 'id("com.google.gms.google-services")' android/app/build.gradle.kts
       - name: Dependencies
         run: flutter pub get
       - name: Build debug APK only after tests pass
