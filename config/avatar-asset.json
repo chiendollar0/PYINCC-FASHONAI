@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
   "approval_status": "blocked",
-  "intended_use": "temporary_technical_uat_only",
-  "source_url": "https://skfb.ly/6YvQ7",
-  "model_uid": "4385c4af843e43379df8b702d04634f9",
-  "canonical_url": "https://sketchfab.com/3d-models/attractive-woman-in-black-bodysuit-in-a-pose-259-4385c4af843e43379df8b702d04634f9",
-  "author": "deep3dstudio",
-  "license": {
-    "id": "Standard",
-    "url": "https://sketchfab.com/licenses",
-    "note": "Public listing metadata is not proof of acquisition or permission to distribute this model."
-  },
-  "permissions": {
-    "download": false,
-    "commercial_use": false,
-    "app_distribution": false
-  },
-  "reviewed_by": null,
-  "reviewed_at": null,
-  "evidence": {
-    "kind": "listing_metadata_only",
-    "path": "docs/evidence/sketchfab-4385c4a-metadata.json",
-    "sha256": null
-  },
+  "intended_use": "official_user_created_static_mesh_pending_structural_review",
+  "source_type": "owner_created_and_uploaded",
+  "source_path_at_intake": "assets/pyincc_avatar_primary.glb",
+  "owner_statement": "The project owner states that this GLB is the official PYINCC avatar mesh created by the owner. The model has not been rigged.",
   "asset": {
     "path": "assets/avatars/pyincc_avatar_primary.glb",
-    "bytes": null,
+    "bytes": 2608120,
+    "git_blob_sha": "c190984eb7ff92cba6dd27ddc6a5d1603b522308",
     "sha256": null
   },
-  "blocker": "Exact model identified. Public API isDownloadable=false; no acquired model file or reviewed license grant supplied. No substituted model or old-scan APK is authorized by this manifest."
+  "structural_review": {
+    "status": "pending",
+    "glb_version": null,
+    "mesh_count": null,
+    "primitive_count": null,
+    "vertex_count": null,
+    "index_count": null,
+    "uv_sets": [],
+    "material_count": null,
+    "embedded_image_count": null,
+    "embedded_image_formats": [],
+    "external_dependencies": [],
+    "skeleton_count": null,
+    "skin_count": null,
+    "rigged": false,
+    "reviewed_at": null
+  },
+  "blocker": "The file is present in the canonical path, but binary inspection and SHA-256 capture have not been completed. The current avatar gate is hard-coded to a historical Sketchfab model UID and must be updated and regression-tested for owner-created assets before this model can be approved. No APK packaging is authorized yet."
 }
