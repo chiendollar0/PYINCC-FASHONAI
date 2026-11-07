@@ -1,21 +1,32 @@
-# FashionAI 3D asset integration — current state
+# FashionAI 3D asset integration — official owner-created mesh
 
-## Selected temporary candidate
+## Current official candidate
 
-Owner decision: 2026-10-18T05:16:31Z. Final mesh reconstruction is deferred; technical UAT must use the sole selected candidate https://skfb.ly/6YvQ7.
+The owner uploaded `pyincc_avatar_primary.glb` to the repository. It was found at `assets/pyincc_avatar_primary.glb` and moved to the canonical path `assets/avatars/pyincc_avatar_primary.glb` in commit `1cd4d8152b8806131f3a03808ffb8662c0b7b249`.
 
-Resolved model UID: `4385c4af843e43379df8b702d04634f9`; author: `deep3dstudio`. Live public metadata reports `isDownloadable=false` and `Standard` license metadata. The listing links to Fab. No model download, purchase or entitlement verification has been performed.
+Repository metadata confirms:
+- Size: 2,608,120 bytes.
+- Git blob SHA: `c190984eb7ff92cba6dd27ddc6a5d1603b522308`.
+- Same blob identity before and after move, so the file was not re-encoded.
+- Owner states this is the official PYINCC mesh and is not rigged.
 
-**BLOCKED:** an acquired model file and reviewed license grant are missing. A public viewer or license label does not grant permission to package a GLB in an APK.
+The binary has not yet been inspected. Mesh/primitive/vertex/index counts, UVs, materials, embedded textures, GLB header, buffer references and SHA-256 are not yet known. The manifest and APK asset gate remain BLOCKED.
 
-## Active pipeline
+## Static mesh versus rigged avatar
 
-1. Engineering reviews the actual acquisition/license evidence for the intended technical UAT and distribution use; records it in `config/avatar-asset.json`.
-2. Import exactly one approved `assets/avatars/pyincc_avatar_primary.glb`; record exact size and SHA-256. The GLB must carry its mesh/UV/material and embedded PNG/JPEG textures for the current structural gate.
-3. Run `python3 scripts/avatar_gate.py`. There is no automatic conversion or fallback download.
-4. CI runs source checks, builds only if the asset gate passes, and hashes the GLB extracted directly from the actual APK. It records raw APK SHA-256, package, minimum SDK, and signing evidence.
-5. Perform physical Android UAT with full-body framing, front/back/left/right views, 360-degree camera, texture/material and offline checks. Technical UAT does not accept final avatar quality, Face Swap or garment fit.
+An unrigged mesh can be rendered and rotated by the existing static 3D viewer if its GLB structure, materials and textures are valid. A skeleton/skin is not required for static display. However, rigged garment fitting, skeletal deformation and character animation require a compatible rig and are not delivered by this asset as currently described.
 
-## Preserved historical work
+## Integration checklist
 
-Both `model_1791878457744.glb` and `model_1791877892370.glb` remain at repository root. Their old preparation script is preserved but no longer invoked by CI. Primary and alternate scan outputs from older APKs are historical evidence only; there is no A/B selector or alternate asset in the new packaging contract.
+1. Inspect the binary GLB, do not infer mesh quality from the filename or file size.
+2. Record GLB version/length, scene/node inventory, mesh/primitive counts, vertex/index counts, UV sets, normals, material/texture references, embedded image formats, external dependencies, skeleton/skin counts and exact SHA-256.
+3. Check the current viewer compatibility and Android memory/rendering implications.
+4. Update `config/avatar-asset.json` with observed values only.
+5. Update `scripts/avatar_gate.py` to support owner-created assets without the historical Sketchfab UID assumption; add tests and keep the gate fail-closed.
+6. Run the complete Python gate suite, Flutter analyze/tests, Android Gradle compile, then APK build only after asset gate passes.
+7. Verify APK contains exactly one primary GLB with byte-for-byte identical size and SHA-256.
+8. Perform physical Android UAT for full-body framing, front/back/left/right views, camera orbit, texture/material and offline behavior.
+
+## Preserved history
+
+The historical root-level scan GLBs and conversion script remain preserved for audit. The deleted ZIP is not required after intake. Do not delete historical source files or create an alternate avatar selector.
