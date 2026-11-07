@@ -1,3 +1,5 @@
+> **Historical plan — superseded on 7 November 2026.** This plan was written for a temporary Sketchfab candidate (UID `4385c4af843e43379df8b702d04634f9`). That candidate is no longer the current avatar. The official owner-created mesh is now at `assets/avatars/pyincc_avatar_primary.glb`; see `docs/official-avatar-intake-2026-11-07.md`. Keep this file as audit history. Do not follow its Sketchfab-specific identity/rights assumptions for the new asset.
+
 # FashionAI avatar build gate implementation plan
 
 > **For agentic workers:** Use superpowers:executing-plans to implement this plan task-by-task. Continue the authorized repair in this session.
