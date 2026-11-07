@@ -4,22 +4,26 @@ Flutter Android/iOS foundation. Runtime 3D viewing uses `model_viewer_plus` 1.9.
 
 ## Current source and scope
 
-Read `docs/PROJECT_UI_P0_SOURCE_OF_TRUTH.md` and `docs/product-contract-v2.md` first. Latest owner decision (18 October 2026): defer final GLB reconstruction and use the single selected Sketchfab candidate for temporary technical UAT, subject to verified rights. Tabs remain **Home | Studio | Store | Account**.
+Read `docs/PROJECT_UI_P0_SOURCE_OF_TRUTH.md` and `docs/product-contract-v2.md` first. Latest avatar intake is recorded in `docs/official-avatar-intake-2026-11-07.md`.
 
-The selected candidate has been identified, but an authorized GLB and reviewed license grant are not available. See `config/avatar-asset.json` and `docs/evidence/sketchfab-4385c4a-metadata.json`. Public listing metadata does not establish download or distribution entitlement.
+The owner-uploaded official candidate is now stored at `assets/avatars/pyincc_avatar_primary.glb`. It is a user-created static mesh and has not been rigged. The uploaded file was moved without re-encoding; Git blob identity was preserved. Its binary GLB structure, mesh topology, UVs, materials, embedded textures, node hierarchy and render quality have not yet been independently inspected in this environment. It is not approved for APK packaging until those checks and exact SHA-256 capture pass.
+
+The old root-level scan files remain preserved for historical reference and are not authorized app assets. The removed ZIP is not required by the build.
 
 ## Build gates
 
 - `python3 -m unittest discover -s tests -v`: regression tests for rights, structural and APK integrity gates. Unit fixtures are temporary, never app assets.
-- `python3 scripts/avatar_gate.py --report build/evidence/avatar-gate.json`: require a reviewed rights manifest and exactly one matching `assets/avatars/pyincc_avatar_primary.glb`. Exit 2 means BLOCKED; no fallback model is generated.
-- Android source validation runs independently. APK packaging requires both source validation and the asset gate; actual APK GLB bytes and raw APK SHA-256 are checked before upload. Package, minimum SDK and signing evidence are also captured.
+- `python3 scripts/avatar_gate.py --report build/evidence/avatar-gate.json`: fail-closed packaging gate. Current manifest remains BLOCKED while the new user-created GLB is inspected and the gate is updated to recognize owner-created assets.
+- Android source validation runs independently. APK packaging requires source validation and the asset gate; actual APK GLB bytes and raw APK SHA-256 are checked before upload.
 - iOS checks source/tests, then requires the same asset gate before unsigned simulator compilation. Simulator compilation is not physical-device UAT.
 
-The historical root-level scan files and `scripts/prepare_avatar_assets.py` remain preserved for reference. Automatic scan regeneration and alternate-GLB packaging are disabled in CI.
+The historical root-level scan files and `scripts/prepare_avatar_assets.py` remain preserved. Do not delete them as part of avatar replacement. They are not the active source for the official avatar.
 
-## When an authorized asset is available
+## Official avatar intake
 
-Engineering records the exact model ID, author, applicable license, reviewed permissions and license-grant evidence; imports the sole primary GLB; and pins byte size/SHA-256 in the manifest. Local preflight must pass before CI packages it. Do not replace pending evidence with invented approval, a sample or a generated placeholder.
+Engineering must record the GLB header/version/declared length, mesh/primitive and vertex/index counts, UV sets, material and texture references, embedded image formats, node hierarchy, skeleton/skin presence, external dependencies, file byte size and SHA-256. A static mesh without a skeleton is valid for the current static Studio viewer; it does not support rigged garment fitting or animation.
+
+After structural validation, update the manifest and gate for a user-created asset without inventing a Sketchfab UID or license grant. Preserve owner provenance and record the exact reviewed declaration. CI must verify the sole primary asset and identical bytes inside the APK.
 
 After a successful build, physical Android evidence must identify the APK, device/Android/WebView and logcat, and demonstrate full-body rendering, four angles, camera interaction and offline behavior. Passing CI is never production or visual approval.
 
