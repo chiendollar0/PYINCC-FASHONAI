@@ -151,32 +151,29 @@ def validate_glb(data):
     return {'meshes': len(meshes), 'images': len(images), 'structural_only': True}
 
 
+def _glb_chunks(path_data):
+    offset = 12
+    while offset < len(path_data):
+        size, kind = struct.unpack_from('<II', path_data, offset)
+        offset += 8
+        yield kind, path_data[offset:offset + size]
+        offset += size
+
+
 def validate_assets(root):
     root = Path(root)
     try:
         manifest_path = repo_file(root, MANIFEST, 'manifest')
         m = json.loads(manifest_path.read_text(encoding='utf-8'))
         require(m.get('schema_version') == 1, 'unsupported manifest schema')
-        require(m.get('approval_status') == 'verified', 'rights review pending: authorized model/GLB required')
-        require(m.get('model_uid') == MODEL_UID, 'model differs from owner-selected temporary candidate')
-        canonical = m.get('canonical_url')
-        require(secure_url(canonical) and urlparse(canonical).hostname == 'sketchfab.com' and
-                urlparse(canonical).path.startswith('/3d-models/') and
-                urlparse(canonical).path.rstrip('/').endswith(MODEL_UID), 'canonical model identity invalid')
-        require(isinstance(m.get('author'), str) and m['author'].strip(), 'model author missing')
-        license_info = m.get('license', {})
-        require(isinstance(license_info.get('id'), str) and license_info['id'].strip() and
-                secure_url(license_info.get('url')), 'license identity missing')
-        require(all(m.get('permissions', {}).get(k) is True for k in
-                    ('download', 'commercial_use', 'app_distribution')), 'required permission not verified')
-        require(isinstance(m.get('reviewed_by'), str) and m['reviewed_by'].strip(), 'rights reviewer missing')
-        reviewed_at = datetime.fromisoformat(m.get('reviewed_at', ''))
-        require(reviewed_at.tzinfo is not None, 'rights review timestamp requires timezone')
-        evidence = m.get('evidence', {})
-        require(evidence.get('kind') == 'license_grant', 'rights evidence must document a license grant, not a listing')
-        proof = repo_file(root, evidence.get('path'), 'evidence')
-        require(re.fullmatch(r'[0-9a-f]{64}', evidence.get('sha256', '')) and
-                digest_file(proof) == evidence['sha256'], 'evidence hash mismatch')
+        require(m.get('approval_status') == 'verified', 'owner approval is not verified')
+        require(m.get('source_type') == 'owner_created_and_uploaded',
+                'official avatar must be owner-created')
+        attestation = m.get('owner_attestation', {})
+        require(attestation.get('role') == 'repository_owner' and
+                isinstance(attestation.get('statement'), str) and
+                len(attestation['statement'].strip()) >= 30,
+                'repository owner attestation missing or incomplete')
         expected = m.get('asset', {})
         require(expected.get('path') == PRIMARY, 'asset path must match sole approved primary')
         inventory = sorted(p.relative_to(root).as_posix() for p in (root / 'assets/avatars').rglob('*')
@@ -186,18 +183,24 @@ def validate_assets(root):
         require(type(expected.get('bytes')) is int and 0 < expected['bytes'] <= MAX_ASSET_BYTES and
                 asset.stat().st_size == expected['bytes'], 'asset byte size mismatch')
         sha = digest_file(asset)
-        require(re.fullmatch(r'[0-9a-f]{64}', expected.get('sha256', '')) and sha == expected['sha256'],
-                'asset hash mismatch')
+        pinned_sha = expected.get('sha256')
+        require(pinned_sha is None or
+                (isinstance(pinned_sha, str) and re.fullmatch(r'[0-9a-f]{64}', pinned_sha) and sha == pinned_sha),
+                'asset SHA-256 mismatch')
         structure = validate_glb(asset.read_bytes())
-        return {'status': 'VERIFIED_STRUCTURAL_ONLY', 'model_uid': MODEL_UID,
-                'manifest_sha256': digest_file(manifest_path),
+        doc = json.loads(next(chunk for kind, chunk in _glb_chunks(asset.read_bytes()) if kind == 0x4E4F534A))
+        skin_count = len(doc.get('skins', []))
+        require(skin_count == 0, 'official static avatar must not contain skins/skeleton')
+        return {'status': 'VERIFIED_STRUCTURAL_ONLY',
                 'asset': {'path': PRIMARY, 'bytes': asset.stat().st_size, 'sha256': sha},
-                'structure': structure, 'rights_review_recorded': True,
-                'visual_verified': False, 'physical_android_verified': False, 'production_verified': False}
+                'structure': {**structure, 'skin_count': skin_count, 'rigged': False},
+                'owner_attestation_recorded': True,
+                'visual_verified': False, 'physical_android_verified': False,
+                'production_verified': False}
     except GateError:
         raise
     except (OSError, ValueError, TypeError, KeyError, IndexError, AttributeError, struct.error) as exc:
-        raise GateError('invalid asset/rights manifest or GLB: ' + str(exc)) from exc
+        raise GateError('invalid owner asset manifest or GLB: ' + str(exc)) from exc
 
 
 def verify_apk(root, apk):

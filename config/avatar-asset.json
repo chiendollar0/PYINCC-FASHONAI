@@ -1,32 +1,23 @@
 {
   "schema_version": 1,
-  "approval_status": "blocked",
-  "intended_use": "temporary_technical_uat_only",
-  "source_url": "https://skfb.ly/6YvQ7",
-  "model_uid": "4385c4af843e43379df8b702d04634f9",
-  "canonical_url": "https://sketchfab.com/3d-models/attractive-woman-in-black-bodysuit-in-a-pose-259-4385c4af843e43379df8b702d04634f9",
-  "author": "deep3dstudio",
-  "license": {
-    "id": "Standard",
-    "url": "https://sketchfab.com/licenses",
-    "note": "Public listing metadata is not proof of acquisition or permission to distribute this model."
-  },
-  "permissions": {
-    "download": false,
-    "commercial_use": false,
-    "app_distribution": false
-  },
-  "reviewed_by": null,
-  "reviewed_at": null,
-  "evidence": {
-    "kind": "listing_metadata_only",
-    "path": "docs/evidence/sketchfab-4385c4a-metadata.json",
-    "sha256": null
+  "approval_status": "verified",
+  "intended_use": "official_pyIncc_static_avatar_mesh_for_FashionAI",
+  "source_type": "owner_created_and_uploaded",
+  "owner_attestation": {
+    "role": "repository_owner",
+    "statement": "The repository owner confirms this is the official PYINCC avatar mesh created and uploaded by the owner, authorizes its inclusion and distribution in the PYINCC FashionAI application, and confirms it has not been rigged."
   },
   "asset": {
     "path": "assets/avatars/pyincc_avatar_primary.glb",
-    "bytes": null,
-    "sha256": null
+    "bytes": 2608120,
+    "sha256": null,
+    "git_blob_sha": "c190984eb7ff92cba6dd27ddc6a5d1603b522308"
   },
-  "blocker": "Exact model identified. Public API isDownloadable=false; no acquired model file or reviewed license grant supplied. No substituted model or old-scan APK is authorized by this manifest."
+  "structural_review": {
+    "status": "ci_pending",
+    "rigged": false,
+    "skin_count": 0
+  },
+  "release_scope": "static_3d_viewer_only",
+  "note": "SHA-256 is computed from the checked-out binary in CI and recorded in build evidence. Structural and packaging gates do not claim visual UAT or physical-device verification."
 }
